@@ -52,7 +52,7 @@ export default function DiariesPage() {
     <main style={containerStyle}>
       <header style={headerStyle}>
         <Link href="/" style={backLinkStyle}>← 홈으로</Link>
-        <h1 style={titleStyle}>📔 참농꾼의 농부 일기</h1>
+        <h1 style={titleStyle}>🧑‍🌾 참농꾼의 농부 일기</h1>
         <p style={subtitleStyle}>흙과 땀으로 적어 내려간 농부님의 소중한 기록입니다.</p>
         <Link href="/upload-diary" style={writeButtonStyle}>✍️ 새 일기 쓰기</Link>
       </header>

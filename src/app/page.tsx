@@ -110,10 +110,10 @@ export default function Home() {
         <div className="absolute top-20 right-10 w-32 h-32 bg-cyan-200 rounded-full blur-3xl opacity-30 animate-pulse" />
         <div className="absolute top-80 left-10 w-48 h-48 bg-emerald-200 rounded-full blur-3xl opacity-20" />
 
-        {/* 🚜 농부 일기 섹션 (최상단으로 이동) */}
+        {/* 🧑‍🌾 농부 일기 섹션 (최상단으로 이동) */}
         <section className="mb-24 relative z-10">
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-16 h-16 rounded-full bg-teal-500 flex items-center justify-center text-3xl shadow-lg shadow-teal-100">🚜</div>
+            <div className="w-16 h-16 rounded-full bg-teal-500 flex items-center justify-center text-3xl shadow-lg shadow-teal-100">🧑‍🌾</div>
             <div>
               <h2 className="text-3xl font-black text-slate-800">chamnongkkun의 농부일기</h2>
               <p className="text-slate-500">따분한 일상에 작은 쉼표가 되는 이야기들</p>
