@@ -2,6 +2,7 @@ import Link from "next/link";
 import fs from "fs";
 import path from "path";
 import AdBanner from "@/components/AdBanner";
+import CoupangBanner from "@/components/CoupangBanner";
 
 interface InfoItem {
   id: number;
@@ -157,6 +158,9 @@ export default function Home() {
           )}
         </section>
 
+        {/* 💰 중간 광고 (AdSense) */}
+        <AdBanner />
+
         {/* 🌸 오늘의 시 & 행사 & 꿀팁 통합 레이아웃 */}
         <div className="flex flex-col lg:flex-row gap-8 mb-24 relative z-10 items-start">
           
@@ -247,10 +251,11 @@ export default function Home() {
                 ))}
               </div>
             </section>
-
           </div>
         </div>
 
+        {/* 💰 하단 쿠팡 광고 */}
+        <CoupangBanner />
       </main>
 
       <footer className="bg-white border-t border-slate-100 py-6 text-slate-500 text-xs">
