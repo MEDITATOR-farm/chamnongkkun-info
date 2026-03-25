@@ -115,15 +115,15 @@ export default function Home() {
             <h2 className="text-4xl font-black text-slate-800 mb-2">🌸 이번 달 행사/축제</h2>
             <div className="h-1.5 w-24 bg-emerald-400 mx-auto rounded-full" />
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {data.events.map((event) => {
               const styles = getSeasonStyles(event.name);
               return (
                 <div
                   key={event.id}
-                  className={`group relative overflow-hidden rounded-[2.5rem] border-2 ${styles.border} ${styles.bg} p-1 transition-all hover:shadow-2xl hover:scale-102`}
+                  className={`group relative overflow-hidden rounded-3xl border ${styles.border} ${styles.bg} p-0.5 transition-all hover:shadow-xl hover:scale-102`}
                 >
-                  <div className="bg-white rounded-[2.3rem] p-8 h-full flex flex-col">
+                  <div className="bg-white rounded-[1.4rem] p-6 h-full flex flex-col">
                     <script
                       type="application/ld+json"
                       dangerouslySetInnerHTML={{
@@ -141,20 +141,20 @@ export default function Home() {
                         })
                       }}
                     />
-                    <span className={`self-start mb-4 rounded-full px-4 py-1 text-xs font-bold ring-2 ring-offset-2 ring-transparent transition-all group-hover:ring-current ${styles.badge}`}>
+                    <span className={`self-start mb-3 rounded-full px-3 py-0.5 text-[10px] font-bold ring-1 ring-offset-1 ring-transparent transition-all group-hover:ring-current ${styles.badge}`}>
                       {event.category} 소식
                     </span>
-                    <h3 className={`mb-4 text-2xl font-black ${styles.text} leading-tight`}>{event.name}</h3>
-                    <div className="space-y-3 mb-6 text-slate-500 font-medium">
+                    <h3 className={`mb-3 text-lg font-black ${styles.text} leading-tight`}>{event.name}</h3>
+                    <div className="space-y-1.5 mb-4 text-slate-500 font-medium text-xs">
                       <p className="flex items-center gap-2">📍 {event.location}</p>
                       <p className="flex items-center gap-2">📅 {event.startDate} ~ {event.endDate}</p>
                     </div>
-                    <p className="text-slate-600 leading-relaxed mb-8 flex-grow">{event.summary}</p>
+                    <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-2">{event.summary}</p>
                     <Link
                       href={`/events/${event.id}`}
-                      className={`block w-full rounded-2xl ${styles.accent} py-4 text-center font-bold text-white transition-all transform group-hover:translate-y-[-2px] shadow-lg`}
+                      className={`block w-full rounded-xl ${styles.accent} py-2.5 text-center font-bold text-sm text-white transition-all transform group-hover:translate-y-[-1px] shadow-md`}
                     >
-                      상세 정보 보기
+                      상세 정보
                     </Link>
                   </div>
                 </div>
