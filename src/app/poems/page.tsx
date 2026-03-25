@@ -1,22 +1,54 @@
-import fs from "fs";
-import path from "path";
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function PoemsPage() {
-  const filePath = path.join(process.cwd(), "public", "data", "poems.json");
-  let poems = [];
-  
-  try {
-    if (fs.existsSync(filePath)) {
-      const fileContent = fs.readFileSync(filePath, "utf8");
-      poems = JSON.parse(fileContent);
-    }
-  } catch (e) {
-    console.error("파일 읽기 오류:", e);
-  }
+  const [poems, setPoems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // ID(시간체크용) 기준 최신순으로 한번 더 확실히 정렬
-  const sortedPoems = [...poems].sort((a: any, b: any) => b.id - a.id);
+  // 시 목록 가져오기 (클라이언트 측에서)
+  useEffect(() => {
+    fetch("/data/poems.json?t=" + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        // ID 기준 최신순 정렬
+        const sorted = data.sort((a: any, b: any) => b.id - a.id);
+        setPoems(sorted);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("데이터 로드 실패:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  // 삭제 처리 함수
+  const handleDelete = async (id: number, title: string) => {
+    const password = prompt(`'${title}' 시를 삭제하시겠습니까?\n발급받은 관리자 비밀번호를 입력해 주세요.`);
+    
+    if (!password) return;
+
+    try {
+      const res = await fetch("/api/delete-poem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("성공적으로 삭제되었습니다.");
+        // UI에서 즉시 제거
+        setPoems(prev => prev.filter(p => p.id !== id));
+      } else {
+        alert("실패: " + data.error);
+      }
+    } catch (err: any) {
+      alert("오류 발생: " + err.message);
+    }
+  };
 
   return (
     <main style={containerStyle}>
@@ -26,36 +58,64 @@ export default function PoemsPage() {
         <p style={subtitleStyle}>지금까지 우리 동네 소식통에 올라온 소중한 시들입니다.</p>
       </header>
 
-      <div style={gridStyle}>
-        {sortedPoems.map((poem: any) => (
-          <div key={poem.id} style={{
-            ...cardStyle,
-            background: poem.bgColor,
-            color: poem.textColor,
-          }}>
-            <div style={{ fontSize: 11, letterSpacing: 2, marginBottom: 8, opacity: 0.8 }}>
-              {poem.mood}
-            </div>
-            <h3 style={{ fontSize: 18, marginBottom: 4, fontWeight: "bold" }}>{poem.title}</h3>
-            {poem.author && <p style={{ fontSize: 13, marginBottom: 16, opacity: 0.7 }}>— {poem.author}</p>}
-            <p style={{ 
-              fontSize: 14, 
-              lineHeight: 1.6, 
-              whiteSpace: "pre-wrap", 
-              display: "-webkit-box",
-              WebkitLineClamp: 4,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              marginBottom: 16
+      {loading ? (
+        <p style={{ textAlign: "center", padding: "50px" }}>시를 불러오는 중입니다... ☕</p>
+      ) : (
+        <div style={gridStyle}>
+          {poems.map((poem) => (
+            <div key={poem.id} style={{
+              ...cardStyle,
+              background: poem.bgColor,
+              color: poem.textColor,
+              position: "relative"
             }}>
-              {poem.content}
-            </p>
-            <div style={{ fontSize: 11, opacity: 0.5, marginTop: "auto" }}>{poem.date}</div>
-          </div>
-        ))}
-      </div>
+              {/* 삭제 버튼 */}
+              <button 
+                onClick={() => handleDelete(poem.id, poem.title)}
+                style={{
+                  position: "absolute",
+                  top: 15, right: 15,
+                  background: "rgba(0,0,0,0.05)",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: 30, height: 30,
+                  cursor: "pointer",
+                  fontSize: 14,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  opacity: 0.6,
+                  transition: "0.2s"
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.opacity = "1")}
+                onMouseOut={(e) => (e.currentTarget.style.opacity = "0.6")}
+                title="삭제하기"
+              >
+                ✕
+              </button>
 
-      {sortedPoems.length === 0 && (
+              <div style={{ fontSize: 11, letterSpacing: 2, marginBottom: 8, opacity: 0.8 }}>
+                {poem.mood}
+              </div>
+              <h3 style={{ fontSize: 18, marginBottom: 4, fontWeight: "bold" }}>{poem.title}</h3>
+              {poem.author && <p style={{ fontSize: 13, marginBottom: 16, opacity: 0.7 }}>— {poem.author}</p>}
+              <p style={{ 
+                fontSize: 14, 
+                lineHeight: 1.6, 
+                whiteSpace: "pre-wrap", 
+                display: "-webkit-box",
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                marginBottom: 16
+              }}>
+                {poem.content}
+              </p>
+              <div style={{ fontSize: 11, opacity: 0.5, marginTop: "auto" }}>{poem.date}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!loading && poems.length === 0 && (
         <p style={{ textAlign: "center", color: "#888", padding: "100px 0" }}>아직 등록된 시가 없네요. 📖</p>
       )}
     </main>
