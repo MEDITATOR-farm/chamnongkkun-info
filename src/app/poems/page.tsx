@@ -25,6 +25,12 @@ export default function PoemsPage() {
 
   // 삭제 처리 함수
   const handleDelete = async (id: number, title: string) => {
+    // 로컬 환경 체크 (정적 사이트 배포 시 API가 작동하지 않으므로)
+    if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+      alert("⚠️ 삭제 기능은 사용자님의 컴퓨터(localhost:3000)에서만 작동합니다.\n\n내 컴퓨터에서 삭제를 완료한 후 'git push'를 해서 사이트에 반영해 주세요.");
+      return;
+    }
+
     const password = prompt(`'${title}' 시를 삭제하시겠습니까?\n발급받은 관리자 비밀번호를 입력해 주세요.`);
     
     if (!password) return;
@@ -36,6 +42,12 @@ export default function PoemsPage() {
         body: JSON.stringify({ id, password })
       });
 
+      // 응답이 JSON이 아닐 경우(예: Static Export 404 페이지) 처리
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("서버 응답이 올바르지 않습니다. (localhost에서 실행 중인지 확인해 주세요)");
+      }
+
       const data = await res.json();
 
       if (res.ok) {
@@ -43,7 +55,7 @@ export default function PoemsPage() {
         // UI에서 즉시 제거
         setPoems(prev => prev.filter(p => p.id !== id));
       } else {
-        alert("실패: " + data.error);
+        alert("실패: " + (data.error || "알 수 없는 오류"));
       }
     } catch (err: any) {
       alert("오류 발생: " + err.message);
