@@ -6,10 +6,12 @@ export async function POST(req) {
   try {
     const { id, password } = await req.json();
 
-    // 환경 변수 비밀번호 확인
-    const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
-    if (!UPLOAD_PASSWORD || password !== UPLOAD_PASSWORD) {
-      return NextResponse.json({ error: "비밀번호가 틀렸습니다." }, { status: 401 });
+    // 환경 변수 비밀번호 확인 (.trim()으로 공백 문제 예방)
+    const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD?.trim();
+    const cleanPassword = password?.trim();
+
+    if (!UPLOAD_PASSWORD || cleanPassword !== UPLOAD_PASSWORD) {
+      return NextResponse.json({ error: "관리자 비밀번호가 일치하지 않습니다." }, { status: 401 });
     }
 
     const filePath = path.join(process.cwd(), "public", "data", "poems.json");
