@@ -110,11 +110,59 @@ export default function Home() {
         <div className="absolute top-20 right-10 w-32 h-32 bg-cyan-200 rounded-full blur-3xl opacity-30 animate-pulse" />
         <div className="absolute top-80 left-10 w-48 h-48 bg-emerald-200 rounded-full blur-3xl opacity-20" />
 
+        {/* 🚜 농부 일기 섹션 (최상단으로 이동) */}
+        <section className="mb-24 relative z-10">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-16 h-16 rounded-full bg-teal-500 flex items-center justify-center text-3xl shadow-lg shadow-teal-100">🚜</div>
+            <div>
+              <h2 className="text-3xl font-black text-slate-800">chamnongkkun의 농부일기</h2>
+              <p className="text-slate-500">따분한 일상에 작은 쉼표가 되는 이야기들</p>
+            </div>
+          </div>
+          <div className="grid gap-4">
+            {diaries.length > 0 ? diaries.slice(0, 3).map((diary: any) => (
+              <div
+                key={diary.id}
+                className="group flex flex-col sm:flex-row gap-6 items-start sm:items-center bg-white p-8 rounded-[2rem] border border-slate-50 transition-all hover:border-teal-200 hover:shadow-lg"
+              >
+                <div className="min-w-[100px] text-center">
+                  <div className="text-teal-600 font-black text-2xl">{diary.date.split('-')[2]}</div>
+                  <div className="text-slate-400 text-xs font-bold">{diary.date.split('-')[1]}월 {diary.date.split('-')[0]}</div>
+                </div>
+                <div className="flex-grow">
+                  <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-teal-600 transition-colors leading-tight">
+                    {diary.title}
+                  </h3>
+                  <p className="text-slate-500 text-sm line-clamp-1">{diary.content}</p>
+                </div>
+                <Link href="/diaries" className="hidden sm:inline-block bg-teal-50 text-teal-600 px-6 py-2 rounded-full font-bold hover:bg-teal-100 transition-colors">
+                  일기장 보기
+                </Link>
+              </div>
+            )) : (
+              <div className="text-center py-12 bg-white rounded-[2rem] border border-dashed border-slate-200">
+                <p className="text-slate-400 mb-4">아직 소중한 일기가 올라오지 않았습니다.</p>
+                <Link href="/upload-diary" className="text-teal-600 font-bold hover:underline">
+                  첫 일기 작성하기 →
+                </Link>
+              </div>
+            )}
+          </div>
+          {diaries.length > 3 && (
+            <div className="mt-8 text-center">
+              <Link href="/diaries" className="text-slate-400 hover:text-teal-600 font-bold border-b border-slate-200 transition-colors">
+                지난 일기 모두 보기 →
+              </Link>
+            </div>
+          )}
+        </section>
+
         <section className="mb-24 relative z-10">
           <div className="mb-12 text-center">
             <h2 className="text-4xl font-black text-slate-800 mb-2">🌸 이번 달 행사/축제</h2>
             <div className="h-1.5 w-24 bg-emerald-400 mx-auto rounded-full" />
           </div>
+          {/* ... (이전과 동일한 행사 카드 코드) ... */}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {data.events.map((event) => {
               const styles = getSeasonStyles(event.name);
@@ -294,51 +342,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-24 relative z-10">
-          <div className="flex items-center gap-4 mb-10">
-            <div className="w-16 h-16 rounded-full bg-teal-500 flex items-center justify-center text-3xl shadow-lg shadow-teal-100">🚜</div>
-            <div>
-              <h2 className="text-3xl font-black text-slate-800">chamnongkkun의 농부일기</h2>
-              <p className="text-slate-500">따분한 일상에 작은 쉼표가 되는 이야기들</p>
-            </div>
-          </div>
-          <div className="grid gap-4">
-            {diaries.length > 0 ? diaries.slice(0, 3).map((diary: any) => (
-              <div
-                key={diary.id}
-                className="group flex flex-col sm:flex-row gap-6 items-start sm:items-center bg-white p-8 rounded-[2rem] border border-slate-50 transition-all hover:border-teal-200 hover:shadow-lg"
-              >
-                <div className="min-w-[100px] text-center">
-                  <div className="text-teal-600 font-black text-2xl">{diary.date.split('-')[2]}</div>
-                  <div className="text-slate-400 text-xs font-bold">{diary.date.split('-')[1]}월 {diary.date.split('-')[0]}</div>
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-teal-600 transition-colors leading-tight">
-                    {diary.title}
-                  </h3>
-                  <p className="text-slate-500 text-sm line-clamp-1">{diary.content}</p>
-                </div>
-                <Link href="/diaries" className="hidden sm:inline-block bg-teal-50 text-teal-600 px-6 py-2 rounded-full font-bold hover:bg-teal-100 transition-colors">
-                  일기장 보기
-                </Link>
-              </div>
-            )) : (
-              <div className="text-center py-12 bg-white rounded-[2rem] border border-dashed border-slate-200">
-                <p className="text-slate-400 mb-4">아직 소중한 일기가 올라오지 않았습니다.</p>
-                <Link href="/upload-diary" className="text-teal-600 font-bold hover:underline">
-                  첫 일기 작성하기 →
-                </Link>
-              </div>
-            )}
-          </div>
-          {diaries.length > 3 && (
-            <div className="mt-8 text-center">
-              <Link href="/diaries" className="text-slate-400 hover:text-teal-600 font-bold border-b border-slate-200 transition-colors">
-                지난 일기 모두 보기 →
-              </Link>
-            </div>
-          )}
-        </section>
       </main>
 
       <footer className="bg-white border-t border-slate-100 py-20 text-slate-500">
