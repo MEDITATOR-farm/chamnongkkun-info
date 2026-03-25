@@ -253,17 +253,17 @@ export default function Home() {
 
       </main>
 
-      <footer className="bg-white border-t border-slate-100 py-8 text-slate-400 text-[10px] tracking-tight">
-        <div className="container mx-auto px-4 text-center space-y-3">
-          <p className="font-bold text-slate-500">📍 데이터 출처: 공공데이터포털(data.go.kr)</p>
-          <div className="flex justify-center gap-4 uppercase font-medium tracking-widest">
+      <footer className="bg-white border-t border-slate-100 py-6 text-slate-500 text-xs">
+        <div className="container mx-auto px-4 text-center space-y-2">
+          <p className="font-bold text-slate-600">📍 데이터 출처: 공공데이터포털(data.go.kr)</p>
+          <div className="flex justify-center gap-4 uppercase font-medium tracking-widest text-[11px]">
             <Link href="/about" className="hover:text-cyan-600 transition-colors">About</Link>
             <span className="opacity-30">|</span>
             <span>Privacy</span>
             <span className="opacity-30">|</span>
             <span>Contact</span>
           </div>
-          <p>© 2025 chamnongkkun-info. Powered by Next.js & Cloudflare</p>
+          <p className="text-slate-400 text-[10px]">© 2025 chamnongkkun-info. Powered by Next.js & Cloudflare</p>
         </div>
       </footer>
     </div>
