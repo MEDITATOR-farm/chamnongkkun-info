@@ -70,17 +70,23 @@ export default function UploadPage() {
     setLoading(false);
   };
 
-  // 배경 이미지 검색
   const fetchBackgrounds = async (query) => {
     try {
-      const res = await fetch(`/api/search-background?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/search-background?query=${encodeURIComponent(query)}&t=${Date.now()}`);
+      if (!res.ok) {
+        throw new Error(`서버 응답 오류 (상태코드: ${res.status})`);
+      }
       const data = await res.json();
       if (data.results && data.results.length > 0) {
-        setImageList(data.results.map(r => r.urls.regular));
-        setBgImage(data.results[0].urls.regular);
+        const urls = data.results.map(r => r.urls.regular);
+        setImageList(urls);
+        setBgImage(urls[0]);
+      } else {
+        console.warn("검색 결과가 없습니다.");
       }
     } catch (e) {
       console.error("이미지 검색 실패:", e);
+      setError("베경 이미지를 가져오지 못했습니다: " + e.message);
     }
   };
 
@@ -186,13 +192,14 @@ export default function UploadPage() {
       {step === 2 && (
         <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 30 }}>
           <div style={{
-            width: "100%", maxWidth: 460, borderRadius: 24, padding: "60px 40px",
-            background: bgImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${bgImage})` : currentTheme.bgColor,
+            width: "100%", maxWidth: 460, minHeight: 400, borderRadius: 24, padding: "60px 40px",
+            background: bgImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("${bgImage}")` : currentTheme.bgColor,
             backgroundSize: "cover", backgroundPosition: "center",
             color: bgImage ? "#fff" : currentTheme.textColor,
             boxShadow: "0 20px 60px rgba(0,0,0,0.12)", textAlign: "center",
             fontFamily: "'Noto Serif KR', serif", transition: "0.5s",
-            overflow: "hidden", position: "relative"
+            overflow: "hidden", position: "relative",
+            display: "flex", flexDirection: "column", justifyContent: "center"
           }}>
             <span style={{ 
               fontSize: 13, 
