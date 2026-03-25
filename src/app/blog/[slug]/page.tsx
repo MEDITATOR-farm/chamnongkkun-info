@@ -8,7 +8,8 @@ import AdBanner from '@/components/AdBanner';
 import CoupangBanner from '@/components/CoupangBanner';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const postData = await getPostData(params.slug);
+  const { slug } = await params;
+  const postData = await getPostData(slug);
   if (!postData) return {};
   
   return {
@@ -32,13 +33,14 @@ export async function generateStaticParams() {
 }
 
 interface Props {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function PostPage({ params }: Props) {
-  const postData = await getPostData(params.slug);
+  const { slug } = await params;
+  const postData = await getPostData(slug);
 
   if (!postData) {
     notFound();
@@ -80,7 +82,7 @@ export default async function PostPage({ params }: Props) {
         "@type": "ListItem",
         "position": 3,
         "name": postData.title,
-        "item": `https://chamnongkkun-info.pages.dev/blog/${params.slug}`
+        "item": `https://chamnongkkun-info.pages.dev/blog/${slug}`
       }
     ]
   };

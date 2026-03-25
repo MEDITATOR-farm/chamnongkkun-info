@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import AdBanner from "@/components/AdBanner";
 import CoupangBanner from "@/components/CoupangBanner";
+import { getSortedPostsData } from "@/lib/posts";
 
 interface InfoItem {
   id: number;
@@ -74,6 +75,8 @@ export default function Home() {
     }
     return { bg: "bg-blue-50", border: "border-blue-300", badge: "bg-blue-200 text-blue-700", accent: "bg-blue-500 hover:bg-blue-600", text: "text-blue-900" };
   };
+
+  const blogPosts = getSortedPostsData().slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200 overflow-x-hidden">
@@ -253,6 +256,34 @@ export default function Home() {
             </section>
           </div>
         </div>
+
+            {/* 📝 새소식 블로그 섹션 */}
+        <section className="mb-24 relative z-10">
+          <div className="flex items-center justify-between mb-10">
+            <h2 className="text-3xl font-black text-slate-800">📝 우리 동네 새소식</h2>
+            <Link href="/blog" className="text-teal-600 font-bold hover:underline">블로그 전체보기 →</Link>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {blogPosts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="group bg-white p-6 rounded-[2rem] border border-slate-100 transition-all hover:border-teal-200 hover:shadow-xl"
+              >
+                <time className="text-xs text-slate-400 font-bold mb-3 block uppercase tracking-wider">{post.date}</time>
+                <h3 className="text-lg font-bold text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2 leading-tight">
+                  {post.title}
+                </h3>
+                <p className="text-slate-500 text-sm line-clamp-2 mb-4 leading-relaxed">
+                  {post.summary}
+                </p>
+                <span className="text-xs font-bold text-teal-600 transition-all group-hover:translate-x-1 inline-flex items-center gap-1">
+                  자세히 읽기 <span>→</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* 💰 하단 쿠팡 광고 */}
         <CoupangBanner />
