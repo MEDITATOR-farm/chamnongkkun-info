@@ -1,9 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import fs from "fs";
+import path from "path";
 import AdBanner from "@/components/AdBanner";
-import DailyPoem from "@/components/DailyPoem";
 
 interface InfoItem {
   id: number;
@@ -31,16 +29,25 @@ interface Data {
   blogPosts: BlogPost[];
 }
 
+function getPoems() {
+  const filePath = path.join(process.cwd(), "public/data/poems.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return [];
+  }
+}
+
+function getData(): Data {
+  const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
+  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+}
+
 export default function Home() {
-  const [data, setData] = useState<Data | null>(null);
-
-  useEffect(() => {
-    fetch("/data/chamnongkkun-info.json")
-      .then((res) => res.json())
-      .then((data) => setData(data));
-  }, []);
-
-  if (!data) return <div className="p-8 text-center min-h-screen flex items-center justify-center text-xl font-bold text-cyan-600">🌊 정보를 불러오는 중입니다...</div>;
+  const data = getData();
+  const poems = getPoems();
+  const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
   const getSeasonStyles = (itemName: string) => {
@@ -145,7 +152,90 @@ export default function Home() {
           </div>
         </section>
 
-        <DailyPoem />
+        {/* ===== 오늘의 시 섹션 ===== */}
+        <section style={{
+          padding: "80px 24px",
+          background: "#faf8f5",
+          textAlign: "center",
+          borderRadius: "4rem",
+          margin: "40px 0"
+        }}>
+          <p style={{
+            color: "#a0917e", letterSpacing: 4,
+            fontSize: 12, marginBottom: 8,
+          }}>
+            POEM OF THE DAY
+          </p>
+          <h2 style={{
+            fontSize: 26, marginBottom: 48,
+            color: "#3d3228", fontWeight: "normal",
+          }}>
+            오늘의 시
+          </h2>
+
+          {latestPoem ? (
+            <div style={{
+              maxWidth: 460,
+              margin: "0 auto",
+              background: latestPoem.bgColor,
+              color: latestPoem.textColor,
+              borderRadius: 20,
+              padding: "48px 36px",
+              boxShadow: "0 12px 48px rgba(0,0,0,0.08)",
+            }}>
+              <div style={{
+                fontSize: 11, letterSpacing: 3,
+                color: latestPoem.accentColor,
+                marginBottom: 14,
+                textTransform: "uppercase",
+              }}>
+                {latestPoem.mood}
+              </div>
+              <h3 style={{
+                fontSize: 22, marginBottom: 6,
+                fontWeight: "normal",
+              }}>
+                {latestPoem.title}
+              </h3>
+              {latestPoem.author && (
+                <p style={{
+                  fontSize: 13, opacity: 0.65,
+                  marginBottom: 28,
+                }}>
+                  — {latestPoem.author}
+                </p>
+              )}
+              <p style={{
+                whiteSpace: "pre-line",
+                lineHeight: 2.2, fontSize: 16,
+                fontFamily: "Georgia, serif",
+              }}>
+                {latestPoem.content}
+              </p>
+              <p style={{
+                marginTop: 28, fontSize: 12, opacity: 0.4,
+              }}>
+                {latestPoem.date}
+              </p>
+            </div>
+          ) : (
+            <p style={{ color: "#ccc" }}>
+              아직 등록된 시가 없어요 📖
+            </p>
+          )}
+
+          {/* 지난 시 목록 링크 */}
+          {poems.length > 1 && (
+            <a href="/poems" style={{
+              display: "inline-block", marginTop: 32,
+              color: "#a0917e", fontSize: 14,
+              textDecoration: "none",
+              borderBottom: "1px solid #a0917e",
+            }}>
+              지난 시 모두 보기 →
+            </a>
+          )}
+        </section>
 
         <section id="category-section" className="mb-24 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
