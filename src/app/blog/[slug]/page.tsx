@@ -98,12 +98,15 @@ export default async function PostPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <article className="max-w-3xl mx-auto px-4 py-12">
-      <Link href="/blog" className="inline-flex items-center text-sm text-neutral-500 hover:text-cyan-600 mb-8 transition-colors">
-        <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        목록으로 돌아가기
-      </Link>
+      <div className="flex items-center gap-4 mb-8 text-sm text-neutral-500">
+        <Link href="/" className="inline-flex items-center hover:text-cyan-600 transition-colors">
+          <span className="mr-1">🏠</span> 홈으로
+        </Link>
+        <span className="opacity-30">|</span>
+        <Link href="/blog" className="inline-flex items-center hover:text-cyan-600 transition-colors">
+          <span className="mr-1">📋</span> 목록으로
+        </Link>
+      </div>
 
       <header className="mb-12">
         <div className="flex items-center gap-3 mb-4">
