@@ -157,147 +157,99 @@ export default function Home() {
           )}
         </section>
 
-        {/* 🌸 오늘의 시 & 행사/축제 나란히 배치 */}
+        {/* 🌸 오늘의 시 & 행사 & 꿀팁 통합 레이아웃 */}
         <div className="flex flex-col lg:flex-row gap-8 mb-24 relative z-10 items-start">
           
-          {/* ===== 오늘의 시 섹션 (왼쪽) ===== */}
+          {/* ===== 오늘의 시 섹션 (왼쪽 사이드바) ===== */}
           <section style={{
-            flex: "0 0 400px",
-            padding: "60px 24px",
+            flex: "0 0 380px",
+            padding: "50px 24px",
             background: "#faf8f5",
             textAlign: "center",
             borderRadius: "3rem",
-            width: "100%"
+            width: "100%",
+            position: "sticky",
+            top: "20px"
           }}>
             <p style={{ color: "#a0917e", letterSpacing: 4, fontSize: 10, marginBottom: 8 }}>POEM OF THE DAY</p>
-            <h2 style={{ fontSize: 20, marginBottom: 32, color: "#3d3228", fontWeight: "normal" }}>오늘의 시</h2>
+            <h2 style={{ fontSize: 18, marginBottom: 24, color: "#3d3228", fontWeight: "normal" }}>오늘의 시</h2>
 
             {latestPoem ? (
               <div style={{
                 background: latestPoem.bgColor,
                 color: latestPoem.textColor,
                 borderRadius: 16,
-                padding: "40px 28px",
+                padding: "36px 24px",
                 boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
                 fontFamily: "'Noto Serif KR', serif",
                 textAlign: "left"
               }}>
-                <div style={{ fontSize: 10, letterSpacing: 2, color: latestPoem.accentColor, marginBottom: 12, textTransform: "uppercase" }}>
+                <div style={{ fontSize: 9, letterSpacing: 2, color: latestPoem.accentColor, marginBottom: 10, textTransform: "uppercase" }}>
                   {latestPoem.mood}
                 </div>
-                <h3 style={{ fontSize: 18, marginBottom: 10, fontWeight: "bold" }}>{latestPoem.title}</h3>
-                {latestPoem.author && <p style={{ fontSize: 12, marginBottom: 24, opacity: 0.7 }}>— {latestPoem.author}</p>}
-                <p style={{ fontSize: 14, lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{latestPoem.content}</p>
-                <p style={{ marginTop: 24, fontSize: 10, opacity: 0.4 }}>{latestPoem.date}</p>
+                <h3 style={{ fontSize: 16, marginBottom: 8, fontWeight: "bold" }}>{latestPoem.title}</h3>
+                {latestPoem.author && <p style={{ fontSize: 11, marginBottom: 20, opacity: 0.7 }}>— {latestPoem.author}</p>}
+                <p style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{latestPoem.content}</p>
+                <p style={{ marginTop: 20, fontSize: 9, opacity: 0.4 }}>{latestPoem.date}</p>
               </div>
             ) : (
               <p style={{ color: "#ccc" }}>아직 등록된 시가 없어요 📖</p>
             )}
 
             {poems.length > 1 && (
-              <a href="/poems" style={{ display: "inline-block", marginTop: 24, color: "#a0917e", fontSize: 13, textDecoration: "none", borderBottom: "1px solid #a0917e" }}>
+              <a href="/poems" style={{ display: "inline-block", marginTop: 20, color: "#a0917e", fontSize: 12, textDecoration: "none", borderBottom: "1px solid #a0917e" }}>
                 지난 시 모두 보기 →
               </a>
             )}
           </section>
 
-          {/* ===== 이번 달 행사/축제 섹션 (오른쪽) ===== */}
-          <section className="flex-grow w-full">
-            <div className="mb-8 text-center lg:text-left">
-              <h2 className="text-3xl font-black text-slate-800 mb-2">🌸 이번 달 행사/축제</h2>
-              <div className="h-1 w-20 bg-emerald-400 lg:mx-0 mx-auto rounded-full" />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {data.events.map((event) => {
-                const styles = getSeasonStyles(event.name);
-                return (
-                  <div
-                    key={event.id}
-                    className={`group relative overflow-hidden rounded-3xl border ${styles.border} ${styles.bg} p-0.5 transition-all hover:shadow-xl hover:scale-102`}
-                  >
-                    <div className="bg-white rounded-[1.4rem] p-6 h-full flex flex-col">
-                      <script
-                        type="application/ld+json"
-                        dangerouslySetInnerHTML={{
-                          __html: JSON.stringify({
-                            "@context": "https://schema.org",
-                            "@type": "Event",
-                            "name": event.name,
-                            "startDate": event.startDate,
-                            "endDate": event.endDate,
-                            "location": {
-                              "@type": "Place",
-                              "name": event.location
-                            },
-                            "description": event.summary
-                          })
-                        }}
-                      />
-                      <span className={`self-start mb-3 rounded-full px-3 py-0.5 text-[10px] font-bold ring-1 ring-offset-1 ring-transparent transition-all group-hover:ring-current ${styles.badge}`}>
-                        {event.category} 소식
-                      </span>
-                      <h3 className={`mb-3 text-lg font-black ${styles.text} leading-tight`}>{event.name}</h3>
-                      <div className="space-y-1.5 mb-4 text-slate-500 font-medium text-xs">
-                        <p className="flex items-center gap-2">📍 {event.location}</p>
-                        <p className="flex items-center gap-2">📅 {event.startDate} ~ {event.endDate}</p>
-                      </div>
-                      <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-2">{event.summary}</p>
-                      <Link
-                        href={`/events/${event.id}`}
-                        className={`block w-full rounded-xl ${styles.accent} py-2.5 text-center font-bold text-sm text-white transition-all transform group-hover:translate-y-[-1px] shadow-md`}
-                      >
-                        상세 정보
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        </div>
-
-        <section id="category-section" className="mb-24 relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
-            <h2 className="text-4xl font-black text-slate-800">💎 우리 동네 꿀팁 & 혜택</h2>
-            <span className="bg-blue-100 text-blue-700 px-6 py-2 rounded-full font-bold text-sm">총 {data.benefits.length}건의 정보</span>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {data.benefits.map((benefit) => (
-              <div
-                key={benefit.id}
-                className="group relative rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-slate-100 transition-all hover:shadow-xl hover:ring-blue-200"
-              >
-                <script
-                  type="application/ld+json"
-                  dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                      "@context": "https://schema.org",
-                      "@type": "GovernmentService",
-                      "serviceName": benefit.name,
-                      "description": benefit.summary,
-                      "provider": {
-                        "@type": "GovernmentOrganization",
-                        "name": "거제시"
-                      }
-                    })
-                  }}
-                />
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-50 to-transparent rounded-tr-[2rem] -z-1" />
-                <h3 className="mb-4 text-xl font-black text-slate-800 group-hover:text-blue-600">{benefit.name}</h3>
-                <div className="mb-6 space-y-2 text-sm">
-                  <p className="text-blue-600 font-bold">🎯 {benefit.target}</p>
-                  <p className="text-slate-600 leading-snug line-clamp-2">{benefit.summary}</p>
-                </div>
-                <Link
-                  href={`/benefits/${benefit.id}`}
-                  className="inline-flex items-center gap-2 font-bold text-blue-500 hover:text-blue-700 transition-colors"
-                >
-                  더 알아보기 <span className="text-xl">→</span>
-                </Link>
+          {/* ===== 오른쪽 정보 영역 (행사 + 꿀팁) ===== */}
+          <div className="flex-grow w-full space-y-16">
+            
+            {/* 1. 이번 달 행사/축제 */}
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-black text-slate-800">🌸 이번 달 행사/축제</h2>
+                <Link href="/blog" className="text-xs font-bold text-emerald-600 hover:underline">전체보기 →</Link>
               </div>
-            ))}
+              <div className="grid gap-4 sm:grid-cols-2">
+                {data.events.slice(0, 4).map((event) => {
+                  const styles = getSeasonStyles(event.name);
+                  return (
+                    <div key={event.id} className={`group relative overflow-hidden rounded-2xl border ${styles.border} ${styles.bg} p-0.5 transition-all hover:shadow-lg`}>
+                      <div className="bg-white rounded-[0.9rem] p-5 h-full flex flex-col">
+                        <span className={`self-start mb-2 rounded-full px-2 py-0.5 text-[9px] font-bold ${styles.badge}`}>{event.category}</span>
+                        <h3 className={`mb-2 text-base font-black ${styles.text} leading-tight`}>{event.name}</h3>
+                        <p className="text-slate-500 text-[11px] mb-3 truncate">📍 {event.location}</p>
+                        <p className="text-slate-600 text-xs line-clamp-2 mb-4 flex-grow">{event.summary}</p>
+                        <Link href={`/events/${event.id}`} className={`block w-full rounded-lg ${styles.accent} py-2 text-center font-bold text-[11px] text-white`}>상세 정보</Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* 2. 우리 동네 꿀팁 & 혜택 */}
+            <section id="category-section">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-black text-slate-800">💎 우리 동네 꿀팁 & 혜택</h2>
+                <span className="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">총 {data.benefits.length}건</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {data.benefits.slice(0, 4).map((benefit) => (
+                  <div key={benefit.id} className="group relative rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 transition-all hover:ring-blue-200">
+                    <h3 className="mb-2 text-base font-black text-slate-800 group-hover:text-blue-600">{benefit.name}</h3>
+                    <p className="text-blue-600 font-bold text-[10px] mb-2">🎯 {benefit.target}</p>
+                    <p className="text-slate-600 text-xs line-clamp-2 mb-4">{benefit.summary}</p>
+                    <Link href={`/benefits/${benefit.id}`} className="text-xs font-bold text-blue-500 hover:text-blue-700">더 알아보기 →</Link>
+                  </div>
+                ))}
+              </div>
+            </section>
+
           </div>
-        </section>
+        </div>
 
       </main>
 
