@@ -177,10 +177,8 @@ export default function Home() {
             <div style={{
               maxWidth: 460,
               margin: "0 auto",
-              background: latestPoem.bgImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${latestPoem.bgImage})` : latestPoem.bgColor,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              color: latestPoem.bgImage ? "#fff" : latestPoem.textColor,
+              background: latestPoem.bgColor,
+              color: latestPoem.textColor,
               borderRadius: 20,
               padding: "48px 36px",
               boxShadow: "0 12px 48px rgba(0,0,0,0.08)",
@@ -188,10 +186,9 @@ export default function Home() {
             }}>
               <div style={{
                 fontSize: 11, letterSpacing: 3,
-                color: latestPoem.bgImage ? "#fff" : latestPoem.accentColor,
+                color: latestPoem.accentColor,
                 marginBottom: 14,
                 textTransform: "uppercase",
-                opacity: 0.8
               }}>
                 {latestPoem.mood}
               </div>

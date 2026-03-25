@@ -22,8 +22,6 @@ export default function UploadPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [themeIndex, setThemeIndex] = useState(0);
-  const [bgImage, setBgImage] = useState(""); // 배경 이미지 URL
-  const [imageList, setImageList] = useState([]); // 검색된 이미지 목록
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -55,11 +53,6 @@ export default function UploadPage() {
         setTitle(data.title);
         setContent(data.content);
         setThemeIndex(Math.floor(Math.random() * themes.length));
-        
-        // 분위기에 맞는 이미지 검색 시도
-        const mood = themes[Math.floor(Math.random() * themes.length)].mood;
-        fetchBackgrounds(mood);
-        
         setStep(2);
       } else {
         setError(data.error || "오류가 발생했습니다");
@@ -70,40 +63,6 @@ export default function UploadPage() {
     setLoading(false);
   };
 
-  const fetchBackgrounds = async (query) => {
-    try {
-      const res = await fetch(`/api/search-background?query=${encodeURIComponent(query)}&t=${Date.now()}`);
-      if (!res.ok) {
-        throw new Error(`서버 응답 오류 (상태코드: ${res.status})`);
-      }
-      const data = await res.json();
-      if (data.results && data.results.length > 0) {
-        const urls = data.results.map(r => r.urls.regular);
-        setImageList(urls);
-        setBgImage(urls[0]);
-      } else {
-        console.warn("검색 결과가 없습니다.");
-      }
-    } catch (e) {
-      console.error("이미지 검색 실패:", e);
-      setError("베경 이미지를 가져오지 못했습니다: " + e.message);
-    }
-  };
-
-  // 사진 랜덤 변경
-  const shuffleImage = () => {
-    if (imageList.length > 1) {
-      let nextImg;
-      do {
-        nextImg = imageList[Math.floor(Math.random() * imageList.length)];
-      } while (nextImg === bgImage);
-      setBgImage(nextImg);
-    } else {
-      // 목록이 없으면 무작위 자연 사진이라도 가져옴
-      fetchBackgrounds(currentTheme.mood);
-    }
-  };
-
   // 디자인 랜덤 변경 (색상)
   const shuffleTheme = () => {
     let nextIndex;
@@ -111,8 +70,6 @@ export default function UploadPage() {
       nextIndex = Math.floor(Math.random() * themes.length);
     } while (nextIndex === themeIndex);
     setThemeIndex(nextIndex);
-    // 색상이 바뀌면 어울리는 사진도 함께 검색 (옵션)
-    fetchBackgrounds(themes[nextIndex].mood);
   };
 
   // 2단계: 최종 저장 요청
@@ -126,7 +83,6 @@ export default function UploadPage() {
       author,
       content,
       password,
-      bgImage, // 사진 추가
       ...theme
     };
 
@@ -193,9 +149,8 @@ export default function UploadPage() {
         <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 30 }}>
           <div style={{
             width: "100%", maxWidth: 460, minHeight: 400, borderRadius: 24, padding: "60px 40px",
-            background: bgImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("${bgImage}")` : currentTheme.bgColor,
-            backgroundSize: "cover", backgroundPosition: "center",
-            color: bgImage ? "#fff" : currentTheme.textColor,
+            background: currentTheme.bgColor,
+            color: currentTheme.textColor,
             boxShadow: "0 20px 60px rgba(0,0,0,0.12)", textAlign: "center",
             fontFamily: "'Noto Serif KR', serif", transition: "0.5s",
             overflow: "hidden", position: "relative",
@@ -203,7 +158,7 @@ export default function UploadPage() {
           }}>
             <span style={{ 
               fontSize: 13, 
-              color: bgImage ? "#fff" : currentTheme.accentColor, 
+              color: currentTheme.accentColor, 
               letterSpacing: 3, marginBottom: 15, display: "block",
               opacity: 0.8
             }}>
@@ -213,24 +168,23 @@ export default function UploadPage() {
               value={title} onChange={(e) => setTitle(e.target.value)} 
               style={{ 
                 ...titleInputStyle, 
-                color: bgImage ? "#fff" : currentTheme.textColor,
-                borderBottom: bgImage ? "1px solid rgba(255,255,255,0.3)" : "1px solid rgba(0,0,0,0.1)"
+                color: currentTheme.textColor,
+                borderBottom: "1px solid rgba(0,0,0,0.1)"
               }} 
             />
             <textarea 
               value={content} onChange={(e) => setContent(e.target.value)} 
               style={{ 
                 ...contentInputStyle, 
-                color: bgImage ? "#fff" : currentTheme.textColor,
+                color: currentTheme.textColor,
               }} 
             />
             {author && <p style={{ fontSize: 13, marginTop: 24, opacity: 0.8 }}>— {author}</p>}
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, width: "100%", maxWidth: 460 }}>
-            <button onClick={shuffleImage} style={shuffleButtonStyle}>🌃 배경 사진 바꾸기</button>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, width: "100%", maxWidth: 460 }}>
             <button onClick={shuffleTheme} style={shuffleButtonStyle}>🎨 테마 색상 바꾸기</button>
-            <button onClick={handleSave} disabled={loading} style={{ ...saveButtonStyle, gridColumn: "span 2" }}>
+            <button onClick={handleSave} disabled={loading} style={saveButtonStyle}>
               {loading ? "저장 중..." : "✅ 이 디자인으로 결정!"}
             </button>
           </div>

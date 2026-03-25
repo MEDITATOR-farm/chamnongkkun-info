@@ -23,13 +23,11 @@ export default function PoemsPage() {
       </header>
 
       <div style={gridStyle}>
-        {sortedPoems.map((poem) => (
+        {sortedPoems.map((poem: any) => (
           <div key={poem.id} style={{
             ...cardStyle,
-            background: poem.bgImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("${poem.bgImage}")` : poem.bgColor,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            color: poem.bgImage ? "#fff" : poem.textColor,
+            background: poem.bgColor,
+            color: poem.textColor,
           }}>
             <div style={{ fontSize: 11, letterSpacing: 2, marginBottom: 8, opacity: 0.8 }}>
               {poem.mood}
@@ -60,13 +58,13 @@ export default function PoemsPage() {
   );
 }
 
-const containerStyle = { maxWidth: 1000, margin: "0 auto", padding: "80px 24px", fontFamily: "'Pretendard', sans-serif" };
-const headerStyle = { textAlign: "center", marginBottom: 60 };
-const backLinkStyle = { color: "#888", textDecoration: "none", fontSize: 14, display: "inline-block", marginBottom: 20 };
-const titleStyle = { fontSize: 32, fontWeight: "bold", color: "#3d3228", marginBottom: 12 };
-const subtitleStyle = { color: "#888", fontSize: 16 };
-const gridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 };
-const cardStyle = { 
+const containerStyle: any = { maxWidth: 1000, margin: "0 auto", padding: "80px 24px", fontFamily: "'Pretendard', sans-serif" };
+const headerStyle: any = { textAlign: "center", marginBottom: 60 };
+const backLinkStyle: any = { color: "#888", textDecoration: "none", fontSize: 14, display: "inline-block", marginBottom: 20 };
+const titleStyle: any = { fontSize: 32, fontWeight: "bold", color: "#3d3228", marginBottom: 12 };
+const subtitleStyle: any = { color: "#888", fontSize: 16 };
+const gridStyle: any = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 };
+const cardStyle: any = { 
   borderRadius: 20, 
   padding: "32px 24px", 
   boxShadow: "0 8px 32px rgba(0,0,0,0.06)", 
