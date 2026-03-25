@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AdBanner from "@/components/AdBanner";
+import DailyPoem from "@/components/DailyPoem";
 
 interface InfoItem {
   id: number;
@@ -144,9 +145,9 @@ export default function Home() {
           </div>
         </section>
 
-        <AdBanner />
+        <DailyPoem />
 
-        <section className="mb-24 relative z-10">
+        <section id="category-section" className="mb-24 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
             <h2 className="text-4xl font-black text-slate-800">💎 우리 동네 꿀팁 & 혜택</h2>
             <span className="bg-blue-100 text-blue-700 px-6 py-2 rounded-full font-bold text-sm">총 {data.benefits.length}건의 정보</span>

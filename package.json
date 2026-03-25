@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "update-poem": "node --env-file=.env.local scripts/update-poem.js"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
