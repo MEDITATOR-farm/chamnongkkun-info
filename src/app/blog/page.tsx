@@ -6,6 +6,9 @@ export default function BlogPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
+      <Link href="/" className="inline-flex items-center text-sm text-neutral-500 hover:text-cyan-600 mb-8 transition-colors">
+        <span className="mr-1">🏠</span> 홈으로 돌아가기
+      </Link>
       <h1 className="text-4xl font-bold mb-8 text-neutral-800">새소식 📝</h1>
       
       {allPostsData.length === 0 ? (
