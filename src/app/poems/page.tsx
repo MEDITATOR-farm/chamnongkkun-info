@@ -2,17 +2,23 @@ import fs from "fs";
 import path from "path";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default function PoemsPage() {
   const filePath = path.join(process.cwd(), "public", "data", "poems.json");
   let poems = [];
   
-  if (fs.existsSync(filePath)) {
-    const fileContent = fs.readFileSync(filePath, "utf8");
-    poems = JSON.parse(fileContent);
+  try {
+    if (fs.existsSync(filePath)) {
+      const fileContent = fs.readFileSync(filePath, "utf8");
+      poems = JSON.parse(fileContent);
+    }
+  } catch (e) {
+    console.error("파일 읽기 오류:", e);
   }
 
-  // 최신순 정렬
-  const sortedPoems = [...poems].reverse();
+  // ID(시간체크용) 기준 최신순으로 한번 더 확실히 정렬
+  const sortedPoems = [...poems].sort((a: any, b: any) => b.id - a.id);
 
   return (
     <main style={containerStyle}>
