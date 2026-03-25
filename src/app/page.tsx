@@ -253,23 +253,23 @@ export default function Home() {
 
       </main>
 
-      <footer className="bg-white border-t border-slate-100 py-20 text-slate-500">
+      <footer className="bg-white border-t border-slate-100 py-10 text-slate-500 text-xs">
         <div className="container mx-auto px-4 max-w-4xl text-center">
-          <div className="mb-10 flex justify-center space-x-8 opacity-60">
-            <span className="text-3xl hover:scale-125 transition-transform cursor-default">🌿</span>
-            <span className="text-3xl hover:scale-125 transition-transform cursor-default">🌊</span>
-            <span className="text-3xl hover:scale-125 transition-transform cursor-default">⛵</span>
+          <div className="mb-6 flex justify-center space-x-6 opacity-60">
+            <span className="text-2xl hover:scale-125 transition-transform cursor-default">🌿</span>
+            <span className="text-2xl hover:scale-125 transition-transform cursor-default">🌊</span>
+            <span className="text-2xl hover:scale-125 transition-transform cursor-default">⛵</span>
           </div>
-          <div className="space-y-4">
-            <p className="text-lg font-bold text-slate-700 underline decoration-cyan-400 decoration-4 underline-offset-4">📍 데이터 출처: 공공데이터포털(data.go.kr)</p>
-            <p className="text-sm">마지막 실시간 업데이트: {new Date().toLocaleDateString("ko-KR")} 22:00</p>
-            <div className="pt-10 flex flex-col items-center gap-2">
-              <div className="flex gap-4 text-xs font-bold uppercase tracking-widest text-slate-300">
-                <span>About</span>
+          <div className="space-y-2">
+            <p className="font-bold text-slate-700 underline decoration-cyan-400 decoration-2 underline-offset-4">📍 데이터 출처: 공공데이터포털(data.go.kr)</p>
+            <p className="opacity-70">마지막 업데이트: {new Date().toLocaleDateString("ko-KR")} 22:00</p>
+            <div className="pt-6 flex flex-col items-center gap-2">
+              <div className="flex gap-4 uppercase tracking-widest text-slate-300">
+                <Link href="/about" className="hover:text-cyan-600 transition-colors">About</Link>
                 <span>Privacy</span>
                 <span>Contact</span>
               </div>
-              <p className="text-[10px] text-slate-300">
+              <p className="text-[9px] text-slate-300">
                 © 2025 chamnongkkun-info. Powered by Next.js & Cloudflare
               </p>
             </div>
