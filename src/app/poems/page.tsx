@@ -2,8 +2,6 @@ import fs from "fs";
 import path from "path";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
 export default function PoemsPage() {
   const filePath = path.join(process.cwd(), "public", "data", "poems.json");
   let poems = [];
