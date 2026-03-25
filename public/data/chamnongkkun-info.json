@@ -1,6 +1,17 @@
 {
   "events": [
     {
+      "id": 1774434265997,
+      "name": "거제 맹종 대나무 축제",
+      "category": "행사",
+      "startDate": "2026-04-01",
+      "endDate": "2026-04-30",
+      "location": "거제맹종죽테마파크",
+      "target": "누구나",
+      "summary": "봄의 기운이 더욱 푸르러지는 4월! 하청면의 명소 거제맹종죽 테마파크 맹종 대나무 축제로의 초대!",
+      "link": "http://maengjongjuk.co.kr"
+    },
+    {
       "id": 1,
       "name": "제3회 공곶이 수선화 축제",
       "category": "행사",
