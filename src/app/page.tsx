@@ -76,10 +76,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200 overflow-x-hidden">
-      {/* 1. 상단 헤더 */}
-      <header className="relative h-[450px] w-full flex items-center justify-center overflow-hidden">
+      {/* 1. 상단 헤더 (높이 축소) */}
+      <header className="relative h-[280px] w-full flex items-center justify-center overflow-hidden">
         {/* 상단 네비게이션 바 추가 */}
-        <nav className="absolute top-0 left-0 w-full z-40 px-6 py-4 flex justify-end gap-6 text-white font-bold">
+        <nav className="absolute top-0 left-0 w-full z-40 px-6 py-4 flex justify-end gap-6 text-white font-bold text-sm">
           <Link href="/" className="hover:text-cyan-200 transition-colors">홈</Link>
           <Link href="/blog" className="hover:text-cyan-200 transition-colors">블로그</Link>
           <Link href="/about" className="hover:text-cyan-200 transition-colors">소개</Link>
@@ -91,10 +91,10 @@ export default function Home() {
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 to-cyan-900/40" />
         
         <div className="relative z-20 text-center text-white p-6 drop-shadow-2xl">
-          <h1 className="text-5xl font-extrabold md:text-7xl tracking-tight mb-4 text-shadow-lg">
+          <h1 className="text-3xl font-extrabold md:text-5xl tracking-tight mb-2 text-shadow-lg">
             거제시 생활 정보
           </h1>
-          <p className="text-xl md:text-2xl font-medium opacity-95">
+          <p className="text-base md:text-xl font-medium opacity-95">
             푸른 바다와 함께하는 생생한 소식 🐬
           </p>
         </div>
