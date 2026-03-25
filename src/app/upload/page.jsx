@@ -41,7 +41,8 @@ export default function UploadPage() {
         setError(data.error || "오류가 발생했습니다");
       }
     } catch (e) {
-      setError("네트워크 오류가 발생했습니다");
+      console.error("Upload error detail:", e);
+      setError("네트워크 오류: " + e.message);
     }
     setLoading(false);
   };

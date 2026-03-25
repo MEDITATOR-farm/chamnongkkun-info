@@ -1,7 +1,9 @@
+export const runtime = "nodejs";
+
+import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-// 시 분위기별 색상 테마 8가지
 const themes = [
   { bgColor: "#f0f4f8", textColor: "#2d3748", accentColor: "#718096", mood: "잔잔한" },
   { bgColor: "#fff5f5", textColor: "#742a2a", accentColor: "#fc8181", mood: "그리운" },
@@ -18,22 +20,28 @@ export async function POST(req) {
     const formData = await req.formData();
     const file = formData.get("image");
     const password = formData.get("password");
-    const author = formData.get("author") || ""; // 시인 이름 입력받기
+    const author = formData.get("author") || "";
 
     // 비밀번호 확인
     if (password !== process.env.UPLOAD_PASSWORD) {
-      return Response.json({ error: "비밀번호가 틀렸습니다" }, { status: 401 });
+      return NextResponse.json(
+        { error: "비밀번호가 틀렸습니다" },
+        { status: 401 }
+      );
     }
 
     if (!file) {
-      return Response.json({ error: "이미지가 없습니다" }, { status: 400 });
+      return NextResponse.json(
+        { error: "이미지가 없습니다" },
+        { status: 400 }
+      );
     }
 
     // 이미지 → base64 변환
     const bytes = await file.arrayBuffer();
     const base64 = Buffer.from(bytes).toString("base64");
 
-    // Google Cloud Vision API 호출
+    // Google Vision API 호출
     const visionRes = await fetch(
       `https://vision.googleapis.com/v1/images:annotate?key=${process.env.GOOGLE_VISION_API_KEY}`,
       {
@@ -49,20 +57,34 @@ export async function POST(req) {
     );
 
     const visionData = await visionRes.json();
-    const extractedText = visionData.responses[0]?.fullTextAnnotation?.text || "";
+
+    // Vision API 오류 체크
+    if (visionData.error) {
+      return NextResponse.json(
+        { error: "Vision API 오류: " + visionData.error.message },
+        { status: 500 }
+      );
+    }
+
+    const extractedText =
+      visionData.responses?.[0]?.fullTextAnnotation?.text || "";
 
     if (!extractedText) {
-      return Response.json({
-        error: "텍스트를 인식하지 못했어요. 더 밝고 선명하게 찍어주세요!"
-      }, { status: 400 });
+      return NextResponse.json(
+        { error: "텍스트를 인식하지 못했어요. 더 밝고 선명하게 찍어주세요!" },
+        { status: 400 }
+      );
     }
 
     // 첫 줄 = 제목, 나머지 = 본문
-    const lines = extractedText.trim().split("\n").filter((l) => l.trim());
+    const lines = extractedText
+      .trim()
+      .split("\n")
+      .filter((l) => l.trim());
     const title = lines[0] || "제목 없음";
     const content = lines.slice(1).join("\n") || extractedText;
 
-    // 랜덤 테마 선택
+    // 랜덤 테마
     const theme = themes[Math.floor(Math.random() * themes.length)];
 
     const poemData = {
@@ -77,20 +99,28 @@ export async function POST(req) {
       date: new Date().toISOString().split("T")[0],
     };
 
-    // poems.json 읽기 → 새 시 추가 → 저장
+    // poems.json 저장
     const dataPath = path.join(process.cwd(), "public/data/poems.json");
     let poems = [];
-    if (fs.existsSync(dataPath)) {
-      poems = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+    try {
+      if (fs.existsSync(dataPath)) {
+        poems = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+      }
+    } catch (e) {
+      poems = [];
     }
-    poems.unshift(poemData); // 최신이 맨 위
+
+    poems.unshift(poemData);
     fs.mkdirSync(path.dirname(dataPath), { recursive: true });
     fs.writeFileSync(dataPath, JSON.stringify(poems, null, 2));
 
-    return Response.json({ success: true, poem: poemData });
+    return NextResponse.json({ success: true, poem: poemData });
 
   } catch (err) {
-    console.error(err);
-    return Response.json({ error: "처리 실패: " + err.message }, { status: 500 });
+    console.error("upload-poem error:", err);
+    return NextResponse.json(
+      { error: "처리 실패: " + err.message },
+      { status: 500 }
+    );
   }
 }
