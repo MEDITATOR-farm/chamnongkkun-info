@@ -53,6 +53,10 @@ jobs:
           fi
 
       - name: Build project
+        env:
+          NEXT_PUBLIC_ADSENSE_ID: ${{ secrets.NEXT_PUBLIC_ADSENSE_ID }}
+          NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_COUPANG_PARTNER_ID: ${{ secrets.NEXT_PUBLIC_COUPANG_PARTNER_ID }}
         run: npm run build
 
       - name: Deploy to Cloudflare Pages
