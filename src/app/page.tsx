@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import AdBanner from "@/components/AdBanner";
 
 interface InfoItem {
   id: number;
@@ -62,6 +63,7 @@ export default function Home() {
         <nav className="absolute top-0 left-0 w-full z-40 px-6 py-4 flex justify-end gap-6 text-white font-bold">
           <Link href="/" className="hover:text-cyan-200 transition-colors">홈</Link>
           <Link href="/blog" className="hover:text-cyan-200 transition-colors">블로그</Link>
+          <Link href="/about" className="hover:text-cyan-200 transition-colors">소개</Link>
         </nav>
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
@@ -103,6 +105,23 @@ export default function Home() {
                   className={`group relative overflow-hidden rounded-[2.5rem] border-2 ${styles.border} ${styles.bg} p-1 transition-all hover:shadow-2xl hover:scale-102`}
                 >
                   <div className="bg-white rounded-[2.3rem] p-8 h-full flex flex-col">
+                    <script
+                      type="application/ld+json"
+                      dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                          "@context": "https://schema.org",
+                          "@type": "Event",
+                          "name": event.name,
+                          "startDate": event.startDate,
+                          "endDate": event.endDate,
+                          "location": {
+                            "@type": "Place",
+                            "name": event.location
+                          },
+                          "description": event.summary
+                        })
+                      }}
+                    />
                     <span className={`self-start mb-4 rounded-full px-4 py-1 text-xs font-bold ring-2 ring-offset-2 ring-transparent transition-all group-hover:ring-current ${styles.badge}`}>
                       {event.category} 소식
                     </span>
@@ -125,6 +144,8 @@ export default function Home() {
           </div>
         </section>
 
+        <AdBanner />
+
         <section className="mb-24 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
             <h2 className="text-4xl font-black text-slate-800">💎 우리 동네 꿀팁 & 혜택</h2>
@@ -136,6 +157,21 @@ export default function Home() {
                 key={benefit.id}
                 className="group relative rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-slate-100 transition-all hover:shadow-xl hover:ring-blue-200"
               >
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "GovernmentService",
+                      "serviceName": benefit.name,
+                      "description": benefit.summary,
+                      "provider": {
+                        "@type": "GovernmentOrganization",
+                        "name": "거제시"
+                      }
+                    })
+                  }}
+                />
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-50 to-transparent rounded-tr-[2rem] -z-1" />
                 <h3 className="mb-4 text-xl font-black text-slate-800 group-hover:text-blue-600">{benefit.name}</h3>
                 <div className="mb-6 space-y-2 text-sm">
