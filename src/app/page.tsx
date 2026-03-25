@@ -157,147 +157,104 @@ export default function Home() {
           )}
         </section>
 
-        <section className="mb-24 relative z-10">
-          <div className="mb-12 text-center">
-            <h2 className="text-4xl font-black text-slate-800 mb-2">🌸 이번 달 행사/축제</h2>
-            <div className="h-1.5 w-24 bg-emerald-400 mx-auto rounded-full" />
-          </div>
-          {/* ... (이전과 동일한 행사 카드 코드) ... */}
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {data.events.map((event) => {
-              const styles = getSeasonStyles(event.name);
-              return (
-                <div
-                  key={event.id}
-                  className={`group relative overflow-hidden rounded-3xl border ${styles.border} ${styles.bg} p-0.5 transition-all hover:shadow-xl hover:scale-102`}
-                >
-                  <div className="bg-white rounded-[1.4rem] p-6 h-full flex flex-col">
-                    <script
-                      type="application/ld+json"
-                      dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                          "@context": "https://schema.org",
-                          "@type": "Event",
-                          "name": event.name,
-                          "startDate": event.startDate,
-                          "endDate": event.endDate,
-                          "location": {
-                            "@type": "Place",
-                            "name": event.location
-                          },
-                          "description": event.summary
-                        })
-                      }}
-                    />
-                    <span className={`self-start mb-3 rounded-full px-3 py-0.5 text-[10px] font-bold ring-1 ring-offset-1 ring-transparent transition-all group-hover:ring-current ${styles.badge}`}>
-                      {event.category} 소식
-                    </span>
-                    <h3 className={`mb-3 text-lg font-black ${styles.text} leading-tight`}>{event.name}</h3>
-                    <div className="space-y-1.5 mb-4 text-slate-500 font-medium text-xs">
-                      <p className="flex items-center gap-2">📍 {event.location}</p>
-                      <p className="flex items-center gap-2">📅 {event.startDate} ~ {event.endDate}</p>
-                    </div>
-                    <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-2">{event.summary}</p>
-                    <Link
-                      href={`/events/${event.id}`}
-                      className={`block w-full rounded-xl ${styles.accent} py-2.5 text-center font-bold text-sm text-white transition-all transform group-hover:translate-y-[-1px] shadow-md`}
-                    >
-                      상세 정보
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ===== 오늘의 시 섹션 ===== */}
-        <section style={{
-          padding: "80px 24px",
-          background: "#faf8f5",
-          textAlign: "center",
-          borderRadius: "4rem",
-          margin: "40px 0"
-        }}>
-          <p style={{
-            color: "#a0917e", letterSpacing: 4,
-            fontSize: 12, marginBottom: 8,
+        {/* 🌸 오늘의 시 & 행사/축제 나란히 배치 */}
+        <div className="flex flex-col lg:flex-row gap-8 mb-24 relative z-10 items-start">
+          
+          {/* ===== 오늘의 시 섹션 (왼쪽) ===== */}
+          <section style={{
+            flex: "0 0 400px",
+            padding: "60px 24px",
+            background: "#faf8f5",
+            textAlign: "center",
+            borderRadius: "3rem",
+            width: "100%"
           }}>
-            POEM OF THE DAY
-          </p>
-          <h2 style={{
-            fontSize: 26, marginBottom: 48,
-            color: "#3d3228", fontWeight: "normal",
-          }}>
-            오늘의 시
-          </h2>
+            <p style={{ color: "#a0917e", letterSpacing: 4, fontSize: 10, marginBottom: 8 }}>POEM OF THE DAY</p>
+            <h2 style={{ fontSize: 20, marginBottom: 32, color: "#3d3228", fontWeight: "normal" }}>오늘의 시</h2>
 
-          {latestPoem ? (
-            <div style={{
-              maxWidth: 460,
-              margin: "0 auto",
-              background: latestPoem.bgColor,
-              color: latestPoem.textColor,
-              borderRadius: 20,
-              padding: "48px 36px",
-              boxShadow: "0 12px 48px rgba(0,0,0,0.08)",
-              fontFamily: "'Noto Serif KR', serif",
-            }}>
+            {latestPoem ? (
               <div style={{
-                fontSize: 11, letterSpacing: 3,
-                color: latestPoem.accentColor,
-                marginBottom: 14,
-                textTransform: "uppercase",
+                background: latestPoem.bgColor,
+                color: latestPoem.textColor,
+                borderRadius: 16,
+                padding: "40px 28px",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
+                fontFamily: "'Noto Serif KR', serif",
+                textAlign: "left"
               }}>
-                {latestPoem.mood}
+                <div style={{ fontSize: 10, letterSpacing: 2, color: latestPoem.accentColor, marginBottom: 12, textTransform: "uppercase" }}>
+                  {latestPoem.mood}
+                </div>
+                <h3 style={{ fontSize: 18, marginBottom: 10, fontWeight: "bold" }}>{latestPoem.title}</h3>
+                {latestPoem.author && <p style={{ fontSize: 12, marginBottom: 24, opacity: 0.7 }}>— {latestPoem.author}</p>}
+                <p style={{ fontSize: 14, lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{latestPoem.content}</p>
+                <p style={{ marginTop: 24, fontSize: 10, opacity: 0.4 }}>{latestPoem.date}</p>
               </div>
-              <h3 style={{
-                fontSize: 22, marginBottom: 12,
-                fontWeight: "bold",
-              }}>
-                {latestPoem.title}
-              </h3>
-              {latestPoem.author && (
-                <p style={{
-                  fontSize: 13,
-                  marginBottom: 32,
-                  opacity: 0.7,
-                }}>
-                  — {latestPoem.author}
-                </p>
-              )}
-              <p style={{
-                fontSize: 16,
-                lineHeight: 1.9,
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-all",
-              }}>
-                {latestPoem.content}
-              </p>
-              <p style={{
-                marginTop: 28, fontSize: 11, opacity: 0.4,
-              }}>
-                {latestPoem.date}
-              </p>
-            </div>
-          ) : (
-            <p style={{ color: "#ccc" }}>
-              아직 등록된 시가 없어요 📖
-            </p>
-          )}
+            ) : (
+              <p style={{ color: "#ccc" }}>아직 등록된 시가 없어요 📖</p>
+            )}
 
-          {/* 지난 시 목록 링크 */}
-          {poems.length > 1 && (
-            <a href="/poems" style={{
-              display: "inline-block", marginTop: 32,
-              color: "#a0917e", fontSize: 14,
-              textDecoration: "none",
-              borderBottom: "1px solid #a0917e",
-            }}>
-              지난 시 모두 보기 →
-            </a>
-          )}
-        </section>
+            {poems.length > 1 && (
+              <a href="/poems" style={{ display: "inline-block", marginTop: 24, color: "#a0917e", fontSize: 13, textDecoration: "none", borderBottom: "1px solid #a0917e" }}>
+                지난 시 모두 보기 →
+              </a>
+            )}
+          </section>
+
+          {/* ===== 이번 달 행사/축제 섹션 (오른쪽) ===== */}
+          <section className="flex-grow w-full">
+            <div className="mb-8 text-center lg:text-left">
+              <h2 className="text-3xl font-black text-slate-800 mb-2">🌸 이번 달 행사/축제</h2>
+              <div className="h-1 w-20 bg-emerald-400 lg:mx-0 mx-auto rounded-full" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {data.events.map((event) => {
+                const styles = getSeasonStyles(event.name);
+                return (
+                  <div
+                    key={event.id}
+                    className={`group relative overflow-hidden rounded-3xl border ${styles.border} ${styles.bg} p-0.5 transition-all hover:shadow-xl hover:scale-102`}
+                  >
+                    <div className="bg-white rounded-[1.4rem] p-6 h-full flex flex-col">
+                      <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{
+                          __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "Event",
+                            "name": event.name,
+                            "startDate": event.startDate,
+                            "endDate": event.endDate,
+                            "location": {
+                              "@type": "Place",
+                              "name": event.location
+                            },
+                            "description": event.summary
+                          })
+                        }}
+                      />
+                      <span className={`self-start mb-3 rounded-full px-3 py-0.5 text-[10px] font-bold ring-1 ring-offset-1 ring-transparent transition-all group-hover:ring-current ${styles.badge}`}>
+                        {event.category} 소식
+                      </span>
+                      <h3 className={`mb-3 text-lg font-black ${styles.text} leading-tight`}>{event.name}</h3>
+                      <div className="space-y-1.5 mb-4 text-slate-500 font-medium text-xs">
+                        <p className="flex items-center gap-2">📍 {event.location}</p>
+                        <p className="flex items-center gap-2">📅 {event.startDate} ~ {event.endDate}</p>
+                      </div>
+                      <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-2">{event.summary}</p>
+                      <Link
+                        href={`/events/${event.id}`}
+                        className={`block w-full rounded-xl ${styles.accent} py-2.5 text-center font-bold text-sm text-white transition-all transform group-hover:translate-y-[-1px] shadow-md`}
+                      >
+                        상세 정보
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
 
         <section id="category-section" className="mb-24 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
