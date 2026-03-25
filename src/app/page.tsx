@@ -177,43 +177,49 @@ export default function Home() {
             <div style={{
               maxWidth: 460,
               margin: "0 auto",
-              background: latestPoem.bgColor,
-              color: latestPoem.textColor,
+              background: latestPoem.bgImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${latestPoem.bgImage})` : latestPoem.bgColor,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              color: latestPoem.bgImage ? "#fff" : latestPoem.textColor,
               borderRadius: 20,
               padding: "48px 36px",
               boxShadow: "0 12px 48px rgba(0,0,0,0.08)",
+              fontFamily: "'Noto Serif KR', serif",
             }}>
               <div style={{
                 fontSize: 11, letterSpacing: 3,
-                color: latestPoem.accentColor,
+                color: latestPoem.bgImage ? "#fff" : latestPoem.accentColor,
                 marginBottom: 14,
                 textTransform: "uppercase",
+                opacity: 0.8
               }}>
                 {latestPoem.mood}
               </div>
               <h3 style={{
-                fontSize: 22, marginBottom: 6,
-                fontWeight: "normal",
+                fontSize: 22, marginBottom: 12,
+                fontWeight: "bold",
               }}>
                 {latestPoem.title}
               </h3>
               {latestPoem.author && (
                 <p style={{
-                  fontSize: 13, opacity: 0.65,
-                  marginBottom: 28,
+                  fontSize: 13,
+                  marginBottom: 32,
+                  opacity: 0.7,
                 }}>
                   — {latestPoem.author}
                 </p>
               )}
               <p style={{
-                whiteSpace: "pre-line",
-                lineHeight: 2.2, fontSize: 16,
-                fontFamily: "Georgia, serif",
+                fontSize: 16,
+                lineHeight: 1.9,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-all",
               }}>
                 {latestPoem.content}
               </p>
               <p style={{
-                marginTop: 28, fontSize: 12, opacity: 0.4,
+                marginTop: 28, fontSize: 11, opacity: 0.4,
               }}>
                 {latestPoem.date}
               </p>

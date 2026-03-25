@@ -1,13 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+
+const themes = [
+  { bgColor: "#f0f4f8", textColor: "#2d3748", accentColor: "#718096", mood: "잔잔한" },
+  { bgColor: "#fff5f5", textColor: "#742a2a", accentColor: "#fc8181", mood: "그리운" },
+  { bgColor: "#f0fff4", textColor: "#22543d", accentColor: "#48bb78", mood: "따뜻한" },
+  { bgColor: "#ebf8ff", textColor: "#2a4365", accentColor: "#63b3ed", mood: "고요한" },
+  { bgColor: "#faf5ff", textColor: "#44337a", accentColor: "#9f7aea", mood: "몽환적인" },
+  { bgColor: "#fffff0", textColor: "#744210", accentColor: "#ecc94b", mood: "희망찬" },
+  { bgColor: "#fff8f1", textColor: "#7b341e", accentColor: "#ed8936", mood: "힘찬" },
+  { bgColor: "#f7fafc", textColor: "#1a202c", accentColor: "#a0aec0", mood: "쓸쓸한" },
+];
 
 export default function UploadPage() {
+  const [step, setStep] = useState(1); // 1: Upload, 2: Preview & Edit, 3: Success
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [password, setPassword] = useState("");
   const [author, setAuthor] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [themeIndex, setThemeIndex] = useState(0);
+  const [bgImage, setBgImage] = useState(""); // 배경 이미지 URL
+  const [imageList, setImageList] = useState([]); // 검색된 이미지 목록
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
   const handleFile = (e) => {
@@ -15,11 +32,10 @@ export default function UploadPage() {
     if (!file) return;
     setImage(file);
     setPreview(URL.createObjectURL(file));
-    setResult(null);
-    setError("");
   };
 
-  const handleUpload = async () => {
+  // 1단계: 텍스트 추출 요청
+  const handleExtract = async () => {
     if (!image || !password) return;
     setLoading(true);
     setError("");
@@ -27,185 +43,229 @@ export default function UploadPage() {
     const formData = new FormData();
     formData.append("image", image);
     formData.append("password", password);
-    formData.append("author", author);
 
     try {
-      const res = await fetch("/api/upload-poem", {
+      const res = await fetch("/api/extract-text", {
         method: "POST",
         body: formData,
       });
       const data = await res.json();
-      if (data.success) {
-        setResult(data.poem);
+
+      if (res.ok) {
+        setTitle(data.title);
+        setContent(data.content);
+        setThemeIndex(Math.floor(Math.random() * themes.length));
+        
+        // 분위기에 맞는 이미지 검색 시도
+        const mood = themes[Math.floor(Math.random() * themes.length)].mood;
+        fetchBackgrounds(mood);
+        
+        setStep(2);
       } else {
         setError(data.error || "오류가 발생했습니다");
       }
     } catch (e) {
-      console.error("Upload error detail:", e);
       setError("네트워크 오류: " + e.message);
     }
     setLoading(false);
   };
 
+  // 배경 이미지 검색
+  const fetchBackgrounds = async (query) => {
+    try {
+      const res = await fetch(`/api/search-background?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (data.results && data.results.length > 0) {
+        setImageList(data.results.map(r => r.urls.regular));
+        setBgImage(data.results[0].urls.regular);
+      }
+    } catch (e) {
+      console.error("이미지 검색 실패:", e);
+    }
+  };
+
+  // 사진 랜덤 변경
+  const shuffleImage = () => {
+    if (imageList.length > 1) {
+      let nextImg;
+      do {
+        nextImg = imageList[Math.floor(Math.random() * imageList.length)];
+      } while (nextImg === bgImage);
+      setBgImage(nextImg);
+    } else {
+      // 목록이 없으면 무작위 자연 사진이라도 가져옴
+      fetchBackgrounds(currentTheme.mood);
+    }
+  };
+
+  // 디자인 랜덤 변경 (색상)
+  const shuffleTheme = () => {
+    let nextIndex;
+    do {
+      nextIndex = Math.floor(Math.random() * themes.length);
+    } while (nextIndex === themeIndex);
+    setThemeIndex(nextIndex);
+    // 색상이 바뀌면 어울리는 사진도 함께 검색 (옵션)
+    fetchBackgrounds(themes[nextIndex].mood);
+  };
+
+  // 2단계: 최종 저장 요청
+  const handleSave = async () => {
+    setLoading(true);
+    setError("");
+
+    const theme = themes[themeIndex];
+    const poemData = {
+      title,
+      author,
+      content,
+      password,
+      bgImage, // 사진 추가
+      ...theme
+    };
+
+    try {
+      const res = await fetch("/api/save-poem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(poemData),
+      });
+
+      if (res.ok) {
+        setStep(3);
+      } else {
+        const data = await res.json();
+        setError(data.error || "저장 중 오류가 발생했습니다.");
+      }
+    } catch (e) {
+      setError("네트워크 오류: " + e.message);
+    }
+    setLoading(false);
+  };
+
+  const currentTheme = themes[themeIndex];
+
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#f8f5f0",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: "Georgia, serif",
-      padding: 24,
-    }}>
-      <div style={{
-        background: "#fff",
-        borderRadius: 20,
-        padding: 36,
-        maxWidth: 480,
-        width: "100%",
-        boxShadow: "0 8px 40px rgba(0,0,0,0.10)",
-      }}>
-        <h2 style={{ textAlign: "center", marginBottom: 6, fontSize: 24 }}>
-          📖 시 업로드
-        </h2>
-        <p style={{ textAlign: "center", color: "#999",
-          marginBottom: 28, fontSize: 14 }}>
-          시집 사진을 찍어 올리면 자동으로 디자인돼요
-        </p>
+    <main style={containerStyle}>
+      <header style={headerStyle}>
+        <h1 style={{ fontSize: 32, marginBottom: 12 }}>🌸 오늘의 시 업로드</h1>
+        <p style={{ color: "#888" }}>시집을 찍고, 원하는 디자인을 골라보세요.</p>
+      </header>
 
-        {/* 사진 선택 영역 */}
-        <label style={{
-          display: "block",
-          border: "2px dashed #d0c8be",
-          borderRadius: 12,
-          padding: 24,
-          textAlign: "center",
-          cursor: "pointer",
-          marginBottom: 14,
-          background: "#faf8f5",
-        }}>
-          {preview ? (
-            <img src={preview} alt="미리보기" style={{
-              width: "100%", borderRadius: 8,
-              maxHeight: 260, objectFit: "contain"
-            }} />
-          ) : (
-            <>
-              <div style={{ fontSize: 40, marginBottom: 8 }}>📸</div>
-              <div style={{ color: "#aaa", fontSize: 14 }}>
-                사진을 선택하거나 직접 찍어주세요
-              </div>
-            </>
-          )}
-          <input type="file" accept="image/*"
-            capture="environment"
-            onChange={handleFile}
-            style={{ display: "none" }} />
-        </label>
-
-        {/* 시인 이름 */}
-        <input
-          type="text"
-          placeholder="✍️ 시인 이름 (예: 윤동주)"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          style={{
-            width: "100%", padding: "12px 16px",
-            borderRadius: 10, border: "1.5px solid #e0dbd4",
-            fontSize: 15, marginBottom: 10,
-            boxSizing: "border-box", outline: "none",
-            fontFamily: "Georgia, serif",
-          }}
-        />
-
-        {/* 비밀번호 */}
-        <input
-          type="password"
-          placeholder="🔑 업로드 비밀번호"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%", padding: "12px 16px",
-            borderRadius: 10, border: "1.5px solid #e0dbd4",
-            fontSize: 15, marginBottom: 14,
-            boxSizing: "border-box", outline: "none",
-          }}
-        />
-
-        {/* 업로드 버튼 */}
-        <button
-          onClick={handleUpload}
-          disabled={!image || !password || loading}
-          style={{
-            width: "100%", padding: 14,
-            background: (!image || !password || loading)
-              ? "#ccc" : "#5c4a32",
-            color: "#fff", border: "none",
-            borderRadius: 10, fontSize: 16,
-            cursor: (!image || !password || loading)
-              ? "not-allowed" : "pointer",
-            fontFamily: "Georgia, serif",
-          }}
-        >
-          {loading ? "⏳ 시를 읽는 중..." : "✨ 업로드 & 디자인 생성"}
-        </button>
-
-        {/* 오류 메시지 */}
-        {error && (
-          <p style={{ color: "#e53e3e", textAlign: "center",
-            marginTop: 14, fontSize: 14 }}>
-            ⚠️ {error}
-          </p>
-        )}
-
-        {/* 결과 미리보기 */}
-        {result && (
-          <div style={{
-            marginTop: 28,
-            background: result.bgColor,
-            color: result.textColor,
-            borderRadius: 16,
-            padding: "32px 28px",
-            textAlign: "center",
-          }}>
-            <div style={{
-              fontSize: 11, letterSpacing: 3,
-              color: result.accentColor,
-              marginBottom: 10,
-              textTransform: "uppercase",
-            }}>
-              {result.mood}
-            </div>
-            <h3 style={{ fontSize: 20, marginBottom: 4,
-              fontWeight: "normal" }}>
-              {result.title}
-            </h3>
-            {result.author && (
-              <p style={{ fontSize: 13, opacity: 0.65, marginBottom: 20 }}>
-                — {result.author}
-              </p>
-            )}
-            <p style={{
-              whiteSpace: "pre-line",
-              lineHeight: 2.2, fontSize: 15,
-            }}>
-              {result.content}
-            </p>
-            <p style={{ marginTop: 20, fontSize: 12, opacity: 0.45 }}>
-              {result.date}
-            </p>
-            <a href="/" style={{
-              display: "inline-block", marginTop: 16,
-              padding: "8px 24px",
-              background: result.accentColor,
-              color: "#fff", borderRadius: 8,
-              textDecoration: "none", fontSize: 14,
-            }}>
-              메인에서 확인하기 →
-            </a>
+      {/* 1단계: 사진 업로드 및 비밀번호 입력 */}
+      {step === 1 && (
+        <section style={formCardStyle}>
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>시집 사진 찍기</label>
+            <input type="file" accept="image/*" capture="environment" onChange={handleFile} style={fileInputStyle} />
           </div>
-        )}
-      </div>
-    </div>
+
+          {preview && (
+            <div style={imageWrapperStyle}>
+              <img src={preview} alt="미리보기" style={imageStyle} />
+            </div>
+          )}
+
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>시인 이름</label>
+            <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="예: 박노해" style={inputStyle} />
+          </div>
+
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>관리자 비밀번호</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="비밀번호 입력" style={inputStyle} />
+          </div>
+
+          <button onClick={handleExtract} disabled={loading || !image || !password} style={activeButtonStyle}>
+            {loading ? "AI 분석 중..." : "AI 분석 및 디자인 생성 시작"}
+          </button>
+        </section>
+      )}
+
+      {/* 2단계: 디자인 확인 및 수정 */}
+      {step === 2 && (
+        <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 30 }}>
+          <div style={{
+            width: "100%", maxWidth: 460, borderRadius: 24, padding: "60px 40px",
+            background: bgImage ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${bgImage})` : currentTheme.bgColor,
+            backgroundSize: "cover", backgroundPosition: "center",
+            color: bgImage ? "#fff" : currentTheme.textColor,
+            boxShadow: "0 20px 60px rgba(0,0,0,0.12)", textAlign: "center",
+            fontFamily: "'Noto Serif KR', serif", transition: "0.5s",
+            overflow: "hidden", position: "relative"
+          }}>
+            <span style={{ 
+              fontSize: 13, 
+              color: bgImage ? "#fff" : currentTheme.accentColor, 
+              letterSpacing: 3, marginBottom: 15, display: "block",
+              opacity: 0.8
+            }}>
+              {currentTheme.mood}
+            </span>
+            <input 
+              value={title} onChange={(e) => setTitle(e.target.value)} 
+              style={{ 
+                ...titleInputStyle, 
+                color: bgImage ? "#fff" : currentTheme.textColor,
+                borderBottom: bgImage ? "1px solid rgba(255,255,255,0.3)" : "1px solid rgba(0,0,0,0.1)"
+              }} 
+            />
+            <textarea 
+              value={content} onChange={(e) => setContent(e.target.value)} 
+              style={{ 
+                ...contentInputStyle, 
+                color: bgImage ? "#fff" : currentTheme.textColor,
+              }} 
+            />
+            {author && <p style={{ fontSize: 13, marginTop: 24, opacity: 0.8 }}>— {author}</p>}
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, width: "100%", maxWidth: 460 }}>
+            <button onClick={shuffleImage} style={shuffleButtonStyle}>🌃 배경 사진 바꾸기</button>
+            <button onClick={shuffleTheme} style={shuffleButtonStyle}>🎨 테마 색상 바꾸기</button>
+            <button onClick={handleSave} disabled={loading} style={{ ...saveButtonStyle, gridColumn: "span 2" }}>
+              {loading ? "저장 중..." : "✅ 이 디자인으로 결정!"}
+            </button>
+          </div>
+          
+          <button onClick={() => setStep(1)} style={{ background: "none", border: "none", color: "#888", cursor: "pointer" }}>
+            ← 사진 다시 찍기
+          </button>
+        </section>
+      )}
+
+      {/* 3단계: 성공 안내 */}
+      {step === 3 && (
+        <section style={{ textAlign: "center", padding: "60px 0" }}>
+          <div style={{ fontSize: 60, marginBottom: 20 }}>✨</div>
+          <h2 style={{ fontSize: 24, marginBottom: 10 }}>업로드가 완료되었습니다!</h2>
+          <p style={{ color: "#666", marginBottom: 40 }}>이제 실제 사이트에 반영하기 위해 GitHub에 푸시해 주세요.</p>
+          <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+            <Link href="/" style={finishButtonStyle}>홈으로 가기</Link>
+            <button onClick={() => { setStep(1); setImage(null); setPreview(null); }} style={finishButtonStyle}>새 시 올리기</button>
+          </div>
+        </section>
+      )}
+
+      {error && <p style={{ color: "#ff4d4d", textAlign: "center", marginTop: 20 }}>⚠️ {error}</p>}
+    </main>
   );
 }
+
+// 스타일 정의
+const containerStyle = { maxWidth: 800, margin: "0 auto", padding: "80px 24px", fontFamily: "'Pretendard', sans-serif" };
+const headerStyle = { textAlign: "center", marginBottom: 60 };
+const formCardStyle = { background: "#fff", padding: 32, borderRadius: 24, boxShadow: "0 4px 24px rgba(0,0,0,0.05)", display: "flex", flexDirection: "column", gap: 24 };
+const inputGroupStyle = { display: "flex", flexDirection: "column", gap: 8 };
+const labelStyle = { fontSize: 14, fontWeight: "bold", color: "#333" };
+const inputStyle = { padding: "14px 18px", borderRadius: 12, border: "1px solid #eee", fontSize: 16 };
+const fileInputStyle = { padding: 10, border: "2px dashed #eee", borderRadius: 12, cursor: "pointer" };
+const imageWrapperStyle = { width: "100%", borderRadius: 16, overflow: "hidden", border: "1px solid #eee" };
+const imageStyle = { width: "100%", display: "block" };
+const activeButtonStyle = { background: "#3d3228", color: "#fff", padding: "18px", borderRadius: 14, border: "none", fontSize: 16, fontWeight: "bold", cursor: "pointer" };
+const shuffleButtonStyle = { flex: 1, background: "#fff", border: "1px solid #ddd", padding: "16px", borderRadius: 14, cursor: "pointer", fontWeight: "bold" };
+const saveButtonStyle = { flex: 1, background: "#22c55e", color: "#fff", border: "none", padding: "16px", borderRadius: 14, cursor: "pointer", fontWeight: "bold" };
+const finishButtonStyle = { background: "#f5f5f5", color: "#333", textDecoration: "none", padding: "14px 24px", borderRadius: 12, fontSize: 15 };
+
+const titleInputStyle = { width: "100%", background: "none", border: "none", borderBottom: "1px solid rgba(0,0,0,0.1)", textAlign: "center", fontSize: 24, marginBottom: 20, padding: 10, fontWeight: "bold" };
+const contentInputStyle = { width: "100%", background: "none", border: "none", textAlign: "center", fontSize: 18, lineHeight: 1.8, height: 300, resize: "none" };
