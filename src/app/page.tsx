@@ -58,6 +58,11 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200 overflow-x-hidden">
       {/* 1. 상단 헤더 */}
       <header className="relative h-[450px] w-full flex items-center justify-center overflow-hidden">
+        {/* 상단 네비게이션 바 추가 */}
+        <nav className="absolute top-0 left-0 w-full z-40 px-6 py-4 flex justify-end gap-6 text-white font-bold">
+          <Link href="/" className="hover:text-cyan-200 transition-colors">홈</Link>
+          <Link href="/blog" className="hover:text-cyan-200 transition-colors">블로그</Link>
+        </nav>
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
           style={{ backgroundImage: "url('/images/header-bg.png')" }}
@@ -172,7 +177,9 @@ export default function Home() {
                   </h3>
                   <p className="text-slate-500 text-sm line-clamp-1">{post.summary}</p>
                 </div>
-                <a href={post.link} className="hidden sm:inline-block text-slate-200 group-hover:text-teal-200 text-3xl transition-colors">➜</a>
+                <Link href="/blog" className="hidden sm:inline-block bg-teal-50 text-teal-600 px-6 py-2 rounded-full font-bold hover:bg-teal-100 transition-colors">
+                  자세히 보기
+                </Link>
               </div>
             ))}
           </div>

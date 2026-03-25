@@ -177,6 +177,17 @@
       "target": "소상공인 및 소비자",
       "summary": "올해 총 2,040억 원 규모로 확대 발행하여 지역 경제를 활성화합니다.",
       "link": "#"
+    },
+    {
+      "id": 8,
+      "name": "유아학비 (누리과정) 지원",
+      "category": "혜택",
+      "startDate": "2023-10-27",
+      "endDate": "상시",
+      "location": "복지로 복지사업서비스 및 읍면동 주민센터",
+      "target": "국공립 및 사립유치원에 다니는 3~5세 유아",
+      "summary": "유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790"
     }
   ],
   "blogPosts": [
