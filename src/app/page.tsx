@@ -253,27 +253,17 @@ export default function Home() {
 
       </main>
 
-      <footer className="bg-white border-t border-slate-100 py-10 text-slate-500 text-xs">
-        <div className="container mx-auto px-4 max-w-4xl text-center">
-          <div className="mb-6 flex justify-center space-x-6 opacity-60">
-            <span className="text-2xl hover:scale-125 transition-transform cursor-default">🌿</span>
-            <span className="text-2xl hover:scale-125 transition-transform cursor-default">🌊</span>
-            <span className="text-2xl hover:scale-125 transition-transform cursor-default">⛵</span>
+      <footer className="bg-white border-t border-slate-100 py-8 text-slate-400 text-[10px] tracking-tight">
+        <div className="container mx-auto px-4 text-center space-y-3">
+          <p className="font-bold text-slate-500">📍 데이터 출처: 공공데이터포털(data.go.kr)</p>
+          <div className="flex justify-center gap-4 uppercase font-medium tracking-widest">
+            <Link href="/about" className="hover:text-cyan-600 transition-colors">About</Link>
+            <span className="opacity-30">|</span>
+            <span>Privacy</span>
+            <span className="opacity-30">|</span>
+            <span>Contact</span>
           </div>
-          <div className="space-y-2">
-            <p className="font-bold text-slate-700 underline decoration-cyan-400 decoration-2 underline-offset-4">📍 데이터 출처: 공공데이터포털(data.go.kr)</p>
-            <p className="opacity-70">마지막 업데이트: {new Date().toLocaleDateString("ko-KR")} 22:00</p>
-            <div className="pt-6 flex flex-col items-center gap-2">
-              <div className="flex gap-4 uppercase tracking-widest text-slate-300">
-                <Link href="/about" className="hover:text-cyan-600 transition-colors">About</Link>
-                <span>Privacy</span>
-                <span>Contact</span>
-              </div>
-              <p className="text-[9px] text-slate-300">
-                © 2025 chamnongkkun-info. Powered by Next.js & Cloudflare
-              </p>
-            </div>
-          </div>
+          <p>© 2025 chamnongkkun-info. Powered by Next.js & Cloudflare</p>
         </div>
       </footer>
     </div>
