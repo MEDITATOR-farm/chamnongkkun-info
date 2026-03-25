@@ -29,6 +29,16 @@ interface Data {
   blogPosts: BlogPost[];
 }
 
+function getDiaries() {
+  const filePath = path.join(process.cwd(), "public/data/diaries.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return [];
+  }
+}
+
 function getPoems() {
   const filePath = path.join(process.cwd(), "public/data/poems.json");
   if (!fs.existsSync(filePath)) return [];
@@ -47,6 +57,7 @@ function getData(): Data {
 export default function Home() {
   const data = getData();
   const poems = getPoems();
+  const diaries = getDiaries();
   const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
@@ -292,27 +303,41 @@ export default function Home() {
             </div>
           </div>
           <div className="grid gap-4">
-            {data.blogPosts.map((post) => (
+            {diaries.length > 0 ? diaries.slice(0, 3).map((diary: any) => (
               <div
-                key={post.id}
+                key={diary.id}
                 className="group flex flex-col sm:flex-row gap-6 items-start sm:items-center bg-white p-8 rounded-[2rem] border border-slate-50 transition-all hover:border-teal-200 hover:shadow-lg"
               >
                 <div className="min-w-[100px] text-center">
-                  <div className="text-teal-600 font-black text-2xl">{post.date.split('-')[2]}</div>
-                  <div className="text-slate-400 text-xs font-bold">{post.date.split('-')[1]}월 {post.date.split('-')[0]}</div>
+                  <div className="text-teal-600 font-black text-2xl">{diary.date.split('-')[2]}</div>
+                  <div className="text-slate-400 text-xs font-bold">{diary.date.split('-')[1]}월 {diary.date.split('-')[0]}</div>
                 </div>
                 <div className="flex-grow">
                   <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-teal-600 transition-colors leading-tight">
-                    {post.title}
+                    {diary.title}
                   </h3>
-                  <p className="text-slate-500 text-sm line-clamp-1">{post.summary}</p>
+                  <p className="text-slate-500 text-sm line-clamp-1">{diary.content}</p>
                 </div>
-                <Link href="/blog" className="hidden sm:inline-block bg-teal-50 text-teal-600 px-6 py-2 rounded-full font-bold hover:bg-teal-100 transition-colors">
-                  자세히 보기
+                <Link href="/diaries" className="hidden sm:inline-block bg-teal-50 text-teal-600 px-6 py-2 rounded-full font-bold hover:bg-teal-100 transition-colors">
+                  일기장 보기
                 </Link>
               </div>
-            ))}
+            )) : (
+              <div className="text-center py-12 bg-white rounded-[2rem] border border-dashed border-slate-200">
+                <p className="text-slate-400 mb-4">아직 소중한 일기가 올라오지 않았습니다.</p>
+                <Link href="/upload-diary" className="text-teal-600 font-bold hover:underline">
+                  첫 일기 작성하기 →
+                </Link>
+              </div>
+            )}
           </div>
+          {diaries.length > 3 && (
+            <div className="mt-8 text-center">
+              <Link href="/diaries" className="text-slate-400 hover:text-teal-600 font-bold border-b border-slate-200 transition-colors">
+                지난 일기 모두 보기 →
+              </Link>
+            </div>
+          )}
         </section>
       </main>
 
