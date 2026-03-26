@@ -169,7 +169,7 @@ export default function Home() {
           
           {/* ===== 오늘의 시 섹션 (왼쪽 사이드바) ===== */}
           <section style={{
-            flex: "0 0 380px",
+            flex: "0 0 400px",
             padding: "50px 24px",
             background: "#faf8f5",
             textAlign: "center",
@@ -211,7 +211,7 @@ export default function Home() {
           </section>
 
           {/* ===== 오른쪽 정보 영역 (행사 + 꿀팁) ===== */}
-          <div className="flex-grow w-full space-y-16">
+          <div className="flex-grow w-full max-w-4xl space-y-16">
             
             {/* 1. 이번 달 행사/축제 */}
             <section>
