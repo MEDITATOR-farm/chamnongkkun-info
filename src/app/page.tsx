@@ -123,7 +123,7 @@ export default function Home() {
               <p className="text-slate-500">따분한 일상에 작은 쉼표가 되는 이야기들</p>
             </div>
           </div>
-          <div className="grid gap-4">
+          <div className="grid gap-8">
             {diaries.length > 0 ? diaries.slice(0, 3).map((diary: any) => (
               <div
                 key={diary.id}
@@ -167,7 +167,7 @@ export default function Home() {
             <h2 className="text-3xl font-black text-slate-800">📝 우리 동네 새소식</h2>
             <Link href="/blog" className="text-teal-600 font-bold hover:underline">블로그 전체보기 →</Link>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-3">
             {blogPosts.map((post) => (
               <Link
                 key={post.slug}
@@ -193,7 +193,7 @@ export default function Home() {
         <AdBanner />
 
         {/* 🌸 이번 달 행사 (Row 1 - Full Width) */}
-        <section id="events-section" className="mb-24 relative z-10">
+        <section id="events-section" className="mb-24 relative z-10 w-full">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-black text-slate-800 flex items-center gap-3">
               <span className="text-4xl">🌸</span> 이번 달 행사/축제
@@ -202,7 +202,7 @@ export default function Home() {
               전체보기 →
             </Link>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {data.events.slice(0, 4).map((event) => {
               const styles = getSeasonStyles(event.name);
               return (
