@@ -15,10 +15,10 @@ async function backfillEventDetails() {
     const db = JSON.parse(fileContent);
     let updatedCount = 0;
 
-    console.log('총 항목 수:', db.events.length + db.benefits.length, '. 상세 내용 생성 중...');
+    console.log('총 항목 수:', db.events.length, '. 상세 내용 생성 중...');
 
-    // 모든 이벤트와 혜택 처리
-    const allItems = [...db.events, ...db.benefits];
+    // 모든 이벤트 처리
+    const allItems = [...db.events];
 
     for (const item of allItems) {
       if (item.detailContent) continue; // 이미 있다면 건너뜀

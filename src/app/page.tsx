@@ -28,7 +28,6 @@ interface BlogPost {
 
 interface Data {
   events: InfoItem[];
-  benefits: InfoItem[];
   blogPosts: BlogPost[];
 }
 
@@ -270,23 +269,6 @@ export default function Home() {
               </div>
             </section>
 
-            {/* 2. 우리 동네 꿀팁 & 혜택 */}
-            <section id="category-section">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black text-slate-800">💎 우리 동네 꿀팁 & 혜택</h2>
-                <span className="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">총 {data.benefits.length}건</span>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {data.benefits.slice(0, 4).map((benefit) => (
-                  <div key={benefit.id} className="group relative rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 transition-all hover:ring-blue-200">
-                    <h3 className="mb-2 text-base font-black text-slate-800 group-hover:text-blue-600">{benefit.name}</h3>
-                    <p className="text-blue-600 font-bold text-[10px] mb-2">🎯 {benefit.target}</p>
-                    <p className="text-slate-600 text-xs line-clamp-2 mb-4">{benefit.summary}</p>
-                    <Link href={`/benefits/${benefit.id}`} className="text-xs font-bold text-blue-500 hover:text-blue-700">더 알아보기 →</Link>
-                  </div>
-                ))}
-              </div>
-            </section>
           </div>
         </div>
 
