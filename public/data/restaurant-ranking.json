@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-26T12:43:42.451Z",
+  "updatedAt": "2026-03-26T13:31:00.000Z",
   "ranking": [
     {
       "rank": 1,
@@ -7,11 +7,7 @@
       "menu": "멍게비빔밥",
       "score": 98,
       "trend": "steady",
-      "tags": [
-        "전통맛집",
-        "향토음식",
-        "현지인추천"
-      ],
+      "tags": ["전통맛집", "향토음식", "현지인추천"],
       "summary": "거제 9미 중 하나인 멍게비빔밥의 원조격 식당으로, 쌉싸름하면서도 향긋한 바다 향이 일품입니다.",
       "link": "https://search.naver.com/search.naver?query=거제+백만석"
     },
@@ -21,11 +17,7 @@
       "menu": "웅아스페셜물회",
       "score": 96,
       "trend": "up",
-      "tags": [
-        "경치좋은",
-        "오션뷰",
-        "데이트코스"
-      ],
+      "tags": ["경치좋은", "오션뷰", "데이트코스"],
       "summary": "신선한 해산물이 산더미처럼 쌓여 나오는 물회 맛집으로, 탁 트인 바다 전망과 함께 식사가 가능합니다.",
       "link": "https://search.naver.com/search.naver?query=거제+웅아물회"
     },
@@ -35,11 +27,7 @@
       "menu": "생대구탕",
       "score": 95,
       "trend": "up",
-      "tags": [
-        "겨울별미",
-        "시원한국물",
-        "외포항맛집"
-      ],
+      "tags": ["겨울별미", "시원한국물", "외포항맛집"],
       "summary": "거제 겨울의 상징인 대구 요리 전문점으로, 비리지 않고 담백하고 시원한 생대구탕이 강력 추천 메뉴입니다.",
       "link": "https://search.naver.com/search.naver?query=거제+외포11번회식당"
     },
@@ -49,11 +37,7 @@
       "menu": "굴구이 세트",
       "score": 93,
       "trend": "up",
-      "tags": [
-        "가성비",
-        "푸짐한",
-        "가족외식"
-      ],
+      "tags": ["가성비", "푸짐한", "가족외식"],
       "summary": "굴 구이부터 튀김, 죽까지 굴 요리를 코스로 즐길 수 있으며, 거제 현지 분위기를 제대로 느낄 수 있습니다.",
       "link": "https://search.naver.com/search.naver?query=거제도굴구이+본점"
     },
@@ -63,13 +47,59 @@
       "menu": "거제 한우 구이",
       "score": 92,
       "trend": "steady",
-      "tags": [
-        "한우맛집",
-        "고급스러운",
-        "프라이빗룸"
-      ],
+      "tags": ["한우맛집", "고급스러운", "프라이빗룸"],
       "summary": "거제 9미 중 하나인 거제 한우를 전문으로 하며, 깔끔한 시설과 최상급 육질로 현지인 모임 장소로 유명합니다.",
       "link": "https://search.naver.com/search.naver?query=거제+두리원"
+    },
+    {
+      "rank": 6,
+      "name": "보영식당",
+      "menu": "생선조림",
+      "score": 91,
+      "trend": "up",
+      "tags": ["지세포맛집", "숨은고수", "가성비갑"],
+      "summary": "지세포 현지인들이 아끼는 생선조림 맛집으로, 깊은 양념 맛과 푸짐한 인심이 돋보이는 곳입니다.",
+      "link": "https://search.naver.com/search.naver?query=거제+지세포+보영식당"
+    },
+    {
+      "rank": 7,
+      "name": "천화원",
+      "menu": "유산슬/짬뽕",
+      "score": 90,
+      "trend": "steady",
+      "tags": ["수요미식회", "전통중식", "역사적인"],
+      "summary": "장승포의 역사를 함께한 노포 중식당으로, 자극적이지 않고 깔끔한 옛날 방식의 중화요리를 맛볼 수 있습니다.",
+      "link": "https://search.naver.com/search.naver?query=거제+천화원"
+    },
+    {
+      "rank": 8,
+      "name": "산골애",
+      "menu": "오리백숙",
+      "score": 89,
+      "trend": "up",
+      "tags": ["건강식", "보양식", "부모님동반"],
+      "summary": "상문동에서 오리백숙으로 정평이 난 곳으로, 누룽지가 들어간 구수한 국물 맛이 일품인 보양식 명소입니다.",
+      "link": "https://search.naver.com/search.naver?query=거제+산골애"
+    },
+    {
+      "rank": 9,
+      "name": "지세포횟집",
+      "menu": "자연산 회",
+      "score": 88,
+      "trend": "steady",
+      "tags": ["신선한", "어부직영", "진짜배기"],
+      "summary": "어부가 직접 잡은 싱싱한 자연산 회를 맛볼 수 있는 곳으로, 꾸밈없는 투박한 현지 스타일의 횟집입니다.",
+      "link": "https://search.naver.com/search.naver?query=거제+지세포횟집"
+    },
+    {
+      "rank": 10,
+      "name": "중앙식당",
+      "menu": "두루치기 백반",
+      "score": 87,
+      "trend": "up",
+      "tags": ["백종원의3대천왕", "옥포맛집", "집밥감성"],
+      "summary": "옥포 시장 인근의 유명한 백반집으로, 칼칼한 두루치기와 정갈한 밑반찬이 어우러진 든든한 한 끼를 제공합니다.",
+      "link": "https://search.naver.com/search.naver?query=거제+옥포+중앙식당"
     }
   ]
 }
