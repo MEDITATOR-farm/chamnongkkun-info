@@ -192,84 +192,82 @@ export default function Home() {
         {/* 💰 중간 광고 (AdSense) */}
         <AdBanner />
 
-        {/* 🌸 오늘의 시 & 행사 & 꿀팁 통합 레이아웃 */}
-        <div className="flex flex-col lg:flex-row gap-8 mb-24 relative z-10 items-start">
+        {/* 🌸 이번 달 행사 (Row 1 - Full Width) */}
+        <section id="events-section" className="mb-24 relative z-10">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-black text-slate-800 flex items-center gap-3">
+              <span className="text-4xl">🌸</span> 이번 달 행사/축제
+            </h2>
+            <Link href="#events-section" className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors">
+              전체보기 →
+            </Link>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {data.events.slice(0, 4).map((event) => {
+              const styles = getSeasonStyles(event.name);
+              return (
+                <div key={event.id} className={`group relative overflow-hidden rounded-[2.5rem] border ${styles.border} ${styles.bg} p-0.5 transition-all hover:shadow-2xl hover:-translate-y-1`}>
+                  <div className="bg-white rounded-[2.4rem] p-6 h-full flex flex-col">
+                    <span className={`self-start mb-3 rounded-full px-3 py-1 text-[10px] font-bold ${styles.badge}`}>{event.category}</span>
+                    <h3 className={`mb-3 text-lg font-black ${styles.text} leading-tight group-hover:text-cyan-600 transition-colors line-clamp-2`}>{event.name}</h3>
+                    <p className="text-slate-500 text-[11px] mb-4 flex items-center gap-1">
+                      <span>📍</span> <span className="truncate">{event.location}</span>
+                    </p>
+                    <p className="text-slate-600 text-sm line-clamp-3 mb-6 flex-grow leading-relaxed">{event.summary}</p>
+                    <Link href={`/events/${event.id}`} className={`block w-full rounded-2xl ${styles.accent} py-3 text-center font-bold text-xs text-white shadow-sm transition-all hover:shadow-md active:scale-95`}>
+                      상세 정보 보러가기
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 📝 오늘의 시 & 맛집 랭킹 (Row 2 - Side by Side) */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-24 relative z-10 items-start">
           
-          {/* ===== 오늘의 시 섹션 (왼쪽 사이드바) ===== */}
-          <section style={{
-            flex: "0 0 400px",
-            padding: "50px 24px",
-            background: "#faf8f5",
-            textAlign: "center",
-            borderRadius: "3rem",
-            width: "100%",
-            position: "sticky",
-            top: "20px"
-          }}>
-            <p style={{ color: "#a0917e", letterSpacing: 4, fontSize: 10, marginBottom: 8 }}>POEM OF THE DAY</p>
-            <h2 style={{ fontSize: 18, marginBottom: 24, color: "#3d3228", fontWeight: "normal" }}>오늘의 시</h2>
+          {/* 오늘의 시 섹션 */}
+          <section className="bg-orange-50/30 rounded-[3rem] p-10 text-center border border-orange-100/50">
+            <p className="text-orange-300 tracking-[0.3em] text-[10px] font-black mb-4">POEM OF THE DAY</p>
+            <h2 className="text-2xl font-black text-slate-800 mb-8">📖 오늘의 시</h2>
 
             {latestPoem ? (
-              <div style={{
-                background: latestPoem.bgColor,
-                color: latestPoem.textColor,
-                borderRadius: 16,
-                padding: "36px 24px",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
-                fontFamily: "'Noto Serif KR', serif",
-                textAlign: "left"
-              }}>
-                <div style={{ fontSize: 9, letterSpacing: 2, color: latestPoem.accentColor, marginBottom: 10, textTransform: "uppercase" }}>
+              <div 
+                className="rounded-[2rem] p-8 shadow-xl text-left transition-transform hover:scale-[1.02]"
+                style={{
+                  background: latestPoem.bgColor,
+                  color: latestPoem.textColor,
+                  fontFamily: "'Noto Serif KR', serif",
+                }}
+              >
+                <div className="text-[10px] tracking-widest mb-3 font-bold opacity-80 uppercase" style={{ color: latestPoem.accentColor }}>
                   {latestPoem.mood}
                 </div>
-                <h3 style={{ fontSize: 16, marginBottom: 8, fontWeight: "bold" }}>{latestPoem.title}</h3>
-                {latestPoem.author && <p style={{ fontSize: 11, marginBottom: 20, opacity: 0.7 }}>— {latestPoem.author}</p>}
-                <p style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{latestPoem.content}</p>
-                <p style={{ marginTop: 20, fontSize: 9, opacity: 0.4 }}>{latestPoem.date}</p>
+                <h3 className="text-xl font-bold mb-2">{latestPoem.title}</h3>
+                {latestPoem.author && <p className="text-xs mb-6 opacity-70">— {latestPoem.author}</p>}
+                <p className="text-base leading-loose whiteSpace-pre-wrap break-all">{latestPoem.content}</p>
+                <p className="mt-8 text-[10px] opacity-40">{latestPoem.date}</p>
               </div>
             ) : (
-              <p style={{ color: "#ccc" }}>아직 등록된 시가 없어요 📖</p>
+              <div className="bg-white/50 backdrop-blur rounded-[2rem] p-12 border border-dashed border-slate-200 text-slate-400">
+                아직 등록된 시가 없어요 📖
+              </div>
             )}
 
             {poems.length > 1 && (
-              <a href="/poems" style={{ display: "inline-block", marginTop: 20, color: "#a0917e", fontSize: 12, textDecoration: "none", borderBottom: "1px solid #a0917e" }}>
+              <Link href="/poems" className="inline-block mt-8 text-orange-400 font-bold text-sm border-b-2 border-orange-200 hover:text-orange-600 hover:border-orange-400 transition-all">
                 지난 시 모두 보기 →
-              </a>
+              </Link>
             )}
-
-            <div className="mt-8 text-left">
-              <RestaurantRanking />
-            </div>
           </section>
 
-          {/* ===== 오른쪽 정보 영역 (행사 + 꿀팁) ===== */}
-          <div className="flex-grow w-full max-w-4xl space-y-16">
-            
-            {/* 1. 이번 달 행사/축제 */}
-            <section id="events-section">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black text-slate-800">🌸 이번 달 행사/축제</h2>
-                <Link href="#events-section" className="text-xs font-bold text-emerald-600 hover:underline">전체보기 →</Link>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {data.events.slice(0, 4).map((event) => {
-                  const styles = getSeasonStyles(event.name);
-                  return (
-                    <div key={event.id} className={`group relative overflow-hidden rounded-2xl border ${styles.border} ${styles.bg} p-0.5 transition-all hover:shadow-lg`}>
-                      <div className="bg-white rounded-[0.9rem] p-5 h-full flex flex-col">
-                        <span className={`self-start mb-2 rounded-full px-2 py-0.5 text-[9px] font-bold ${styles.badge}`}>{event.category}</span>
-                        <h3 className={`mb-2 text-base font-black ${styles.text} leading-tight`}>{event.name}</h3>
-                        <p className="text-slate-500 text-[11px] mb-3 truncate">📍 {event.location}</p>
-                        <p className="text-slate-600 text-xs line-clamp-2 mb-4 flex-grow">{event.summary}</p>
-                        <Link href={`/events/${event.id}`} className={`block w-full rounded-lg ${styles.accent} py-2 text-center font-bold text-[11px] text-white`}>상세 정보</Link>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
-          </div>
+          {/* 맛집 랭킹 섹션 */}
+          <section className="bg-blue-50/30 rounded-[3rem] p-10 border border-blue-100/50 h-full">
+            <p className="text-blue-300 tracking-[0.3em] text-[10px] font-black mb-4">LOCAL FAVORITES</p>
+            <h2 className="text-2xl font-black text-slate-800 mb-8">🍴 거제 맛집 랭킹</h2>
+            <RestaurantRanking />
+          </section>
         </div>
 
 
