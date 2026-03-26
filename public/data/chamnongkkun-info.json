@@ -1,15 +1,15 @@
 {
   "events": [
     {
-      "name": "Geoje Cherry Blossom Festival",
-      "startDate": "2026-04-01",
+      "name": "2026년 장승포해안로 포포로드 벚꽃축제",
+      "startDate": "2026-04-04",
       "endDate": "2026-04-05",
-      "location": "Geoje-si",
-      "target": "전 국민",
-      "summary": "2026년 4월 1일부터 5일까지 거제시에서 개최되는 벚꽃 축제입니다.",
-      "link": "#",
+      "location": "장승포해안로 일원 (장승포동 산 1-6번지)",
+      "target": "거제 시민 및 관광객",
+      "summary": "장승포해안로 벚꽃길을 배경으로 플리마켓, 체험 및 판매 부스, 푸드트럭, 버스킹 공연 등 다채로운 행사가 열리는 봄꽃 축제입니다.",
+      "link": "http://www.geoje.go.kr:80/board/view.geoje?boardId=BBS_0000008&dataSid=306390583",
       "category": "행사",
-      "id": 1774526579760
+      "id": 1774527073761
     },
     {
       "id": 1774438478151,
@@ -75,17 +75,6 @@
       "location": "옥포항 및 옥포대첩기념공원",
       "target": "누구나",
       "summary": "충무공 이순신 장군의 첫 승전을 기념하는 역사 문화 축제입니다.",
-      "link": "#"
-    },
-    {
-      "id": 5,
-      "name": "거제 수국 축제",
-      "category": "행사",
-      "startDate": "2025-06-28",
-      "endDate": "2025-06-29",
-      "location": "남부면 저구항 일원",
-      "target": "누구나",
-      "summary": "파스텔톤 수국이 만개한 저구항 바닷길에서 인생샷을 남기기 좋습니다.",
       "link": "#"
     }
   ],
