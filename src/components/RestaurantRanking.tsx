@@ -91,6 +91,18 @@ export default function RestaurantRanking() {
                 />
               </div>
             </div>
+
+            {/* 링크 버튼 */}
+            {item.link && (
+              <a 
+                href={item.link} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="opacity-0 group-hover:opacity-100 transition-opacity bg-blue-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-lg hover:bg-blue-700 whitespace-nowrap"
+              >
+                지도보기
+              </a>
+            )}
           </div>
         ))}
       </div>

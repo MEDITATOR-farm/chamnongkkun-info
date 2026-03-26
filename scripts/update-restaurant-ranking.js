@@ -29,7 +29,8 @@ async function updateRestaurantRanking() {
     "score": 98,
     "trend": "up", // up, down, steady
     "tags": ["가족외식", "경치좋은", "현지인맛집"],
-    "summary": "AI 한줄 평"
+    "summary": "AI 한줄 평",
+    "link": "네이버 지도 또는 식당 정보 URL (없으면 해당 식당 이름을 네이버에서 검색하는 주소)"
   },
   ... (총 5개)
 ]
