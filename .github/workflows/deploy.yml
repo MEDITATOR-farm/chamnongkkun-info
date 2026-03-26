@@ -38,6 +38,7 @@ jobs:
           node scripts/fetch-public-data.js
           node scripts/fetch-geoje-events.js
           node scripts/fetch-rss-events.js
+          node scripts/update-restaurant-ranking.js
           node scripts/generate-blog-post.js
 
       - name: Commit and push changes

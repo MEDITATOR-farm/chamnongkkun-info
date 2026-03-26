@@ -1,4 +1,5 @@
 import Link from "next/link";
+import RestaurantRanking from "@/components/RestaurantRanking";
 import fs from "fs";
 import path from "path";
 import AdBanner from "@/components/AdBanner";
@@ -236,6 +237,10 @@ export default function Home() {
                 지난 시 모두 보기 →
               </a>
             )}
+
+            <div className="mt-8 text-left">
+              <RestaurantRanking />
+            </div>
           </section>
 
           {/* ===== 오른쪽 정보 영역 (행사 + 꿀팁) ===== */}
