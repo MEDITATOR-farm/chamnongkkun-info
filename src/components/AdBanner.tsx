@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 declare global {
   interface Window {
@@ -10,14 +10,19 @@ declare global {
 
 export default function AdBanner() {
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
+  const adPushed = useRef(false);
 
   useEffect(() => {
     // 광고 ID가 설정되어 있고 실시간 환경일 때만 광고를 로드합니다.
-    if (adsenseId && adsenseId !== "나중에_입력") {
+    if (adsenseId && adsenseId !== "나중에_입력" && !adPushed.current) {
       try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        const adsbygoogle = window.adsbygoogle || [];
+        adsbygoogle.push({});
+        adPushed.current = true;
       } catch (err) {
-        console.error("AdSense error:", err);
+        if (err instanceof Error && !err.message.includes("already have ads")) {
+          console.error("AdSense error:", err);
+        }
       }
     }
   }, [adsenseId]);
