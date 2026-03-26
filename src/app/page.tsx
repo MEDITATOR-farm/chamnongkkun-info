@@ -246,10 +246,10 @@ export default function Home() {
           <div className="flex-grow w-full max-w-4xl space-y-16">
             
             {/* 1. 이번 달 행사/축제 */}
-            <section>
+            <section id="events-section">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black text-slate-800">🌸 이번 달 행사/축제</h2>
-                <Link href="/blog" className="text-xs font-bold text-emerald-600 hover:underline">전체보기 →</Link>
+                <Link href="#events-section" className="text-xs font-bold text-emerald-600 hover:underline">전체보기 →</Link>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 {data.events.slice(0, 4).map((event) => {
