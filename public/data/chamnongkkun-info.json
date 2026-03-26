@@ -76,50 +76,6 @@
       "target": "누구나",
       "summary": "파스텔톤 수국이 만개한 저구항 바닷길에서 인생샷을 남기기 좋습니다.",
       "link": "#"
-    },
-    {
-      "id": 6,
-      "name": "거제 바다로 세계로",
-      "category": "행사",
-      "startDate": "2025-07-25",
-      "endDate": "2025-08-05",
-      "location": "주요 해수욕장 및 지세포항",
-      "target": "누구나",
-      "summary": "해양 스포츠 대회와 화려한 야간 공연이 열리는 거제 최대의 여름 축제예요.",
-      "link": "#"
-    },
-    {
-      "id": 7,
-      "name": "제20회 거제섬꽃축제",
-      "category": "행사",
-      "startDate": "2025-10-31",
-      "endDate": "2025-11-08",
-      "location": "거제시 농업기술센터",
-      "target": "누구나",
-      "summary": "도 지정 문화관광축제로 선정된 거제의 자부심 같은 행사입니다.",
-      "link": "#"
-    },
-    {
-      "id": 8,
-      "name": "거제 대구 수산물 축제",
-      "category": "행사",
-      "startDate": "2025-12-15",
-      "endDate": "2026-01-15",
-      "location": "외포항 일원",
-      "target": "누구나",
-      "summary": "겨울 별미인 대구를 맛보고 저렴하게 구매할 수 있는 미식 축제입니다.",
-      "link": "#"
-    },
-    {
-      "id": 9,
-      "name": "장승포 신년 해맞이 행사",
-      "category": "행사",
-      "startDate": "2026-01-01",
-      "endDate": "2026-01-01",
-      "location": "장승포",
-      "target": "누구나",
-      "summary": "새해 첫 일출을 보며 한 해의 안녕을 기원하는 행사입니다.",
-      "link": "#"
     }
   ],
   "benefits": [
@@ -210,6 +166,17 @@
       "target": "국공립 및 사립유치원에 다니는 3~5세 유아",
       "summary": "유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원",
       "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790"
+    },
+    {
+      "id": 9,
+      "name": "근로·자녀장려금",
+      "category": "혜택",
+      "startDate": "2024-05-24",
+      "endDate": "상시",
+      "location": "국세청",
+      "target": "근로소득, 사업소득 또는 종교인소득이 있는 저소득 가구",
+      "summary": "소득과 재산이 적은 근로소득자에게 근로장려금을, 자녀가 있을 경우 자녀장려금을 지급합니다.",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/105100000001"
     }
   ],
   "blogPosts": [
