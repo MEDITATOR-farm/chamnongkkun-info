@@ -58,8 +58,8 @@ async function backfillEventDetails() {
       item.detailContent = resultText;
       updatedCount++;
       
-      // API 할당량 제한을 고려해 약간의 대기
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // API 할당량 제한을 피하기 위해 10초 대기
+      await new Promise(resolve => setTimeout(resolve, 10000));
     }
 
     if (updatedCount > 0) {

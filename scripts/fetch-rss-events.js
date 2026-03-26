@@ -44,6 +44,7 @@ async function fetchRssEvents() {
   "location": "장소 (없으면 거제시 일원)",
   "target": "대상 (예: 거제 시민, 관광객 등)",
   "summary": "핵심 내용 1~2문장 요약",
+  "detailContent": "블로그 포스팅 형식의 아주 상세한 설명 (추천 이유 3가지, 팁 포함, 800자 내외)",
   "link": "관련 URL (<link> 태그의 주소)",
   "category": "행사"
 }

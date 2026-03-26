@@ -44,6 +44,7 @@ async function generateBlogPost() {
     const today = new Date().toISOString().split('T')[0];
     
     const prompt = `아래 공공서비스 정보를 바탕으로 블로그 글을 작성해줘.
+${latestItem.detailContent ? `이미 작성된 상세 내용이 있으니 이를 참고하여 더 풍성하게 다듬어줘: ${latestItem.detailContent}` : ''}
 
 정보: ${JSON.stringify(latestItem, null, 2)}
 
