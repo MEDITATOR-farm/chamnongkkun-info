@@ -296,6 +296,8 @@ export default function Home() {
           <div className="flex justify-center gap-4 uppercase font-medium tracking-widest text-[11px]">
             <Link href="/about" className="hover:text-cyan-600 transition-colors">About</Link>
             <span className="opacity-30">|</span>
+            <Link href="/update-events" className="hover:text-cyan-600 transition-colors">Update</Link>
+            <span className="opacity-30">|</span>
             <span>Privacy</span>
             <span className="opacity-30">|</span>
             <span>Contact</span>

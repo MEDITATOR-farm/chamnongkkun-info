@@ -1,6 +1,17 @@
 {
   "events": [
     {
+      "name": "Geoje Cherry Blossom Festival",
+      "startDate": "2026-04-01",
+      "endDate": "2026-04-05",
+      "location": "Geoje-si",
+      "target": "전 국민",
+      "summary": "2026년 4월 1일부터 5일까지 거제시에서 개최되는 벚꽃 축제입니다.",
+      "link": "#",
+      "category": "행사",
+      "id": 1774526579760
+    },
+    {
       "id": 1774438478151,
       "name": "거제 공곶이 수선화 축제",
       "category": "행사",
