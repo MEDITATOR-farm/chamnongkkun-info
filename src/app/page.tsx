@@ -225,61 +225,74 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 📝 오늘의 시, 맛집 & AI 랭킹 (Rankings Section) */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-24 relative z-10 items-stretch">
-          
-          {/* 오늘의 시 섹션 */}
-          <section className="bg-orange-50/30 rounded-[3rem] p-10 text-center border border-orange-100/50 flex flex-col">
-            <p className="text-orange-300 tracking-[0.3em] text-[10px] font-black mb-4">POEM OF THE DAY</p>
-            <h2 className="text-2xl font-black text-slate-800 mb-8">📖 오늘의 시</h2>
+        {/* 📊 오늘의 인사이트 요약 (Consolidated Section) */}
+        <section className="mb-24 relative z-10 bg-slate-50/50 rounded-[4rem] p-8 md:p-12 border border-slate-100 shadow-sm">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-black text-slate-800 mb-2">📊 오늘의 인사이트</h2>
+            <p className="text-slate-500 font-medium tracking-tight">시와 맛집, 그리고 최신 AI 트렌드를 한눈에 확인하세요</p>
+          </div>
 
-            {latestPoem ? (
-              <div 
-                className="rounded-[2rem] p-8 shadow-xl text-left transition-transform hover:scale-[1.02] flex-grow"
-                style={{
-                  background: latestPoem.bgColor,
-                  color: latestPoem.textColor,
-                  fontFamily: "'Noto Serif KR', serif",
-                }}
-              >
-                <div className="text-[10px] tracking-widest mb-3 font-bold opacity-80 uppercase" style={{ color: latestPoem.accentColor }}>
-                  {latestPoem.mood}
+          <div className="grid lg:grid-cols-3 gap-8 items-stretch">
+            
+            {/* 1. 오늘의 시 섹션 */}
+            <div className="bg-orange-50/50 rounded-[3rem] p-8 text-center border border-orange-100 flex flex-col h-full shadow-sm">
+              <p className="text-orange-300 tracking-[0.3em] text-[10px] font-black mb-4 uppercase">Poem of the Day</p>
+              <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center justify-center gap-2">
+                <span>📖</span> 오늘의 시
+              </h3>
+
+              {latestPoem ? (
+                <div 
+                  className="rounded-3xl p-6 shadow-md text-left transition-transform hover:scale-[1.02] flex-grow flex flex-col justify-center"
+                  style={{
+                    background: latestPoem.bgColor,
+                    color: latestPoem.textColor,
+                    fontFamily: "'Noto Serif KR', serif",
+                  }}
+                >
+                  <div className="text-[9px] tracking-widest mb-2 font-bold opacity-80 uppercase" style={{ color: latestPoem.accentColor }}>
+                    {latestPoem.mood}
+                  </div>
+                  <h4 className="text-lg font-bold mb-1">{latestPoem.title}</h4>
+                  {latestPoem.author && <p className="text-[10px] mb-4 opacity-70">— {latestPoem.author}</p>}
+                  <p className="text-sm leading-relaxed whiteSpace-pre-wrap break-all line-clamp-[10]">{latestPoem.content}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{latestPoem.title}</h3>
-                {latestPoem.author && <p className="text-xs mb-6 opacity-70">— {latestPoem.author}</p>}
-                <p className="text-base leading-loose whiteSpace-pre-wrap break-all">{latestPoem.content}</p>
-                <p className="mt-8 text-[10px] opacity-40">{latestPoem.date}</p>
-              </div>
-            ) : (
-              <div className="bg-white/50 backdrop-blur rounded-[2rem] p-12 border border-dashed border-slate-200 text-slate-400 flex-grow">
-                아직 등록된 시가 없어요 📖
-              </div>
-            )}
+              ) : (
+                <div className="bg-white/50 backdrop-blur rounded-3xl p-8 border border-dashed border-slate-200 text-slate-400 flex-grow flex items-center justify-center">
+                  아직 시가 없어요 📖
+                </div>
+              )}
 
-            {poems.length > 1 && (
-              <Link href="/poems" className="inline-block mt-8 text-orange-400 font-bold text-sm border-b-2 border-orange-200 hover:text-orange-600 hover:border-orange-400 transition-all">
-                지난 시 모두 보기 →
-              </Link>
-            )}
-          </section>
-
-          {/* 맛집 랭킹 섹션 */}
-          <section className="bg-blue-50/30 rounded-[3rem] p-10 border border-blue-100/50 flex flex-col h-full">
-            <p className="text-blue-300 tracking-[0.3em] text-[10px] font-black mb-4 flex items-center gap-1 justify-center">
-               <span>LOCAL FAVORITES</span>
-            </p>
-            <h2 className="text-2xl font-black text-slate-800 mb-8 text-center">🍴 거제 맛집 랭킹</h2>
-            <RestaurantRanking />
-          </section>
-
-          {/* AI 랭킹 섹션 (신규 추가) */}
-          <section className="lg:col-span-2 bg-indigo-50/30 rounded-[3rem] p-10 border border-indigo-100/50 mt-4">
-            <p className="text-indigo-300 tracking-[0.3em] text-[10px] font-black mb-4 text-center">TECH TRENDS</p>
-            <div className="max-w-4xl mx-auto">
-              <AIRanking />
+              {poems.length > 1 && (
+                <Link href="/poems" className="inline-block mt-6 text-orange-400 font-bold text-xs border-b border-orange-200 hover:text-orange-600 transition-all">
+                  지난 시 모두 보기 →
+                </Link>
+              )}
             </div>
-          </section>
-        </div>
+
+            {/* 2. 맛집 랭킹 섹션 */}
+            <div className="bg-blue-50/50 rounded-[3rem] p-8 border border-blue-100 flex flex-col h-full shadow-sm">
+              <p className="text-blue-300 tracking-[0.3em] text-[10px] font-black mb-4 text-center uppercase">Local Favorites</p>
+              <h3 className="text-xl font-black text-slate-800 mb-6 text-center flex items-center justify-center gap-2">
+                <span>🍴</span> 거제 맛집 랭킹
+              </h3>
+              <div className="flex-grow">
+                <RestaurantRanking />
+              </div>
+            </div>
+
+            {/* 3. AI 랭킹 섹션 */}
+            <div className="bg-indigo-50/50 rounded-[3rem] p-8 border border-indigo-100 flex flex-col h-full shadow-sm">
+              <p className="text-indigo-300 tracking-[0.3em] text-[10px] font-black mb-4 text-center uppercase">Tech Trends</p>
+              <h3 className="text-xl font-black text-slate-800 mb-6 text-center flex items-center justify-center gap-2">
+                 <span>🤖</span> 실시간 AI 랭킹
+              </h3>
+              <div className="flex-grow">
+                <AIRanking />
+              </div>
+            </div>
+          </div>
+        </section>
 
 
         {/* 💰 하단 쿠팡 광고 */}
