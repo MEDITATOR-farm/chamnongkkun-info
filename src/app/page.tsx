@@ -1,6 +1,7 @@
 import Link from "next/link";
 import RestaurantRanking from "@/components/RestaurantRanking";
 import AIRanking from "@/components/AIRanking";
+import RestaurantMap from "@/components/RestaurantMap";
 import fs from "fs";
 import path from "path";
 import AdBanner from "@/components/AdBanner";
@@ -294,6 +295,18 @@ export default function Home() {
           </div>
         </section>
 
+
+        {/* 📍 거제 맛집 지도 (Map Section) */}
+        <section className="mb-24 relative z-10 w-full overflow-hidden">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-3xl shadow-xl shadow-slate-200 text-white">📍</div>
+            <div>
+              <h2 className="text-3xl font-black text-slate-800">한눈에 보는 거제 맛집 지도</h2>
+              <p className="text-slate-500">순위별 맛집의 위치와 정보를 지도로 확인해보세요</p>
+            </div>
+          </div>
+          <RestaurantMap />
+        </section>
 
         {/* 💰 하단 쿠팡 광고 */}
         <CoupangBanner />
