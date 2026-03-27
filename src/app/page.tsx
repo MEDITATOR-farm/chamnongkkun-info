@@ -1,5 +1,6 @@
 import Link from "next/link";
 import RestaurantRanking from "@/components/RestaurantRanking";
+import AIRanking from "@/components/AIRanking";
 import fs from "fs";
 import path from "path";
 import AdBanner from "@/components/AdBanner";
@@ -224,17 +225,17 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 📝 오늘의 시 & 맛집 랭킹 (Row 2 - Side by Side) */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-24 relative z-10 items-start">
+        {/* 📝 오늘의 시, 맛집 & AI 랭킹 (Rankings Section) */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-24 relative z-10 items-stretch">
           
           {/* 오늘의 시 섹션 */}
-          <section className="bg-orange-50/30 rounded-[3rem] p-10 text-center border border-orange-100/50">
+          <section className="bg-orange-50/30 rounded-[3rem] p-10 text-center border border-orange-100/50 flex flex-col">
             <p className="text-orange-300 tracking-[0.3em] text-[10px] font-black mb-4">POEM OF THE DAY</p>
             <h2 className="text-2xl font-black text-slate-800 mb-8">📖 오늘의 시</h2>
 
             {latestPoem ? (
               <div 
-                className="rounded-[2rem] p-8 shadow-xl text-left transition-transform hover:scale-[1.02]"
+                className="rounded-[2rem] p-8 shadow-xl text-left transition-transform hover:scale-[1.02] flex-grow"
                 style={{
                   background: latestPoem.bgColor,
                   color: latestPoem.textColor,
@@ -250,7 +251,7 @@ export default function Home() {
                 <p className="mt-8 text-[10px] opacity-40">{latestPoem.date}</p>
               </div>
             ) : (
-              <div className="bg-white/50 backdrop-blur rounded-[2rem] p-12 border border-dashed border-slate-200 text-slate-400">
+              <div className="bg-white/50 backdrop-blur rounded-[2rem] p-12 border border-dashed border-slate-200 text-slate-400 flex-grow">
                 아직 등록된 시가 없어요 📖
               </div>
             )}
@@ -263,10 +264,20 @@ export default function Home() {
           </section>
 
           {/* 맛집 랭킹 섹션 */}
-          <section className="bg-blue-50/30 rounded-[3rem] p-10 border border-blue-100/50 h-full">
-            <p className="text-blue-300 tracking-[0.3em] text-[10px] font-black mb-4">LOCAL FAVORITES</p>
-            <h2 className="text-2xl font-black text-slate-800 mb-8">🍴 거제 맛집 랭킹</h2>
+          <section className="bg-blue-50/30 rounded-[3rem] p-10 border border-blue-100/50 flex flex-col h-full">
+            <p className="text-blue-300 tracking-[0.3em] text-[10px] font-black mb-4 flex items-center gap-1 justify-center">
+               <span>LOCAL FAVORITES</span>
+            </p>
+            <h2 className="text-2xl font-black text-slate-800 mb-8 text-center">🍴 거제 맛집 랭킹</h2>
             <RestaurantRanking />
+          </section>
+
+          {/* AI 랭킹 섹션 (신규 추가) */}
+          <section className="lg:col-span-2 bg-indigo-50/30 rounded-[3rem] p-10 border border-indigo-100/50 mt-4">
+            <p className="text-indigo-300 tracking-[0.3em] text-[10px] font-black mb-4 text-center">TECH TRENDS</p>
+            <div className="max-w-4xl mx-auto">
+              <AIRanking />
+            </div>
           </section>
         </div>
 
