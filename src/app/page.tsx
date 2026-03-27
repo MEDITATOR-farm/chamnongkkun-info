@@ -162,6 +162,23 @@ export default function Home() {
             </div>
           )}
         </section>
+
+        {/* 📍 거제 맛집 지도 (Map Section) - 위치 이동됨 */}
+        <section className="mb-32 relative z-10 w-full overflow-hidden bg-white/50 p-10 rounded-[4rem] border border-slate-100 shadow-sm">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-3xl shadow-2xl shadow-slate-200 text-white">📍</div>
+              <div>
+                <h2 className="text-3xl font-black text-slate-800">거제 현지인 맛집 지도</h2>
+                <p className="text-slate-500">지도를 클릭하여 추천 맛집의 위치와 정보를 확인하세요</p>
+              </div>
+            </div>
+            <Link href="#events-section" className="bg-slate-100 text-slate-600 px-6 py-3 rounded-full font-bold hover:bg-slate-200 transition-all text-sm">
+              행사 정보 보러가기 ↓
+            </Link>
+          </div>
+          <RestaurantMap />
+        </section>
         
         {/* 📝 새소식 블로그 섹션 (위치 이동) */}
         <section className="mb-24 relative z-10">
@@ -230,13 +247,13 @@ export default function Home() {
         <section className="mb-24 relative z-10 bg-slate-50/50 rounded-[4rem] p-8 md:p-12 border border-slate-100 shadow-sm">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black text-slate-800 mb-2">📊 오늘의 인사이트</h2>
-            <p className="text-slate-500 font-medium tracking-tight">시와 맛집, 그리고 최신 AI 트렌드를 한눈에 확인하세요</p>
+            <p className="text-slate-500 font-medium tracking-tight">감성적인 시와 최신 기술 트렌드를 함께 만나보세요</p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 items-stretch">
+          <div className="grid lg:grid-cols-5 gap-8 items-stretch">
             
-            {/* 1. 오늘의 시 섹션 */}
-            <div className="bg-orange-50/50 rounded-[3rem] p-8 text-center border border-orange-100 flex flex-col h-full shadow-sm">
+            {/* 1. 오늘의 시 섹션 (2 columns) */}
+            <div className="lg:col-span-2 bg-orange-50/50 rounded-[3rem] p-8 text-center border border-orange-100 flex flex-col h-full shadow-sm">
               <p className="text-orange-300 tracking-[0.3em] text-[10px] font-black mb-4 uppercase">Poem of the Day</p>
               <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center justify-center gap-2">
                 <span>📖</span> 오늘의 시
@@ -244,19 +261,19 @@ export default function Home() {
 
               {latestPoem ? (
                 <div 
-                  className="rounded-3xl p-6 shadow-md text-left transition-transform hover:scale-[1.02] flex-grow flex flex-col justify-center"
+                  className="rounded-3xl p-8 shadow-md text-left transition-transform hover:scale-[1.02] flex-grow flex flex-col justify-center border border-orange-100/30"
                   style={{
                     background: latestPoem.bgColor,
                     color: latestPoem.textColor,
                     fontFamily: "'Noto Serif KR', serif",
                   }}
                 >
-                  <div className="text-[9px] tracking-widest mb-2 font-bold opacity-80 uppercase" style={{ color: latestPoem.accentColor }}>
+                  <div className="text-[10px] tracking-widest mb-3 font-bold opacity-80 uppercase" style={{ color: latestPoem.accentColor }}>
                     {latestPoem.mood}
                   </div>
-                  <h4 className="text-lg font-bold mb-1">{latestPoem.title}</h4>
-                  {latestPoem.author && <p className="text-[10px] mb-4 opacity-70">— {latestPoem.author}</p>}
-                  <p className="text-sm leading-relaxed whiteSpace-pre-wrap break-all line-clamp-[10]">{latestPoem.content}</p>
+                  <h4 className="text-xl font-bold mb-2">{latestPoem.title}</h4>
+                  {latestPoem.author && <p className="text-xs mb-6 opacity-70">— {latestPoem.author}</p>}
+                  <p className="text-base leading-loose whiteSpace-pre-wrap break-all">{latestPoem.content}</p>
                 </div>
               ) : (
                 <div className="bg-white/50 backdrop-blur rounded-3xl p-8 border border-dashed border-slate-200 text-slate-400 flex-grow flex items-center justify-center">
@@ -265,48 +282,19 @@ export default function Home() {
               )}
 
               {poems.length > 1 && (
-                <Link href="/poems" className="inline-block mt-6 text-orange-400 font-bold text-xs border-b border-orange-200 hover:text-orange-600 transition-all">
+                <Link href="/poems" className="inline-block mt-8 text-orange-400 font-bold text-sm border-b-2 border-orange-200 hover:text-orange-600 transition-all">
                   지난 시 모두 보기 →
                 </Link>
               )}
             </div>
 
-            {/* 2. 맛집 랭킹 섹션 */}
-            <div className="bg-blue-50/50 rounded-[3rem] p-8 border border-blue-100 flex flex-col h-full shadow-sm">
-              <p className="text-blue-300 tracking-[0.3em] text-[10px] font-black mb-4 text-center uppercase">Local Favorites</p>
-              <h3 className="text-xl font-black text-slate-800 mb-6 text-center flex items-center justify-center gap-2">
-                <span>🍴</span> 거제 맛집 랭킹
-              </h3>
-              <div className="flex-grow">
-                <RestaurantRanking />
-              </div>
-            </div>
-
-            {/* 3. AI 랭킹 섹션 */}
-            <div className="bg-indigo-50/50 rounded-[3rem] p-8 border border-indigo-100 flex flex-col h-full shadow-sm">
-              <p className="text-indigo-300 tracking-[0.3em] text-[10px] font-black mb-4 text-center uppercase">Tech Trends</p>
-              <h3 className="text-xl font-black text-slate-800 mb-6 text-center flex items-center justify-center gap-2">
-                 <span>🤖</span> 실시간 AI 랭킹
-              </h3>
-              <div className="flex-grow">
-                <AIRanking />
-              </div>
+            {/* 2. AI 랭킹 섹션 (3 columns) */}
+            <div className="lg:col-span-3">
+              <AIRanking />
             </div>
           </div>
         </section>
 
-
-        {/* 📍 거제 맛집 지도 (Map Section) */}
-        <section className="mb-24 relative z-10 w-full overflow-hidden">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-3xl shadow-xl shadow-slate-200 text-white">📍</div>
-            <div>
-              <h2 className="text-3xl font-black text-slate-800">한눈에 보는 거제 맛집 지도</h2>
-              <p className="text-slate-500">순위별 맛집의 위치와 정보를 지도로 확인해보세요</p>
-            </div>
-          </div>
-          <RestaurantMap />
-        </section>
 
         {/* 💰 하단 쿠팡 광고 */}
         <CoupangBanner />
