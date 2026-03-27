@@ -67,6 +67,9 @@ export default function RestaurantMap() {
 
   // 거제도 중심 좌표
   const center: [number, number] = [34.88, 128.62];
+  
+  // CHAMNONGKKUN 농장 위치 (거제시 동부면 208-8)
+  const farmLocation: [number, number] = [34.8219, 128.6110];
 
   return (
     <div className="relative w-full h-[600px] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
@@ -81,6 +84,40 @@ export default function RestaurantMap() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        
+        {/* 🏠 CHAMNONGKKUN 농장 마커 (특별 표시) */}
+        <Marker 
+          position={farmLocation} 
+          icon={L.icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+          })}
+        >
+          <Popup className="custom-popup">
+            <div className="p-3 min-w-[220px]">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xl">🏠</span>
+                <h4 className="font-black text-rose-600 m-0 text-lg">CHAMNONGKKUN 농장</h4>
+              </div>
+              <p className="text-[11px] text-slate-600 mb-4 leading-relaxed font-medium">
+                거제시 동부면 208-8<br/>
+                정성껏 가꾸는 소중한 우리 농장입니다.
+              </p>
+              <a
+                href="/diaries"
+                className="block text-center text-[10px] font-bold text-white bg-rose-500 px-4 py-2 rounded-xl hover:bg-rose-600 transition-colors shadow-lg shadow-rose-100"
+              >
+                농부 일기 보러가기 →
+              </a>
+            </div>
+          </Popup>
+        </Marker>
+
+        {/* 🍴 맛집 마커들 */}
         {restaurants.map((res, index) => (
           <Marker key={index} position={[res.lat, res.lng]}>
             <Popup className="custom-popup">
