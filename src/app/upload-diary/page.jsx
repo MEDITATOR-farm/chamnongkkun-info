@@ -73,8 +73,8 @@ export default function UploadDiaryPage() {
     <main style={containerStyle}>
       <header style={headerStyle}>
         <Link href="/" style={backLinkStyle}>← 홈으로</Link>
-        <h1 style={titleStyle}>🧑‍🌾 농부 일기 쓰기</h1>
-        <p style={subtitleStyle}>오늘 하루 농장에서는 어떤 일이 있었나요? 사진과 영상도 함께 남겨보세요.</p>
+        <h1 style={titleStyle}>🧑‍🌾 농장 소식 및 일기 쓰기</h1>
+        <p style={subtitleStyle}>오늘의 농장 소식이나 일기를 들려주세요. 사진과 영상은 메인이 '농장 최근 현장'에 멋지게 표시됩니다.</p>
       </header>
 
       <div style={layoutStyle}>

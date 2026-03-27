@@ -37,7 +37,9 @@ function getDiaries() {
   const filePath = path.join(process.cwd(), "public/data/diaries.json");
   if (!fs.existsSync(filePath)) return [];
   try {
-    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    const diaries = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    // id(타임스탬프) 기준 내림차순 정렬하여 최신순으로 반환
+    return diaries.sort((a: any, b: any) => b.id - a.id);
   } catch (e) {
     return [];
   }
@@ -169,7 +171,39 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 📍 거제 맛집 지도 (슬림화) */}
+        {/* 🎬 농장의 생생한 현장 (Farm's Recent View) - 새 섹션 */}
+        {diaries.length > 0 && (diaries[0].image || diaries[0].video) && (
+          <section className="mb-20 relative z-10">
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-xl">🎬</span>
+              <h2 className="text-lg font-bold text-slate-800">농장 최근 현장</h2>
+            </div>
+            <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-black/5 aspect-video relative group">
+              {diaries[0].video ? (
+                <video 
+                  src={diaries[0].video} 
+                  controls 
+                  className="w-full h-full object-cover"
+                  poster={diaries[0].image}
+                />
+              ) : (
+                <img 
+                  src={diaries[0].image} 
+                  alt="Farm Recent View" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                />
+              )}
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                <p className="text-white text-sm font-medium">{diaries[0].title}</p>
+              </div>
+            </div>
+            <div className="mt-4 text-right">
+              <Link href="/upload-diary" className="text-[11px] font-bold text-teal-500 hover:text-teal-700 transition-colors">
+                + 현장 소식 올리기
+              </Link>
+            </div>
+          </section>
+        )}
         <section className="mb-16 relative z-10 px-4">
           <div className="flex items-center gap-3 mb-6">
             <span className="text-xl">📍</span>
