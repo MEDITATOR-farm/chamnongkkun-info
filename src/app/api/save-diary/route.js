@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { writeFile } from "fs/promises";
 
 export async function POST(req) {
   try {
-    const data = await req.json();
-    const { title, content, password, date } = data;
+    const formData = await req.formData();
+    const title = formData.get("title");
+    const content = formData.get("content");
+    const password = formData.get("password");
+    const date = formData.get("date") || new Date().toISOString().split("T")[0];
+    const imageFile = formData.get("image");
+    const videoFile = formData.get("video");
 
     // 비밀번호 확인
     if (password !== process.env.UPLOAD_PASSWORD) {
@@ -16,11 +22,36 @@ export async function POST(req) {
       return NextResponse.json({ error: "제목과 내용을 입력해 주세요." }, { status: 400 });
     }
 
+    let imageUrl = "";
+    let videoUrl = "";
+
+    // 이미지 저장
+    if (imageFile && typeof imageFile !== "string") {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filename = `${Date.now()}-${imageFile.name}`;
+      const uploadPath = path.join(process.cwd(), "public", "uploads", "diaries", "images", filename);
+      await writeFile(uploadPath, buffer);
+      imageUrl = `/uploads/diaries/images/${filename}`;
+    }
+
+    // 영상 저장
+    if (videoFile && typeof videoFile !== "string") {
+      const bytes = await videoFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filename = `${Date.now()}-${videoFile.name}`;
+      const uploadPath = path.join(process.cwd(), "public", "uploads", "diaries", "videos", filename);
+      await writeFile(uploadPath, buffer);
+      videoUrl = `/uploads/diaries/videos/${filename}`;
+    }
+
     const newDiary = {
       id: Date.now(),
       title,
       content,
-      date: date || new Date().toISOString().split("T")[0],
+      date,
+      image: imageUrl,
+      video: videoUrl,
     };
 
     const dataPath = path.join(process.cwd(), "public", "data", "diaries.json");

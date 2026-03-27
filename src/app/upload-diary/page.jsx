@@ -10,8 +10,30 @@ export default function UploadDiaryPage() {
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [image, setImage] = useState(null);
+  const [video, setVideo] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [videoPreview, setVideoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleVideoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setVideo(file);
+      setVideoPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,10 +41,17 @@ export default function UploadDiaryPage() {
     setError("");
 
     try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("password", password);
+      formData.append("date", date);
+      if (image) formData.append("image", image);
+      if (video) formData.append("video", video);
+
       const res = await fetch("/api/save-diary", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, password, date }),
+        body: formData,
       });
 
       const data = await res.json();
@@ -45,7 +74,7 @@ export default function UploadDiaryPage() {
       <header style={headerStyle}>
         <Link href="/" style={backLinkStyle}>← 홈으로</Link>
         <h1 style={titleStyle}>🧑‍🌾 농부 일기 쓰기</h1>
-        <p style={subtitleStyle}>오늘 하루 농장에서는 어떤 일이 있었나요? 소중한 일상을 기록해 보세요.</p>
+        <p style={subtitleStyle}>오늘 하루 농장에서는 어떤 일이 있었나요? 사진과 영상도 함께 남겨보세요.</p>
       </header>
 
       <div style={layoutStyle}>
@@ -80,9 +109,30 @@ export default function UploadDiaryPage() {
               placeholder="오늘의 이야기를 들려주세요..."
               value={content} 
               onChange={(e) => setContent(e.target.value)} 
-              style={{ ...inputStyle, minHeight: 250, resize: "vertical" }} 
+              style={{ ...inputStyle, minHeight: 150, resize: "vertical" }} 
               required
             />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+            <div style={inputGroup}>
+              <label style={labelStyle}>📸 사진 올리기</label>
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ ...inputStyle, padding: "10px" }}
+              />
+            </div>
+            <div style={inputGroup}>
+              <label style={labelStyle}>🎥 영상 올리기</label>
+              <input 
+                type="file" 
+                accept="video/*"
+                onChange={handleVideoChange}
+                style={{ ...inputStyle, padding: "10px" }}
+              />
+            </div>
           </div>
 
           <div style={inputGroup}>
@@ -112,6 +162,21 @@ export default function UploadDiaryPage() {
             <h3 style={{ fontSize: 24, marginBottom: 20, fontWeight: "bold", color: "#3d3228" }}>
               {title || "제목을 입력해 주세요"}
             </h3>
+            
+            {/* 사진 미리보기 */}
+            {imagePreview && (
+              <div style={mediaPreviewContainer}>
+                <img src={imagePreview} alt="Preview" style={mediaPreviewImage} />
+              </div>
+            )}
+
+            {/* 영상 미리보기 */}
+            {videoPreview && (
+              <div style={mediaPreviewContainer}>
+                <video src={videoPreview} controls style={mediaPreviewImage} />
+              </div>
+            )}
+
             <p style={{ fontSize: 16, lineHeight: 1.8, whiteSpace: "pre-wrap", color: "#5d5248" }}>
               {content || "내용을 입력하시면 이곳에 실시간으로 나타납니다."}
             </p>
@@ -121,6 +186,9 @@ export default function UploadDiaryPage() {
     </main>
   );
 }
+
+const mediaPreviewContainer = { marginBottom: 20, borderRadius: 12, overflow: "hidden", border: "1px solid #f0eee0" };
+const mediaPreviewImage = { width: "100%", height: "auto", display: "block" };
 
 const containerStyle = { maxWidth: 1100, margin: "0 auto", padding: "60px 24px", fontFamily: "'Pretendard', sans-serif" };
 const headerStyle = { textAlign: "center", marginBottom: 50 };

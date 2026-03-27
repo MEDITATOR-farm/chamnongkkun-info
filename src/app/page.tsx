@@ -139,7 +139,14 @@ export default function Home() {
                   <h3 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-teal-600 transition-colors leading-tight">
                     {diary.title}
                   </h3>
-                  <p className="text-slate-500 text-sm line-clamp-1">{diary.content}</p>
+                  <div className="flex items-center gap-4">
+                    {diary.image && (
+                      <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-100 flex-shrink-0">
+                        <img src={diary.image} alt="Thumbnail" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <p className="text-slate-500 text-sm line-clamp-1">{diary.content}</p>
+                  </div>
                 </div>
                 <Link href="/diaries" className="hidden sm:inline-block bg-teal-50 text-teal-600 px-6 py-2 rounded-full font-bold hover:bg-teal-100 transition-colors">
                   일기장 보기

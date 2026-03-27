@@ -71,6 +71,21 @@ export default function DiariesPage() {
               
               <div style={dateStyle}>{diary.date}</div>
               <h3 style={diaryTitle}>{diary.title}</h3>
+
+              {/* 이미지 출력 */}
+              {diary.image && (
+                <div style={mediaContainer}>
+                  <img src={diary.image} alt={diary.title} style={mediaImage} />
+                </div>
+              )}
+
+              {/* 영상 출력 */}
+              {diary.video && (
+                <div style={mediaContainer}>
+                  <video src={diary.video} controls style={mediaImage} />
+                </div>
+              )}
+
               <p style={diaryContent}>{diary.content}</p>
             </div>
           ))}
@@ -109,6 +124,8 @@ const diaryCard: any = {
 const dateStyle: any = { fontSize: 14, color: "#8b4513", opacity: 0.6, marginBottom: 12 };
 const diaryTitle: any = { fontSize: 24, fontWeight: "bold", color: "#3d3228", marginBottom: 20 };
 const diaryContent: any = { fontSize: 17, lineHeight: 1.9, color: "#5d5248", whiteSpace: "pre-wrap" };
+const mediaContainer: any = { marginBottom: 24, borderRadius: 12, overflow: "hidden", border: "1px solid #f0eee0" };
+const mediaImage: any = { width: "100%", maxHeight: 500, objectFit: "contain", display: "block" };
 
 const deleteButtonStyle: any = {
   position: "absolute", top: 20, right: 20, background: "none", border: "none",
