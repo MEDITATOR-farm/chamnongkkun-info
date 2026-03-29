@@ -6,6 +6,8 @@ import fs from "fs";
 import path from "path";
 import AdBanner from "@/components/AdBanner";
 import CoupangBanner from "@/components/CoupangBanner";
+import FarmGallery from "@/components/FarmGallery";
+import DailyIdiomClient from "@/components/DailyIdiomClient";
 import { getSortedPostsData } from "@/lib/posts";
 
 interface InfoItem {
@@ -55,6 +57,16 @@ function getPoems() {
   }
 }
 
+function getIdioms() {
+  const filePath = path.join(process.cwd(), "public/data/idioms.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return [];
+  }
+}
+
 function getData(): Data {
   const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -64,6 +76,7 @@ export default function Home() {
   const data = getData();
   const poems = getPoems();
   const diaries = getDiaries();
+  const idioms = getIdioms();
   const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
@@ -118,98 +131,67 @@ export default function Home() {
         <div className="absolute top-20 right-10 w-32 h-32 bg-cyan-200 rounded-full blur-3xl opacity-30 animate-pulse" />
         <div className="absolute top-80 left-10 w-48 h-48 bg-emerald-200 rounded-full blur-3xl opacity-20" />
 
-        {/* 🧑‍🌾 농부 일기 섹션 (미니멀리즘 적용) */}
-        <section className="mb-20 relative z-10">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">🌱</span>
-              <h2 className="text-xl font-bold text-slate-800">최근 농부일기</h2>
+        {/* 🧑‍🌾 농부 일기 섹션 (높이를 줄이고 산뜻하게) */}
+        <section className="mb-16 relative z-10">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🌱</span>
+              <h2 className="text-lg font-bold text-slate-800 pl-1">최근 농부일기</h2>
             </div>
-            <Link href="/diaries" className="text-slate-400 hover:text-teal-600 text-sm font-medium transition-colors">
+            <Link href="/diaries" className="text-slate-400 hover:text-teal-500 text-xs font-bold transition-colors">
               전체보기 →
             </Link>
           </div>
           
-          <div className="max-w-3xl space-y-4">
+          <div className="max-w-3xl space-y-2.5">
             {diaries.length > 0 ? (
               diaries.filter((d: any) => d.date === diaries[0].date).map((diary: any, index: number) => (
                 <Link 
                   key={index}
-                  href="/diaries"
-                  className="group block bg-white p-6 rounded-2xl border border-slate-100 hover:border-teal-200 hover:shadow-sm transition-all relative overflow-hidden"
+                  href={`/diaries/${diary.id}`}
+                  className="group block bg-white py-3.5 px-5 rounded-2xl border border-teal-50 hover:border-teal-300 hover:shadow-md transition-all relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-6">
-                    <div className="flex-shrink-0 text-center">
-                      <div className="text-teal-600 font-black text-xl leading-none">{diary.date.split('-')[2]}</div>
-                      <div className="text-slate-400 text-[10px] mt-1 uppercase tracking-wider">{diary.date.split('-')[1]}월</div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0 text-center bg-teal-50/70 rounded-xl p-2 min-w-[48px] border border-teal-100/50 group-hover:bg-teal-100/70 transition-colors">
+                      <div className="text-teal-600 font-extrabold text-lg leading-none">{diary.date.split('-')[2]}</div>
+                      <div className="text-teal-500 text-[9px] mt-0.5 uppercase tracking-wider font-bold">{diary.date.split('-')[1]}월</div>
                     </div>
                     
                     <div className="flex-grow min-w-0">
-                      <h3 className="text-lg font-bold text-slate-800 mb-1 group-hover:text-teal-600 transition-colors truncate">
+                      <h3 className="text-base font-bold text-slate-800 mb-0.5 group-hover:text-teal-600 transition-colors truncate">
                         {diary.title}
                       </h3>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         {diary.image && (
-                          <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 flex-shrink-0">
-                            <img src={diary.image} alt="Thumbnail" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all" />
+                          <div className="w-6 h-6 rounded-md overflow-hidden border border-slate-100 flex-shrink-0 shadow-sm">
+                            <img src={diary.image} alt="Thumbnail" className="w-full h-full object-cover" />
                           </div>
                         )}
-                        <p className="text-slate-400 text-sm line-clamp-1 font-light italic">
-                          "{diary.content.substring(0, 60)}..."
+                        <p className="text-slate-500 text-xs line-clamp-1">
+                          {diary.content.substring(0, 60)}...
                         </p>
                       </div>
                     </div>
                     
-                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0">
-                      <span className="text-teal-300 text-xl">→</span>
+                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                      <span className="text-teal-400 font-black text-lg">→</span>
                     </div>
                   </div>
                 </Link>
               ))
             ) : (
-              <div className="py-10 bg-white rounded-2xl border border-slate-50 text-center">
+              <div className="py-8 bg-white rounded-2xl border border-slate-50 text-center">
                 <p className="text-slate-300 text-sm">새로운 일기를 기다리고 있습니다.</p>
               </div>
             )}
           </div>
         </section>
 
-        {/* 🎬 농장의 생생한 현장 (Farm's Recent View) - 새 섹션 */}
+        {/* 🎬 농장의 생생한 현장 (Farm's Recent View) - 갤러리 팝업 모드로 대체 */}
         {diaries.length > 0 && diaries.filter((d: any) => d.date === diaries[0].date).some((d: any) => d.image || d.video) && (
-          <section className="mb-20 relative z-10">
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-xl">🎬</span>
-              <h2 className="text-lg font-bold text-slate-800">농장 최근 현장</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video)).map((diary: any, index: number) => (
-                <div key={index} className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-black/5 aspect-video relative group">
-                  {diary.video ? (
-                    <video 
-                      src={diary.video} 
-                      controls 
-                      className="w-full h-full object-cover"
-                      poster={diary.image}
-                    />
-                  ) : (
-                    <img 
-                      src={diary.image} 
-                      alt="Farm Recent View" 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                    />
-                  )}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                    <p className="text-white text-sm font-medium line-clamp-1">{diary.title}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 text-right">
-              <Link href="/upload-diary" className="text-[11px] font-bold text-teal-500 hover:text-teal-700 transition-colors">
-                + 현장 소식 올리기
-              </Link>
-            </div>
-          </section>
+          <FarmGallery 
+            diaries={diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video))} 
+          />
         )}
         <section className="mb-16 relative z-10 px-4">
           <div className="flex items-center gap-3 mb-6">
@@ -337,6 +319,13 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* 📚 오늘의 사자성어 */}
+        {idioms.length > 0 && (
+          <section className="mb-20 relative z-10 px-4">
+            <DailyIdiomClient idioms={idioms} />
+          </section>
+        )}
 
         {/* 🗺️ 거꾸로 세계지도 */}
         <section className="mb-20 relative z-10 px-4">
