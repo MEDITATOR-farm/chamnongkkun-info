@@ -331,6 +331,21 @@ export default function Home() {
           </div>
         </section>
 
+        {/* 🗺️ 거꾸로 세계지도 */}
+        <section className="mb-20 relative z-10 px-4">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-xl">🌍</span>
+            <h2 className="text-lg font-bold text-slate-800">해양수산부 거꾸로 세계지도</h2>
+          </div>
+          <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-white p-2">
+            <img 
+              src="/images/upside-down-map.jpg" 
+              alt="해양수산부 거꾸로 세계지도" 
+              className="w-full h-auto rounded-xl hover:scale-[1.02] transition-transform duration-500"
+            />
+          </div>
+        </section>
+
         {/* 💰 광고 섹션 */}
         <div className="px-4 mb-20">
           <AdBanner />
