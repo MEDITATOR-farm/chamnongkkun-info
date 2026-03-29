@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-27T23:07:51.348Z",
+  "updatedAt": "2026-03-28T23:04:02.300Z",
   "ranking": [
     {
       "rank": 1,
@@ -9,75 +9,75 @@
       "trend": "steady",
       "tags": [
         "거제9미",
-        "향토음식",
-        "가족외식"
+        "멍게비빔밥원조",
+        "TV출현맛집"
       ],
-      "summary": "거제 멍게비빔밥의 원조격으로, 특유의 향긋한 멍게와 담백한 지리탕의 조화가 일품인 곳입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+백만석",
+      "summary": "거제 9미 중 하나인 멍게비빔밥의 원조 격인 식당으로, 특유의 향긋한 멍게와 담백한 맛이 일품입니다.",
+      "link": "https://search.naver.com/search.naver?query=%EA%B1%B0%EC%A0%9C+%EB%B0%B1%EB%A7%8C%EC%84%9D",
       "lat": 34.880,
       "lng": 128.625
     },
     {
       "rank": 2,
-      "name": "웅아물회",
-      "menu": "선장물회, 성게비빔밥",
+      "name": "강성횟집",
+      "menu": "달인물회 & 성게비빔밥",
       "score": 96,
       "trend": "up",
       "tags": [
-        "경치좋은",
+        "해녀직송",
         "물회맛집",
-        "데이트코스"
+        "현지인추천"
       ],
-      "summary": "지심도가 보이는 탁 트인 바다 전망과 함께 신선한 해산물이 가득한 물회를 즐길 수 있는 인기 맛집입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+웅아물회",
-      "lat": 34.875,
-      "lng": 128.712
+      "summary": "해녀가 직접 채취한 신선한 해산물을 사용하며, 시원하고 새콤달콤한 물회로 관광객과 현지인 모두에게 인기입니다.",
+      "link": "https://search.naver.com/search.naver?query=%EA%B1%B0%EC%A0%9C+%EA%B0%95%EC%84%B1%ED%9A%9F%EC%A7%91",
+      "lat": 34.846,
+      "lng": 128.685
     },
     {
       "rank": 3,
-      "name": "거제도굴구이",
-      "menu": "굴구이, 굴코스요리",
+      "name": "거제굴구이",
+      "menu": "굴코스 요리",
       "score": 95,
       "trend": "up",
       "tags": [
         "겨울별미",
-        "현지인맛집",
-        "가성비좋은"
+        "굴요리전문",
+        "가족외식"
       ],
-      "summary": "거제의 대표 겨울 보양식인 굴을 구이, 튀김, 죽 등 다양한 코스로 푸짐하게 맛볼 수 있습니다.",
-      "link": "https://search.naver.com/search.naver?query=거제도굴구이+본점",
+      "summary": "거제 9미 중 하나인 굴을 구이, 튀김, 죽 등 다양한 코스로 즐길 수 있는 겨울철 필수 방문 코스입니다.",
+      "link": "https://search.naver.com/search.naver?query=%EA%B1%B0%EC%A0%9C%EA%B5%B4%EA%B5%AC%EC%9D%B4+%EB%B3%B8%EC%A0%90",
       "lat": 34.912,
       "lng": 128.608
     },
     {
       "rank": 4,
       "name": "중앙식당",
-      "menu": "생대구탕, 두루치기 정식",
+      "menu": "생선구이 정식 & 도다리쑥국",
       "score": 93,
       "trend": "steady",
       "tags": [
-        "백종원의3대천왕",
-        "현지인맛집",
-        "노포맛집"
+        "백종원의삼대천왕",
+        "로컬맛집",
+        "가성비"
       ],
-      "summary": "거제 외포항의 신선한 대구로 끓인 시원한 대구탕과 정갈한 밑반찬이 매력적인 옥포동의 숨은 강자입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+옥포+중앙식당",
+      "summary": "옥포항 인근의 오래된 맛집으로, 푸짐한 생선구이와 제철 도다리쑥국 등 거제의 손맛을 그대로 느낄 수 있습니다.",
+      "link": "https://search.naver.com/search.naver?query=%EA%B1%B0%EC%A0%9C+%EC%98%A5%ED%8F%AC+%EC%A4%91%EC%95%99%EC%8B%9D%EB%8B%B9",
       "lat": 34.898,
       "lng": 128.685
     },
     {
       "rank": 5,
-      "name": "외포 11번가",
-      "menu": "대구코스요리, 대구탕",
+      "name": "외양포횟집",
+      "menu": "생대구탕",
       "score": 91,
       "trend": "up",
       "tags": [
-        "거제9미",
-        "외포항맛집",
-        "단체모임"
+        "장목면맛집",
+        "해장제일",
+        "겨울보양식"
       ],
-      "summary": "대구의 본고장 외포항에서 갓 잡은 생대구로 만든 진하고 뽀얀 국물의 대구탕을 제대로 경험할 수 있는 곳입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+외포11번가",
+      "summary": "거제 외포항의 특산물인 생대구를 활용해 시원하고 깊은 국물 맛을 내는 대구탕 전문점입니다.",
+      "link": "https://search.naver.com/search.naver?query=%EA%B1%B0%EC%A0%9C+%EC%9Wait%EC%96%91%ED%8F%AC%ED%9A%9F%EC%A7%91",
       "lat": 34.935,
       "lng": 128.725
     }
