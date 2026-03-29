@@ -23,30 +23,23 @@ export default function DailyIdiomClient({ idioms }: { idioms: any[] }) {
   if (!todaysIdiom) return null;
 
   return (
-    <div className="bg-gradient-to-br from-teal-50 to-emerald-50/50 rounded-3xl p-6 md:p-8 border border-white shadow-[0_4px_30px_rgba(0,120,100,0.06)] relative overflow-hidden group">
-      {/* 디자인 목적: 연하고 큰 한자 배경 글자 (마우스 올리면 부드럽게 움직임) */}
-      <div className="absolute -top-6 -right-4 p-4 opacity-[0.03] transition-transform duration-1000 group-hover:scale-110 group-hover:-rotate-3 pointer-events-none">
-        <span className="text-9xl font-serif text-teal-900">{todaysIdiom.chars[0]}</span>
-      </div>
-      
-      <div className="relative z-10">
-        <span className="inline-block bg-teal-600 shadow-sm text-white text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-lg mb-4 tracking-widest">
+    <div className="bg-gradient-to-r from-teal-50 to-emerald-50/30 rounded-2xl p-3 sm:p-4 border border-teal-100/50 shadow-sm flex items-center relative overflow-hidden group transition-all hover:shadow-md">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 relative z-10 w-full">
+        {/* 뱃지 */}
+        <div className="flex-shrink-0 bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md tracking-widest whitespace-nowrap w-fit">
           💡 오늘의 사자성어
-        </span>
-        <div className="flex flex-wrap items-end gap-3 mb-2">
-          {/* 한글 뜻음 (가장 큼) */}
-          <h3 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-widest font-serif drop-shadow-sm">
-            {todaysIdiom.hanja} 
-          </h3>
-          {/* 한자 표기 (조금 작고 연함) */}
-          <span className="text-lg sm:text-xl font-medium text-teal-700/60 tracking-[0.25em] mb-0.5 font-serif">
-            ({todaysIdiom.chars})
+        </div>
+        
+        {/* 뜻과 한자 */}
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 flex-grow min-w-0">
+          <div className="flex items-baseline gap-1 whitespace-nowrap">
+            <span className="text-base sm:text-lg font-bold text-slate-800 font-serif">{todaysIdiom.hanja}</span>
+            <span className="text-xs sm:text-sm font-medium text-teal-700/60 font-serif tracking-[0.1em]">({todaysIdiom.chars})</span>
+          </div>
+          <span className="text-xs sm:text-sm font-medium text-teal-900/80 mt-0.5 sm:mt-0 opacity-90 truncate max-w-full">
+            — {todaysIdiom.meaning}
           </span>
         </div>
-        {/* 설명 부분 */}
-        <p className="text-teal-900 text-sm sm:text-base font-bold mt-3 leading-relaxed max-w-lg opacity-80 break-keep">
-          "{todaysIdiom.meaning}"
-        </p>
       </div>
     </div>
   );
