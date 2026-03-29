@@ -1,6 +1,17 @@
 {
   "events": [
     {
+      "name": "조회된 행사 없음",
+      "startDate": "2026-03-29",
+      "endDate": "2026-03-29",
+      "location": "N/A",
+      "target": "N/A",
+      "summary": "제공된 데이터 원본에 유효한 행사 정보가 포함되어 있지 않습니다(API 호출 오류: INVALID REQUEST PARAMETER ERROR).",
+      "link": "#",
+      "category": "행사",
+      "id": 1774825494259
+    },
+    {
       "name": "거제 대금산 진달래 축제",
       "startDate": "2026-04-04",
       "endDate": "2026-04-05",
@@ -103,6 +114,17 @@
       "target": "연근해 허가를 가진 어업인",
       "summary": "연근해 어업인을 대상으로 노후기관, 장비, 설비를 대체 보급",
       "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000001"
+    },
+    {
+      "id": 5,
+      "name": "해양사고 국선 심판변론인 선정 지원",
+      "category": "혜택",
+      "startDate": "2024-05-23",
+      "endDate": "상시",
+      "location": "해양수산부",
+      "target": "사회적 약자(연령, 장애, 빈곤, 교육정도 등)에 해당하는 해양사고관련자",
+      "summary": "해양사고를 입은 사회적 약자에게 국선 심판변론인 선정 및 법률자문 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000007"
     }
   ],
   "blogPosts": [
