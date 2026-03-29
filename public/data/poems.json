@@ -1,5 +1,27 @@
 [
   {
+    "id": 1774786699091,
+    "title": "사막의 어린 나무는 한번 비가 내릴 때",
+    "author": "박노해",
+    "content": "그 짧은 몇 날 동안 훌쩍 자라버린다.\n인생에도 그런 때가 있다.\n나를 훌쩍 성숙시키는 도약의 때가\nIf ever rain falls, a baby tree in a desert\ngrows rapidly for a few brief day.\nThere are days like that in human life, too,\ndays when we leap into maturity.",
+    "mood": "고요한",
+    "bgColor": "#ebf8ff",
+    "textColor": "#2a4365",
+    "accentColor": "#63b3ed",
+    "date": "2026-03-29"
+  },
+  {
+    "id": 1774786675383,
+    "title": "영양실조는",
+    "author": "박노해",
+    "content": "영양결핍만이 아니라\n영양과잉이기도 하다.\n지금, 결핍보다 무서운 건 과잉이다.\nMalnutrition\nis not only a lack of nutrition.\nIt is also excess nutrition.\nNowadays,\nexcess is more terrible than lack.",
+    "mood": "잔잔한",
+    "bgColor": "#f0f4f8",
+    "textColor": "#2d3748",
+    "accentColor": "#718096",
+    "date": "2026-03-29"
+  },
+  {
     "id": 1774524612104,
     "title": "삶은 기적이다.",
     "author": "박노해",
@@ -19,50 +41,6 @@
     "bgColor": "#fffff0",
     "textColor": "#744210",
     "accentColor": "#ecc94b",
-    "date": "2026-03-25"
-  },
-  {
-    "id": 1774440786552,
-    "title": "수많은 고통 중에 가장 큰 고통은",
-    "author": "박노해",
-    "content": "나 홀로 버려져 있다는 느낌.\n인간은 세계 전체가 등을 돌려도\n속마음을 나누고 나를 믿어주는\n단 한 사람이 곁에 있다면,\n그 사랑이면 살아지는 것이다.\nAmong the many kinds of pain,\nthe greatest pain is feeling\nthat I am abandoned.\nEven if the whole world turns its back,\nso long as there's one person\nthere beside me\nsharing innermost feelings and trusting me,\nso long as that love is there, I'm alive.",
-    "mood": "몽환적인",
-    "bgColor": "#faf5ff",
-    "textColor": "#44337a",
-    "accentColor": "#9f7aea",
-    "date": "2026-03-25"
-  },
-  {
-    "id": 1774440521851,
-    "title": "수많은 고통 중에 가장 큰 고통은",
-    "author": "박노해",
-    "content": "나 홀로 버려져 있다는 느낌.\n인간은 세계 전체가 등을 돌려도\n속마음을 나누고 나를 믿어주는\n단 한 사람이 곁에 있다면,\n그 사랑이면 살아지는 것이다.\nAmong the many kinds of pain,\nthe greatest pain is feeling\nthat I am abandoned.\nEven if the whole world turns its back,\nso long as there's one person\nthere beside me\nsharing innermost feelings and trusting me,\nso long as that love is there, I'm alive.",
-    "mood": "그리운",
-    "bgColor": "#fff5f5",
-    "textColor": "#742a2a",
-    "accentColor": "#fc8181",
-    "date": "2026-03-25"
-  },
-  {
-    "id": 1774440234019,
-    "title": "수많은 고통 중에 가장 큰 고통은",
-    "author": "박노해",
-    "content": "나 홀로 버려져 있다는 느낌.\n인간은 세계 전체가 등을 돌려도\n속마음을 나누고 나를 믿어주는\n단 한 사람이 곁에 있다면,\n그 사랑이면 살아지는 것이다.\nAmong the many kinds of pain,\nthe greatest pain is feeling\nthat I am abandoned.\nEven if the whole world turns its back,\nso long as there's one person\nthere beside me\nsharing innermost feelings and trusting me,\nso long as that love is there, I'm alive.",
-    "mood": "따뜻한",
-    "bgColor": "#f0fff4",
-    "textColor": "#22543d",
-    "accentColor": "#48bb78",
-    "date": "2026-03-25"
-  },
-  {
-    "id": 1774440208782,
-    "title": "수많은 고통 중에 가장 큰 고통은",
-    "author": "박노해",
-    "content": "나 홀로 버려져 있다는 느낌.\n인간은 세계 전체가 등을 돌려도\n속마음을 나누고 나를 믿어주는\n단 한 사람이 곁에 있다면,\n그 사랑이면 살아지는 것이다.\nAmong the many kinds of pain,\nthe greatest pain is feeling\nthat I am abandoned.\nEven if the whole world turns its back,\nso long as there's one person\nthere beside me\nsharing innermost feelings and trusting me,\nso long as that love is there, I'm alive.",
-    "mood": "고요한",
-    "bgColor": "#ebf8ff",
-    "textColor": "#2a4365",
-    "accentColor": "#63b3ed",
     "date": "2026-03-25"
   }
 ]

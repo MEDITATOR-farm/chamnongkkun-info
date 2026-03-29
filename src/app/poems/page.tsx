@@ -6,9 +6,12 @@ import Link from "next/link";
 export default function PoemsPage() {
   const [poems, setPoems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLocal, setIsLocal] = useState(false);
 
   // 시 목록 가져오기 (클라이언트 측에서)
   useEffect(() => {
+    setIsLocal(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
     fetch("/data/poems.json?t=" + Date.now())
       .then(res => res.json())
       .then(data => {
@@ -68,6 +71,25 @@ export default function PoemsPage() {
         <Link href="/" style={backLinkStyle}>← 홈으로 돌아가기</Link>
         <h1 style={titleStyle}>지난 시 모음</h1>
         <p style={subtitleStyle}>지금까지 우리 동네 소식통에 올라온 소중한 시들입니다.</p>
+
+        {/* 로컬 환경에서만 보이는 시 쓰기 버튼 */}
+        {isLocal && (
+          <div style={{ marginTop: 24 }}>
+            <Link href="/upload" style={{
+              display: "inline-block",
+              padding: "10px 24px",
+              background: "#f97316", /* 주황색 포인트 */
+              color: "white",
+              borderRadius: "30px",
+              textDecoration: "none",
+              fontWeight: "bold",
+              fontSize: "14px",
+              boxShadow: "0 4px 12px rgba(249, 115, 22, 0.25)",
+            }}>
+              ✨ 새로운 시 올리기
+            </Link>
+          </div>
+        )}
       </header>
 
       {loading ? (
