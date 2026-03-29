@@ -15,6 +15,7 @@ const themes = [
 
 export default function UploadPage() {
   const [step, setStep] = useState(1); // 1: Upload, 2: Preview & Edit, 3: Success
+  const [uploadMode, setUploadMode] = useState("ai"); // "ai" or "direct"
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [password, setPassword] = useState("");
@@ -105,6 +106,39 @@ export default function UploadPage() {
     setLoading(false);
   };
 
+  // 직접 업로드 (AI 없이 사진만 저장)
+  const handleSaveDirect = async () => {
+    if (!image || !password) {
+      setError("사진과 비밀번호를 모두 입력해주세요.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("password", password);
+    formData.append("author", author);
+    formData.append("title", title);
+
+    try {
+      const res = await fetch("/api/save-poem-image", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setStep(3);
+      } else {
+        setError(data.error || "오류가 발생했습니다");
+      }
+    } catch (e) {
+      setError("네트워크 오류: " + e.message);
+    }
+    setLoading(false);
+  };
+
   const currentTheme = themes[themeIndex];
 
   return (
@@ -114,9 +148,25 @@ export default function UploadPage() {
         <p style={{ color: "#888" }}>시집을 찍고, 원하는 디자인을 골라보세요.</p>
       </header>
 
-      {/* 1단계: 사진 업로드 및 비밀번호 입력 */}
+      {/* 1단계: 사진 업로드 및 정보 입력 */}
       {step === 1 && (
         <section style={formCardStyle}>
+          {/* 모드 선택 탭 */}
+          <div style={modeTabContainerStyle}>
+            <button 
+              onClick={() => setUploadMode("ai")} 
+              style={uploadMode === "ai" ? activeTabStyle : inactiveTabStyle}
+            >
+              🤖 AI 텍스트 변환
+            </button>
+            <button 
+              onClick={() => setUploadMode("direct")} 
+              style={uploadMode === "direct" ? activeTabStyle : inactiveTabStyle}
+            >
+              📸 원본 사진 올리기
+            </button>
+          </div>
+
           <div style={inputGroupStyle}>
             <label style={labelStyle}>시집 사진 찍기</label>
             <input type="file" accept="image/*" capture="environment" onChange={handleFile} style={fileInputStyle} />
@@ -125,6 +175,13 @@ export default function UploadPage() {
           {preview && (
             <div style={imageWrapperStyle}>
               <img src={preview} alt="미리보기" style={imageStyle} />
+            </div>
+          )}
+
+          {uploadMode === "direct" && (
+            <div style={inputGroupStyle}>
+              <label style={labelStyle}>시 제목 (선택)</label>
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="예: 봄날의 편지" style={inputStyle} />
             </div>
           )}
 
@@ -138,9 +195,15 @@ export default function UploadPage() {
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="비밀번호 입력" style={inputStyle} />
           </div>
 
-          <button onClick={handleExtract} disabled={loading || !image || !password} style={activeButtonStyle}>
-            {loading ? "AI 분석 중..." : "AI 분석 및 디자인 생성 시작"}
-          </button>
+          {uploadMode === "ai" ? (
+            <button onClick={handleExtract} disabled={loading || !image || !password} style={activeButtonStyle}>
+              {loading ? "AI 분석 중..." : "AI 분석 및 디자인 생성 시작"}
+            </button>
+          ) : (
+            <button onClick={handleSaveDirect} disabled={loading || !image || !password} style={saveButtonStyle}>
+              {loading ? "업로드 중..." : "✅ 사진 올려서 바로 등록하기!"}
+            </button>
+          )}
         </section>
       )}
 
@@ -230,3 +293,6 @@ const finishButtonStyle = { background: "#f5f5f5", color: "#333", textDecoration
 
 const titleInputStyle = { width: "100%", background: "none", border: "none", borderBottom: "1px solid rgba(0,0,0,0.1)", textAlign: "center", fontSize: 24, marginBottom: 20, padding: 10, fontWeight: "bold" };
 const contentInputStyle = { width: "100%", background: "none", border: "none", textAlign: "center", fontSize: 18, lineHeight: 1.8, height: 300, resize: "none" };
+const modeTabContainerStyle = { display: "flex", gap: "10px", marginBottom: "15px", background: "#f5f5f5", padding: "8px", borderRadius: "16px" };
+const activeTabStyle = { flex: 1, padding: "12px", background: "#fff", color: "#3d3228", border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "15px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", cursor: "pointer", transition: "all 0.2s" };
+const inactiveTabStyle = { flex: 1, padding: "12px", background: "transparent", color: "#888", border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "15px", cursor: "pointer", transition: "all 0.2s" };

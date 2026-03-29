@@ -99,8 +99,8 @@ export default function PoemsPage() {
           {poems.map((poem) => (
             <div key={poem.id} style={{
               ...cardStyle,
-              background: poem.bgColor,
-              color: poem.textColor,
+              background: poem.bgColor || "#ffffff",
+              color: poem.textColor || "#333333",
               position: "relative"
             }}>
               {/* 삭제 버튼 */}
@@ -127,22 +127,30 @@ export default function PoemsPage() {
               </button>
 
               <div style={{ fontSize: 11, letterSpacing: 2, marginBottom: 8, opacity: 0.8 }}>
-                {poem.mood}
+                {poem.mood || "오늘의 시집"}
               </div>
               <h3 style={{ fontSize: 18, marginBottom: 4, fontWeight: "bold" }}>{poem.title}</h3>
               {poem.author && <p style={{ fontSize: 13, marginBottom: 16, opacity: 0.7 }}>— {poem.author}</p>}
-              <p style={{ 
-                fontSize: 14, 
-                lineHeight: 1.6, 
-                whiteSpace: "pre-wrap", 
-                display: "-webkit-box",
-                WebkitLineClamp: 4,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                marginBottom: 16
-              }}>
-                {poem.content}
-              </p>
+              
+              {(poem.type === "image" || poem.imageUrl) ? (
+                <div style={{ width: "100%", borderRadius: "12px", overflow: "hidden", marginBottom: 16, border: "1px solid rgba(0,0,0,0.05)" }}>
+                  <img src={poem.imageUrl} alt={poem.title} style={{ width: "100%", display: "block", objectFit: "contain", maxHeight: "300px", margin: "0 auto" }} loading="lazy" />
+                </div>
+              ) : (
+                <p style={{ 
+                  fontSize: 14, 
+                  lineHeight: 1.6, 
+                  whiteSpace: "pre-wrap", 
+                  display: "-webkit-box",
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  marginBottom: 16
+                }}>
+                  {poem.content}
+                </p>
+              )}
+              
               <div style={{ fontSize: 11, opacity: 0.5, marginTop: "auto" }}>{poem.date}</div>
             </div>
           ))}

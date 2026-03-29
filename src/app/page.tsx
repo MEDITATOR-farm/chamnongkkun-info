@@ -229,16 +229,22 @@ export default function Home() {
                     <h3 className="text-lg font-serif font-bold text-slate-800 mb-4 leading-tight">
                       {latestPoem.title}
                     </h3>
-                    <div className="space-y-3">
-                      {(latestPoem.content || "").split("\n").slice(0, 3).map((line: string, idx: number) => (
-                        <p key={idx} className="text-slate-500 font-serif leading-relaxed text-sm italic">
-                          {line}
-                        </p>
-                      ))}
-                      {(latestPoem.content || "").split("\n").length > 3 && (
-                        <p className="text-slate-300 text-[10px] font-serif tracking-widest mt-2">. . .</p>
-                      )}
-                    </div>
+                    {(latestPoem.type === "image" || latestPoem.imageUrl) ? (
+                      <div className="w-full rounded-xl overflow-hidden mb-4 border border-slate-100 flex justify-center bg-slate-50">
+                        <img src={latestPoem.imageUrl} alt={latestPoem.title} className="w-full h-auto object-contain max-h-[200px]" loading="lazy" />
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {(latestPoem.content || "").split("\n").slice(0, 3).map((line: string, idx: number) => (
+                          <p key={idx} className="text-slate-500 font-serif leading-relaxed text-sm italic">
+                            {line}
+                          </p>
+                        ))}
+                        {(latestPoem.content || "").split("\n").length > 3 && (
+                          <p className="text-slate-300 text-[10px] font-serif tracking-widest mt-2">. . .</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <p className="text-slate-400 font-serif italic text-sm">소중한 시가 준비 중입니다.</p>
