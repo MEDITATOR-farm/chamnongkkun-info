@@ -13,7 +13,9 @@
         "가족외식"
       ],
       "summary": "거제 멍게비빔밥의 원조격으로, 특유의 향긋한 멍게와 담백한 지리탕의 조화가 일품인 곳입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+백만석"
+      "link": "https://search.naver.com/search.naver?query=거제+백만석",
+      "lat": 34.880,
+      "lng": 128.625
     },
     {
       "rank": 2,
@@ -27,7 +29,9 @@
         "데이트코스"
       ],
       "summary": "지심도가 보이는 탁 트인 바다 전망과 함께 신선한 해산물이 가득한 물회를 즐길 수 있는 인기 맛집입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+웅아물회"
+      "link": "https://search.naver.com/search.naver?query=거제+웅아물회",
+      "lat": 34.875,
+      "lng": 128.712
     },
     {
       "rank": 3,
@@ -41,7 +45,9 @@
         "가성비좋은"
       ],
       "summary": "거제의 대표 겨울 보양식인 굴을 구이, 튀김, 죽 등 다양한 코스로 푸짐하게 맛볼 수 있습니다.",
-      "link": "https://search.naver.com/search.naver?query=거제도굴구이+본점"
+      "link": "https://search.naver.com/search.naver?query=거제도굴구이+본점",
+      "lat": 34.912,
+      "lng": 128.608
     },
     {
       "rank": 4,
@@ -55,7 +61,9 @@
         "노포맛집"
       ],
       "summary": "거제 외포항의 신선한 대구로 끓인 시원한 대구탕과 정갈한 밑반찬이 매력적인 옥포동의 숨은 강자입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+옥포+중앙식당"
+      "link": "https://search.naver.com/search.naver?query=거제+옥포+중앙식당",
+      "lat": 34.898,
+      "lng": 128.685
     },
     {
       "rank": 5,
@@ -69,7 +77,9 @@
         "단체모임"
       ],
       "summary": "대구의 본고장 외포항에서 갓 잡은 생대구로 만든 진하고 뽀얀 국물의 대구탕을 제대로 경험할 수 있는 곳입니다.",
-      "link": "https://search.naver.com/search.naver?query=거제+외포11번가"
+      "link": "https://search.naver.com/search.naver?query=거제+외포11번가",
+      "lat": 34.935,
+      "lng": 128.725
     }
   ]
 }

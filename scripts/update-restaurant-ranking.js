@@ -30,12 +30,14 @@ async function updateRestaurantRanking() {
     "trend": "up", // up, down, steady
     "tags": ["가족외식", "경치좋은", "현지인맛집"],
     "summary": "AI 한줄 평",
-    "link": "네이버 지도 또는 식당 정보 URL (없으면 해당 식당 이름을 네이버에서 검색하는 주소)"
+    "link": "네이버 지도 URL",
+    "lat": 34.880, // 위도 (숫자)
+    "lng": 128.625 // 경도 (숫자)
   },
   ... (총 5개)
 ]
 
-반드시 순수 JSON 객체(배열)만 출력해.`;
+위도(lat)와 경도(lng)는 소수점 3자리까지 정확한 숫자로 제공해줘. 반드시 순수 JSON 객체(배열)만 출력해.`;
 
     const response = await fetch(geminiUrl, {
       method: 'POST',

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import RestaurantRanking from "@/components/RestaurantRanking";
 import AIRanking from "@/components/AIRanking";
-import RestaurantMap from "@/components/RestaurantMap";
+import MapLoader from "@/components/MapLoader";
 import fs from "fs";
 import path from "path";
 import AdBanner from "@/components/AdBanner";
@@ -210,7 +210,7 @@ export default function Home() {
             <h2 className="text-lg font-bold text-slate-800">거제 맛집 지도</h2>
           </div>
           <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-            <RestaurantMap />
+            <MapLoader />
           </div>
         </section>
 

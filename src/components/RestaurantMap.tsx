@@ -117,35 +117,37 @@ export default function RestaurantMap() {
           </Popup>
         </Marker>
 
-        {/* 🍴 맛집 마커들 */}
-        {restaurants.map((res, index) => (
-          <Marker key={index} position={[res.lat, res.lng]}>
-            <Popup className="custom-popup">
-              <div className="p-2 min-w-[200px]">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-6 h-6 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-black text-xs">
-                    {res.rank}
-                  </span>
-                  <h4 className="font-bold text-slate-800 m-0">{res.name}</h4>
+        {/* 🍴 맛집 마커들 (좌표가 있는 데이터만 렌더링) */}
+        {restaurants
+          .filter(res => res.lat && res.lng)
+          .map((res, index) => (
+            <Marker key={index} position={[res.lat, res.lng]}>
+              <Popup className="custom-popup">
+                <div className="p-2 min-w-[200px]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-6 h-6 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-black text-xs">
+                      {res.rank}
+                    </span>
+                    <h4 className="font-bold text-slate-800 m-0">{res.name}</h4>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">{res.summary}</p>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                      {res.menu}
+                    </span>
+                    <a
+                      href={res.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-bold text-white bg-slate-800 px-3 py-1.5 rounded-lg hover:bg-black transition-colors"
+                    >
+                      상세보기 →
+                    </a>
+                  </div>
                 </div>
-                <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">{res.summary}</p>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-                    {res.menu}
-                  </span>
-                  <a
-                    href={res.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[10px] font-bold text-white bg-slate-800 px-3 py-1.5 rounded-lg hover:bg-black transition-colors"
-                  >
-                    상세보기 →
-                  </a>
-                </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </Marker>
+          ))}
       </MapContainer>
       
       {/* 플로팅 컨트롤 (맵 위에 표시될 안내) */}
