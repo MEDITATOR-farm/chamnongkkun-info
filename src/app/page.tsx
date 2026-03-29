@@ -130,39 +130,42 @@ export default function Home() {
             </Link>
           </div>
           
-          <div className="max-w-3xl">
+          <div className="max-w-3xl space-y-4">
             {diaries.length > 0 ? (
-              <Link 
-                href="/diaries"
-                className="group block bg-white p-6 rounded-2xl border border-slate-100 hover:border-teal-200 hover:shadow-sm transition-all relative overflow-hidden"
-              >
-                <div className="flex items-center gap-6">
-                  <div className="flex-shrink-0 text-center">
-                    <div className="text-teal-600 font-black text-xl leading-none">{diaries[0].date.split('-')[2]}</div>
-                    <div className="text-slate-400 text-[10px] mt-1 uppercase tracking-wider">{diaries[0].date.split('-')[1]}월</div>
-                  </div>
-                  
-                  <div className="flex-grow min-w-0">
-                    <h3 className="text-lg font-bold text-slate-800 mb-1 group-hover:text-teal-600 transition-colors truncate">
-                      {diaries[0].title}
-                    </h3>
-                    <div className="flex items-center gap-3">
-                      {diaries[0].image && (
-                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 flex-shrink-0">
-                          <img src={diaries[0].image} alt="Thumbnail" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all" />
-                        </div>
-                      )}
-                      <p className="text-slate-400 text-sm line-clamp-1 font-light italic">
-                        "{diaries[0].content.substring(0, 60)}..."
-                      </p>
+              diaries.filter((d: any) => d.date === diaries[0].date).map((diary: any, index: number) => (
+                <Link 
+                  key={index}
+                  href="/diaries"
+                  className="group block bg-white p-6 rounded-2xl border border-slate-100 hover:border-teal-200 hover:shadow-sm transition-all relative overflow-hidden"
+                >
+                  <div className="flex items-center gap-6">
+                    <div className="flex-shrink-0 text-center">
+                      <div className="text-teal-600 font-black text-xl leading-none">{diary.date.split('-')[2]}</div>
+                      <div className="text-slate-400 text-[10px] mt-1 uppercase tracking-wider">{diary.date.split('-')[1]}월</div>
+                    </div>
+                    
+                    <div className="flex-grow min-w-0">
+                      <h3 className="text-lg font-bold text-slate-800 mb-1 group-hover:text-teal-600 transition-colors truncate">
+                        {diary.title}
+                      </h3>
+                      <div className="flex items-center gap-3">
+                        {diary.image && (
+                          <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 flex-shrink-0">
+                            <img src={diary.image} alt="Thumbnail" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all" />
+                          </div>
+                        )}
+                        <p className="text-slate-400 text-sm line-clamp-1 font-light italic">
+                          "{diary.content.substring(0, 60)}..."
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0">
+                      <span className="text-teal-300 text-xl">→</span>
                     </div>
                   </div>
-                  
-                  <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0">
-                    <span className="text-teal-300 text-xl">→</span>
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              ))
             ) : (
               <div className="py-10 bg-white rounded-2xl border border-slate-50 text-center">
                 <p className="text-slate-300 text-sm">새로운 일기를 기다리고 있습니다.</p>
@@ -172,30 +175,34 @@ export default function Home() {
         </section>
 
         {/* 🎬 농장의 생생한 현장 (Farm's Recent View) - 새 섹션 */}
-        {diaries.length > 0 && (diaries[0].image || diaries[0].video) && (
+        {diaries.length > 0 && diaries.filter((d: any) => d.date === diaries[0].date).some((d: any) => d.image || d.video) && (
           <section className="mb-20 relative z-10">
             <div className="flex items-center gap-3 mb-8">
               <span className="text-xl">🎬</span>
               <h2 className="text-lg font-bold text-slate-800">농장 최근 현장</h2>
             </div>
-            <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-black/5 aspect-video relative group">
-              {diaries[0].video ? (
-                <video 
-                  src={diaries[0].video} 
-                  controls 
-                  className="w-full h-full object-cover"
-                  poster={diaries[0].image}
-                />
-              ) : (
-                <img 
-                  src={diaries[0].image} 
-                  alt="Farm Recent View" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                />
-              )}
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                <p className="text-white text-sm font-medium">{diaries[0].title}</p>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video)).map((diary: any, index: number) => (
+                <div key={index} className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-black/5 aspect-video relative group">
+                  {diary.video ? (
+                    <video 
+                      src={diary.video} 
+                      controls 
+                      className="w-full h-full object-cover"
+                      poster={diary.image}
+                    />
+                  ) : (
+                    <img 
+                      src={diary.image} 
+                      alt="Farm Recent View" 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    />
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                    <p className="text-white text-sm font-medium line-clamp-1">{diary.title}</p>
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="mt-4 text-right">
               <Link href="/upload-diary" className="text-[11px] font-bold text-teal-500 hover:text-teal-700 transition-colors">
