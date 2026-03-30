@@ -11,6 +11,7 @@ import DailyIdiomClient from "@/components/DailyIdiomClient";
 import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyNewsClient from "@/components/DailyNewsClient";
 import WeatherWidget from "@/components/WeatherWidget";
+import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
 
 interface InfoItem {
@@ -100,6 +101,16 @@ function getEconomyNews() {
   }
 }
 
+function getBooks() {
+  const filePath = path.join(process.cwd(), "public/data/books.json");
+  if (!fs.existsSync(filePath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return null;
+  }
+}
+
 function getData(): Data {
   const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -115,6 +126,7 @@ export default function Home() {
   const wisdoms = getWisdoms();
   const aiNews = getAiNews();
   const economyNews = getEconomyNews();
+  const books = getBooks();
   const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
@@ -237,6 +249,9 @@ export default function Home() {
                </div>
                {/* 위젯은 안에서 상하 높이가 최소화(68px)되어 그려집니다 */}
                <WeatherWidget />
+               
+               {/* 하단 책 랭킹 그래픽 컴포넌트 */}
+               <BookRankingClient data={books} />
             </div>
 
           </div>

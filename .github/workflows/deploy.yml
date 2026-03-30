@@ -40,6 +40,7 @@ jobs:
           node scripts/generate-daily-wisdom.js
           node scripts/generate-daily-ai-news.js
           node scripts/generate-daily-economy.js
+          node scripts/generate-daily-books.js
           node scripts/fetch-public-data.js
           node scripts/fetch-geoje-events.js
           node scripts/fetch-rss-events.js
