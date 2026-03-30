@@ -7,6 +7,7 @@ export default function PoemsPage() {
   const [poems, setPoems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLocal, setIsLocal] = useState(false);
+  const [selectedPoem, setSelectedPoem] = useState<any>(null);
 
   // 시 목록 가져오기 (클라이언트 측에서)
   useEffect(() => {
@@ -102,10 +103,13 @@ export default function PoemsPage() {
               background: poem.bgColor || "#ffffff",
               color: poem.textColor || "#333333",
               position: "relative"
-            }}>
+            }} onClick={() => setSelectedPoem(poem)}>
               {/* 삭제 버튼 */}
               <button 
-                onClick={() => handleDelete(poem.id, poem.title)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(poem.id, poem.title);
+                }}
                 style={{
                   position: "absolute",
                   top: 15, right: 15,
@@ -151,7 +155,10 @@ export default function PoemsPage() {
                 </p>
               )}
               
-              <div style={{ fontSize: 11, opacity: 0.5, marginTop: "auto" }}>{poem.date}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "auto" }}>
+                <div style={{ fontSize: 11, opacity: 0.5 }}>{poem.date}</div>
+                <div style={{ fontSize: 11, fontWeight: "bold", opacity: 0.5 }}>크게 보기 🔍</div>
+              </div>
             </div>
           ))}
         </div>
@@ -159,6 +166,56 @@ export default function PoemsPage() {
 
       {!loading && poems.length === 0 && (
         <p style={{ textAlign: "center", color: "#888", padding: "100px 0" }}>아직 등록된 시가 없네요. 📖</p>
+      )}
+
+      {/* 
+        팝업(모달) 창: 지난 시 모음의 시를 클릭했을 때 나타납니다.
+      */}
+      {selectedPoem && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          onClick={() => setSelectedPoem(null)} // 검은 바탕을 누르면 창이 닫힙니다.
+        >
+          <div 
+            className="relative w-full max-w-2xl bg-[#fdfbf7] rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-orange-100"
+            onClick={(e) => e.stopPropagation()} // 하얀 창을 눌렀을 때는 안 닫히게 막아줍니다.
+            style={{ maxHeight: '90vh' }}
+          >
+            {/* 닫기 버튼 */}
+            <button 
+              className="absolute top-4 right-4 text-slate-400 hover:text-orange-500 text-3xl z-[110] transition-colors bg-white/80 rounded-full w-10 h-10 flex items-center justify-center shadow-sm"
+              onClick={() => setSelectedPoem(null)}
+            >
+              &times;
+            </button>
+            
+            <div className="p-6 sm:p-10 overflow-y-auto w-full">
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-800 mb-8 text-center border-b-2 border-orange-100 pb-6 w-full relative">
+                {selectedPoem.title}
+                <div className="absolute -bottom-[1px] left-1/2 -translate-x-1/2 w-12 h-0.5 bg-orange-400"></div>
+              </h2>
+              
+              {(selectedPoem.type === "image" || selectedPoem.imageUrl) ? (
+                <div className="w-full flex justify-center mb-8">
+                  <img src={selectedPoem.imageUrl} alt={selectedPoem.title} className="max-w-full h-auto rounded-xl shadow-md border border-slate-100" />
+                </div>
+              ) : (
+                <div className="space-y-4 sm:space-y-6 px-2 sm:px-8 py-6">
+                  {(selectedPoem.content || "").split("\n").map((line: string, idx: number) => (
+                    <p key={idx} className="text-slate-700 font-serif leading-loose text-base sm:text-lg text-center break-words min-h-[1.5rem]">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              )}
+              
+              <div className="mt-10 text-right px-4">
+                <p className="text-slate-600 font-serif font-bold text-lg">— {selectedPoem.author || "거제의 시인"}</p>
+                {selectedPoem.date && <p className="text-slate-400 text-sm mt-2">{selectedPoem.date}</p>}
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </main>
   );
@@ -178,5 +235,6 @@ const cardStyle: any = {
   display: "flex", 
   flexDirection: "column",
   fontFamily: "'Noto Serif KR', serif",
-  transition: "0.3s"
+  transition: "0.3s",
+  cursor: "pointer"
 };

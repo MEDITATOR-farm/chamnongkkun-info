@@ -10,6 +10,7 @@ import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
 import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyNewsClient from "@/components/DailyNewsClient";
+import DailyPoemClient from "@/components/DailyPoemClient";
 import WeatherWidget from "@/components/WeatherWidget";
 import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
@@ -282,52 +283,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
             {/* 1. 오늘의 시 */}
-            <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-0.5 h-full bg-orange-200/50" />
-              <div className="flex flex-col h-full">
-                <div className="flex justify-between items-start mb-4">
-                  <span className="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Today's Poem</span>
-                  <div className="text-orange-100 group-hover:text-orange-200 transition-colors">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </svg>
-                  </div>
-                </div>
-                
-                {latestPoem ? (
-                  <div className="flex-grow flex flex-col justify-center">
-                    <h3 className="text-lg font-serif font-bold text-slate-800 mb-3 leading-tight">
-                      {latestPoem.title}
-                    </h3>
-                    {(latestPoem.type === "image" || latestPoem.imageUrl) ? (
-                      <div className="w-full mb-3 flex justify-center">
-                        <img src={latestPoem.imageUrl} alt={latestPoem.title} className="w-full h-auto object-contain max-h-[400px] rounded-lg" loading="lazy" />
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {(latestPoem.content || "").split("\n").slice(0, 3).map((line: string, idx: number) => (
-                          <p key={idx} className="text-slate-500 font-serif leading-relaxed text-sm italic">
-                            {line}
-                          </p>
-                        ))}
-                        {(latestPoem.content || "").split("\n").length > 3 && (
-                          <p className="text-slate-300 text-[10px] font-serif tracking-widest mt-2">. . .</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-slate-400 font-serif italic text-sm">소중한 시가 준비 중입니다.</p>
-                )}
-                
-                <div className="mt-8 flex justify-between items-end border-t border-slate-50 pt-4">
-                  <span className="text-[10px] text-slate-400 font-medium">— {latestPoem?.author || "거제의 시인"}</span>
-                  <Link href="/poems" className="text-orange-400 text-[10px] font-bold hover:text-orange-600 transition-colors">
-                    더 읽어보기 →
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <DailyPoemClient poem={latestPoem} />
 
             {/* 2. 실시간 AI 랭킹 */}
             <AIRanking />
