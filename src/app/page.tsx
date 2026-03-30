@@ -12,6 +12,7 @@ import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyNewsClient from "@/components/DailyNewsClient";
 import DailyPoemClient from "@/components/DailyPoemClient";
 import WeatherWidget from "@/components/WeatherWidget";
+import StockRankingWidget from "@/components/StockRankingWidget";
 import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
 
@@ -112,6 +113,16 @@ function getBooks() {
   }
 }
 
+function getStocks() {
+  const filePath = path.join(process.cwd(), "public/data/stocks.json");
+  if (!fs.existsSync(filePath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return null;
+  }
+}
+
 function getData(): Data {
   const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -128,6 +139,7 @@ export default function Home() {
   const aiNews = getAiNews();
   const economyNews = getEconomyNews();
   const books = getBooks();
+  const stockData = getStocks();
   const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
@@ -242,8 +254,13 @@ export default function Home() {
             </div>
           </div>
 
+            {/* 가운데: 시황 랭킹 */}
+            <div className="w-full lg:w-[240px] xl:w-[280px] flex-shrink-0 mt-2 lg:mt-0">
+               <StockRankingWidget data={stockData} />
+            </div>
+
             {/* 오른쪽: 실시간 거제 날씨 위젯 */}
-            <div className="w-full lg:w-[280px] xl:w-[320px] flex-shrink-0">
+            <div className="w-full lg:w-[240px] xl:w-[280px] flex-shrink-0 mt-2 lg:mt-0">
                <div className="flex items-center gap-2 mb-5">
                  <span className="text-xl">🌤️</span>
                  <h2 className="text-lg font-bold text-slate-800 pl-1">오늘 거제 날씨</h2>
@@ -252,7 +269,9 @@ export default function Home() {
                <WeatherWidget />
                
                {/* 하단 책 랭킹 그래픽 컴포넌트 */}
-               <BookRankingClient data={books} />
+               <div className="mt-4">
+                 <BookRankingClient data={books} />
+               </div>
             </div>
 
           </div>
