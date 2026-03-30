@@ -9,6 +9,8 @@ import CoupangBanner from "@/components/CoupangBanner";
 import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
 import DailyWisdomClient from "@/components/DailyWisdomClient";
+import DailyNewsClient from "@/components/DailyNewsClient";
+import WeatherWidget from "@/components/WeatherWidget";
 import { getSortedPostsData } from "@/lib/posts";
 
 interface InfoItem {
@@ -78,6 +80,26 @@ function getWisdoms() {
   }
 }
 
+function getAiNews() {
+  const filePath = path.join(process.cwd(), "public/data/ai-news.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return [];
+  }
+}
+
+function getEconomyNews() {
+  const filePath = path.join(process.cwd(), "public/data/economy.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return [];
+  }
+}
+
 function getData(): Data {
   const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -86,9 +108,13 @@ function getData(): Data {
 export default function Home() {
   const data = getData();
   const poems = getPoems();
-  const diaries = getDiaries();
+  let diaries = getDiaries();
+  // 일기 최신순(내림차순) 정렬 보장
+  diaries = diaries.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const idioms = getIdioms();
   const wisdoms = getWisdoms();
+  const aiNews = getAiNews();
+  const economyNews = getEconomyNews();
   const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
@@ -143,19 +169,23 @@ export default function Home() {
         <div className="absolute top-20 right-10 w-32 h-32 bg-cyan-200 rounded-full blur-3xl opacity-30 animate-pulse" />
         <div className="absolute top-80 left-10 w-48 h-48 bg-emerald-200 rounded-full blur-3xl opacity-20" />
 
-        {/* 🧑‍🌾 농부 일기 섹션 (높이를 줄이고 산뜻하게) */}
-        <section className="mb-16 relative z-10">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🌱</span>
-              <h2 className="text-lg font-bold text-slate-800 pl-1">최근 농부일기</h2>
-            </div>
-            <Link href="/diaries" className="text-slate-400 hover:text-teal-500 text-xs font-bold transition-colors">
-              전체보기 →
-            </Link>
-          </div>
-          
-          <div className="max-w-3xl space-y-2.5">
+        {/* 🧑‍🌾 농부 일기 섹션 (가로 분할 및 날씨 위젯 추가) */}
+        <section className="mb-16 relative z-10 px-4">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+            
+            {/* 왼쪽: 최근 농부일기 리스트 */}
+            <div className="flex-grow">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🌱</span>
+                  <h2 className="text-lg font-bold text-slate-800 pl-1">최근 농부일기</h2>
+                </div>
+                <Link href="/diaries" className="text-slate-400 hover:text-teal-500 text-xs font-bold transition-colors">
+                  전체보기 →
+                </Link>
+              </div>
+              
+              <div className="max-w-3xl space-y-2.5">
             {diaries.length > 0 ? (
               diaries.filter((d: any) => d.date === diaries[0].date).map((diary: any, index: number) => (
                 <Link 
@@ -190,12 +220,25 @@ export default function Home() {
                     </div>
                   </div>
                 </Link>
-              ))
+            ))
             ) : (
               <div className="py-8 bg-white rounded-2xl border border-slate-50 text-center">
                 <p className="text-slate-300 text-sm">새로운 일기를 기다리고 있습니다.</p>
               </div>
             )}
+            </div>
+          </div>
+
+            {/* 오른쪽: 실시간 거제 날씨 위젯 */}
+            <div className="w-full lg:w-[280px] xl:w-[320px] flex-shrink-0">
+               <div className="flex items-center gap-2 mb-5">
+                 <span className="text-xl">🌤️</span>
+                 <h2 className="text-lg font-bold text-slate-800 pl-1">오늘 거제 날씨</h2>
+               </div>
+               {/* 위젯은 안에서 상하 높이가 최소화(68px)되어 그려집니다 */}
+               <WeatherWidget />
+            </div>
+
           </div>
         </section>
 
@@ -338,9 +381,17 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 📚 오늘의 사자성어 및 명심보감 */}
-        {(idioms.length > 0 || wisdoms.length > 0) && (
-          <section className="mb-20 relative z-10 px-4 flex flex-col gap-3">
+        {/* 📚 최신 트렌드 & 지식 섹션 */}
+        {(aiNews.length > 0 || economyNews.length > 0 || idioms.length > 0 || wisdoms.length > 0) && (
+          <section className="mb-20 relative z-10 px-4 flex flex-col gap-1">
+            {/* 상단: AI 및 경제 핫이슈 */}
+            {aiNews.length > 0 && <DailyNewsClient data={aiNews} type="ai" />}
+            {economyNews.length > 0 && <DailyNewsClient data={economyNews} type="economy" />}
+            
+            {/* 간격 여백 */}
+            <div className="h-4"></div>
+            
+            {/* 하단: 사자성어 및 명심보감 */}
             {idioms.length > 0 && <DailyIdiomClient idioms={idioms} />}
             {wisdoms.length > 0 && <DailyWisdomClient wisdoms={wisdoms} />}
           </section>
