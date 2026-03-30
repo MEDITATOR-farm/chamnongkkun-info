@@ -133,8 +133,8 @@ export default function PoemsPage() {
               {poem.author && <p style={{ fontSize: 13, marginBottom: 16, opacity: 0.7 }}>— {poem.author}</p>}
               
               {(poem.type === "image" || poem.imageUrl) ? (
-                <div style={{ width: "100%", borderRadius: "12px", overflow: "hidden", marginBottom: 16, border: "1px solid rgba(0,0,0,0.05)" }}>
-                  <img src={poem.imageUrl} alt={poem.title} style={{ width: "100%", display: "block", objectFit: "contain", maxHeight: "300px", margin: "0 auto" }} loading="lazy" />
+                <div style={{ width: "100%", marginBottom: 16 }}>
+                  <img src={poem.imageUrl} alt={poem.title} style={{ width: "100%", display: "block", objectFit: "contain", maxHeight: "500px", margin: "0 auto", borderRadius: "12px" }} loading="lazy" />
                 </div>
               ) : (
                 <p style={{ 

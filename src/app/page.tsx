@@ -8,6 +8,7 @@ import AdBanner from "@/components/AdBanner";
 import CoupangBanner from "@/components/CoupangBanner";
 import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
+import DailyWisdomClient from "@/components/DailyWisdomClient";
 import { getSortedPostsData } from "@/lib/posts";
 
 interface InfoItem {
@@ -67,6 +68,16 @@ function getIdioms() {
   }
 }
 
+function getWisdoms() {
+  const filePath = path.join(process.cwd(), "public/data/wisdom.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    return [];
+  }
+}
+
 function getData(): Data {
   const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -77,6 +88,7 @@ export default function Home() {
   const poems = getPoems();
   const diaries = getDiaries();
   const idioms = getIdioms();
+  const wisdoms = getWisdoms();
   const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
@@ -113,7 +125,7 @@ export default function Home() {
         
         <div className="relative z-20 text-center text-white p-6 drop-shadow-2xl">
           <h1 className="text-3xl font-extrabold md:text-5xl tracking-tight mb-2 text-shadow-lg">
-            거제시 생활 정보
+            Chamnongkkun 과 함께 하는 거제소식
           </h1>
           <p className="text-base md:text-xl font-medium opacity-95">
             푸른 바다와 함께하는 생생한 소식 🐬
@@ -212,10 +224,10 @@ export default function Home() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
             {/* 1. 오늘의 시 */}
-            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm relative overflow-hidden group">
+            <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-0.5 h-full bg-orange-200/50" />
               <div className="flex flex-col h-full">
-                <div className="flex justify-between items-start mb-6">
+                <div className="flex justify-between items-start mb-4">
                   <span className="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Today's Poem</span>
                   <div className="text-orange-100 group-hover:text-orange-200 transition-colors">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -226,12 +238,12 @@ export default function Home() {
                 
                 {latestPoem ? (
                   <div className="flex-grow flex flex-col justify-center">
-                    <h3 className="text-lg font-serif font-bold text-slate-800 mb-4 leading-tight">
+                    <h3 className="text-lg font-serif font-bold text-slate-800 mb-3 leading-tight">
                       {latestPoem.title}
                     </h3>
                     {(latestPoem.type === "image" || latestPoem.imageUrl) ? (
-                      <div className="w-full rounded-xl overflow-hidden mb-4 border border-slate-100 flex justify-center bg-slate-50">
-                        <img src={latestPoem.imageUrl} alt={latestPoem.title} className="w-full h-auto object-contain max-h-[200px]" loading="lazy" />
+                      <div className="w-full mb-3 flex justify-center">
+                        <img src={latestPoem.imageUrl} alt={latestPoem.title} className="w-full h-auto object-contain max-h-[400px] rounded-lg" loading="lazy" />
                       </div>
                     ) : (
                       <div className="space-y-3">
@@ -326,10 +338,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 📚 오늘의 사자성어 */}
-        {idioms.length > 0 && (
-          <section className="mb-20 relative z-10 px-4">
-            <DailyIdiomClient idioms={idioms} />
+        {/* 📚 오늘의 사자성어 및 명심보감 */}
+        {(idioms.length > 0 || wisdoms.length > 0) && (
+          <section className="mb-20 relative z-10 px-4 flex flex-col gap-3">
+            {idioms.length > 0 && <DailyIdiomClient idioms={idioms} />}
+            {wisdoms.length > 0 && <DailyWisdomClient wisdoms={wisdoms} />}
           </section>
         )}
 

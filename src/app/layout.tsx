@@ -20,10 +20,10 @@ const nanumMyeongjo = Nanum_Myeongjo({
 });
 
 export const metadata: Metadata = {
-  title: "거제시 생활 정보 | 행사·혜택·지원금 안내",
+  title: "Chamnongkkun 과 함께 하는 거제소식 | 행사·혜택·지원금 안내",
   description: "거제시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
   openGraph: {
-    title: "거제시 생활 정보 | 행사·혜택·지원금 안내",
+    title: "Chamnongkkun 과 함께 하는 거제소식 | 행사·혜택·지원금 안내",
     description: "거제시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
     url: "https://chamnongkkun-info.pages.dev",
     siteName: "우리 동네 소식통",
@@ -83,7 +83,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "거제시 생활 정보",
+              "name": "Chamnongkkun 과 함께 하는 거제소식",
               "url": "https://chamnongkkun-info.pages.dev",
               "description": "거제시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보"
             })
