@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "update-poem": "node --env-file=.env.local scripts/update-poem.js",
+    "update-idiom": "node --env-file=.env.local scripts/generate-daily-idiom.js",
+    "update-wisdom": "node --env-file=.env.local scripts/generate-daily-wisdom.js",
+    "update-daily-all": "npm run update-idiom && npm run update-wisdom && node --env-file=.env.local scripts/generate-daily-ai-news.js && node --env-file=.env.local scripts/generate-daily-economy.js && node --env-file=.env.local scripts/generate-daily-books.js && node --env-file=.env.local scripts/generate-daily-stocks.js",
     "fetch-events": "node scripts/fetch-rss-events.js",
     "generate-blog": "node scripts/generate-blog-post.js"
   },

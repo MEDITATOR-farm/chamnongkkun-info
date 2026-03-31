@@ -13,10 +13,18 @@ export default function WeatherWidget() {
     const fetchWeather = async () => {
       try {
         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);
+        
+        if (!res.ok) {
+           throw new Error(`날씨 API 응답 오차: ${res.status}`);
+        }
+        
         const data = await res.json();
         setWeather(data.current_weather);
       } catch (e) {
-        console.error("날씨 정보 불러오기 실패", e);
+        console.error("날씨 정보 불러오기 실패:", e);
+        // 에러 시 로딩 상태를 해제하거나 에러 UI를 보여주기 위해 null이 아닌 에러용 값을 넣을 수 있음
+        // 여기서는 에러 로그만 남기고, UI에서 '알 수 없음' 처리를 하도록 유도
+        setWeather({ weathercode: -1, temperature: 0, windspeed: 0 }); // 에러용 더미 데이터
       }
     };
     fetchWeather();

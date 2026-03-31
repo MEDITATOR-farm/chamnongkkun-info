@@ -16,22 +16,22 @@
   {
     "id": 3,
     "name": "S&P 500",
-    "value": "6,495.79",
-    "change": "2.40%",
+    "value": "6,436.51",
+    "change": "1.46%",
     "isUp": true
   },
   {
     "id": 4,
     "name": "NASDAQ",
-    "value": "21,477.59",
-    "change": "3.28%",
+    "value": "21,187.03",
+    "change": "1.89%",
     "isUp": true
   },
   {
     "id": 5,
     "name": "원/달러 환율",
-    "value": "1,508.76",
-    "change": "7.75원",
-    "isUp": false
+    "value": "1,523.69",
+    "change": "7.18원",
+    "isUp": true
   }
 ]
