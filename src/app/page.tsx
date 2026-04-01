@@ -177,19 +177,19 @@ export default function Home() {
         />
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 to-cyan-900/40" />
         
-        <div className="relative z-20 text-center text-white p-6 drop-shadow-2xl">
-          <h1 className="text-3xl font-extrabold md:text-5xl tracking-tight mb-2 text-shadow-lg">
+        <div className="relative z-20 text-center text-white p-6 md:p-10 drop-shadow-2xl bg-black/10 backdrop-blur-[2px] rounded-3xl border border-white/10">
+          <h1 className="text-3xl font-extrabold md:text-5xl tracking-tight mb-3 text-shadow-lg">
             Chamnongkkun 과 함께 하는 거제소식
           </h1>
-          <p className="text-base md:text-xl font-medium opacity-95">
+          <p className="text-base md:text-xl font-medium opacity-95 mb-6">
             푸른 바다와 함께하는 생생한 소식 🐬
           </p>
-          <div className="mt-6">
+          <div className="flex justify-center">
             <a 
               href="https://smartstore.naver.com/chamnongkkun" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-full font-black transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 active:translate-y-0 text-sm md:text-base border-2 border-white/20"
             >
               <span>🛍️</span> 참농꾼 스토어 바로가기
             </a>
