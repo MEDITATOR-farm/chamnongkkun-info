@@ -3,9 +3,40 @@
 import { useEffect, useState } from "react";
 
 export default function StockRankingWidget({ data }: { data?: any[] }) {
-  const isReal = data && data.length > 0;
-  
-  const stocks = isReal ? data : [
+  const [stocks, setStocks] = useState<any[]>(data || []);
+  const [isLive, setIsLive] = useState(false);
+  const [loading, setLoading] = useState(!data);
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/stocks');
+        if (!res.ok) throw new Error("Failed to fetch");
+        const liveData = await res.json();
+        if (liveData && Array.isArray(liveData)) {
+          setStocks(liveData);
+          setIsLive(true);
+        }
+      } catch (err) {
+        console.error("Stock fetch error:", err);
+        // 실패 시 props로 전달받은 데이터나 기본 데이터 유지
+        if (!data || data.length === 0) {
+           // 데이터가 아예 없을 때만 기본값(필요 시) 유지
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStocks();
+    
+    // 3분마다 자동 갱신
+    const interval = setInterval(fetchStocks, 3 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [data]);
+
+  const displayStocks = (stocks && stocks.length > 0) ? stocks : [
     { id: 1, name: "KOSPI", value: "2,748.56", change: "+1.2%", isUp: true },
     { id: 2, name: "KOSDAQ", value: "912.45", change: "+0.8%", isUp: true },
     { id: 3, name: "S&P 500", value: "5,234.18", change: "-0.3%", isUp: false },
@@ -14,20 +45,20 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
   ];
 
   return (
-    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group h-full">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-full opacity-60 -z-0 transition-transform group-hover:scale-110"></div>
+    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group h-full transition-all">
+      <div className={`absolute top-0 right-0 w-32 h-32 ${isLive ? 'bg-red-50' : 'bg-slate-50'} rounded-bl-full opacity-60 -z-0 transition-all group-hover:scale-110`}></div>
       
       <div className="flex justify-between items-center mb-5 relative z-10">
         <h3 className="text-[13px] font-bold text-slate-800 flex items-center gap-1.5">
-          <span className="text-red-500 text-base">📈</span> 실시간 증시
+          <span className={`${isLive ? 'animate-pulse' : ''} text-red-500 text-base`}>📈</span> 실시간 증시
         </h3>
-        <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full border ${isReal ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
-          {isReal ? "실시간 연동" : "임시데이터"}
+        <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full border transition-colors ${isLive ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+          {loading ? "연결 중.." : (isLive ? "실시간 연동" : "지연 데이터")}
         </span>
       </div>
 
-      <div className="flex-grow flex flex-col justify-between gap-1.5 relative z-10">
-        {stocks.map((stock, index) => (
+      <div className={`flex-grow flex flex-col justify-between gap-1.5 relative z-10 transition-opacity duration-500 ${loading ? 'opacity-40' : 'opacity-100'}`}>
+        {displayStocks.map((stock, index) => (
           <div key={stock.id} className="flex items-center justify-between px-2 py-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
             <div className="flex items-center gap-3">
               <span className={`w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-black shadow-sm ${index < 2 ? 'bg-red-500 text-white shadow-red-200' : 'bg-slate-100 text-slate-600'}`}>
@@ -47,7 +78,7 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
       
       <div className="mt-5 pt-3 border-t border-slate-50 text-center relative z-10">
         <p className="text-[9px] text-slate-400 font-medium tracking-tight">
-          {isReal ? "※ 야후 파이낸스 공개 데이터를 통해 업데이트됩니다" : "※ 실제 시장 데이터로 연동 예정입니다"}
+          {loading ? "최신 데이터를 불러오고 있습니다..." : (isLive ? "※ 야후 파이낸스 실시간 데이터를 연동 중입니다" : "※ 연동에 실패하여 임시 데이터를 표시합니다")}
         </p>
       </div>
     </div>
