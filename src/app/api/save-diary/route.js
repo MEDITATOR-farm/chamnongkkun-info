@@ -27,9 +27,9 @@ export async function POST(req) {
 
     const imageUrls = [];
 
-    // 이미지 저장 (최대 5장)
+    // 이미지 저장
     if (imageFiles && imageFiles.length > 0) {
-      for (const imageFile of imageFiles.slice(0, 5)) {
+      for (const imageFile of imageFiles) {
         if (typeof imageFile !== "string") {
           const bytes = await imageFile.arrayBuffer();
           const buffer = Buffer.from(bytes);

@@ -19,12 +19,7 @@ export default function UploadDiaryPage() {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (images.length + files.length > 5) {
-      alert("사진은 최대 5장까지만 업로드할 수 있습니다.");
-      return;
-    }
-
-    const newImages = [...images, ...files].slice(0, 5);
+    const newImages = [...images, ...files];
     setImages(newImages);
 
     // 미리보기 생성
@@ -137,7 +132,7 @@ export default function UploadDiaryPage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
             <div style={inputGroup}>
-              <label style={labelStyle}>📸 사진 올리기 (최대 5장)</label>
+              <label style={labelStyle}>📸 사진 올리기 (여러 장 선택 가능)</label>
               <input 
                 type="file" 
                 accept="image/*"
