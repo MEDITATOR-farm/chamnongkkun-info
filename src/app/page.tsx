@@ -13,6 +13,7 @@ import DailyNewsClient from "@/components/DailyNewsClient";
 import DailyPoemClient from "@/components/DailyPoemClient";
 import WeatherWidget from "@/components/WeatherWidget";
 import StockRankingWidget from "@/components/StockRankingWidget";
+import StockActiveRankingWidget from "@/components/StockActiveRankingWidget";
 import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
 
@@ -207,12 +208,12 @@ export default function Home() {
         <div className="absolute top-20 right-10 w-32 h-32 bg-cyan-200 rounded-full blur-3xl opacity-30 animate-pulse" />
         <div className="absolute top-80 left-10 w-48 h-48 bg-emerald-200 rounded-full blur-3xl opacity-20" />
 
-        {/* 🧑‍🌾 농부 일기 섹션 (가로 분할 및 날씨 위젯 추가) */}
+        {/* 🧑‍🌾 농부 일기 & 증시 & 날씨 통합 섹션 (4:2:2:2 비율 정렬) */}
         <section className="mb-16 relative z-10 px-4">
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div className="flex flex-col lg:flex-row gap-4 xl:gap-6 items-stretch">
             
-            {/* 왼쪽: 최근 농부일기 리스트 */}
-            <div className="flex-grow">
+            {/* 1. 최근 농부일기 (40%) */}
+            <div className="w-full lg:w-[40%] flex flex-col">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🌱</span>
@@ -223,68 +224,50 @@ export default function Home() {
                 </Link>
               </div>
               
-              <div className="max-w-3xl space-y-2.5">
-            {diaries.length > 0 ? (
-              diaries.filter((d: any) => d.date === diaries[0].date).map((diary: any, index: number) => (
-                <Link 
-                  key={index}
-                  href={`/diaries/${diary.id}`}
-                  className="group block bg-white py-3.5 px-5 rounded-2xl border border-teal-50 hover:border-teal-300 hover:shadow-md transition-all relative overflow-hidden"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0 text-center bg-teal-50/70 rounded-xl p-2 min-w-[48px] border border-teal-100/50 group-hover:bg-teal-100/70 transition-colors">
-                      <div className="text-teal-600 font-extrabold text-lg leading-none">{diary.date.split('-')[2]}</div>
-                      <div className="text-teal-500 text-[9px] mt-0.5 uppercase tracking-wider font-bold">{diary.date.split('-')[1]}월</div>
-                    </div>
-                    
-                    <div className="flex-grow min-w-0">
-                      <h3 className="text-base font-bold text-slate-800 mb-0.5 group-hover:text-teal-600 transition-colors truncate">
-                        {diary.title}
-                      </h3>
-                      <div className="flex items-center gap-2.5">
-                        {diary.image && (
-                          <div className="w-6 h-6 rounded-md overflow-hidden border border-slate-100 flex-shrink-0 shadow-sm">
-                            <img src={diary.image} alt="Thumbnail" className="w-full h-full object-cover" />
-                          </div>
-                        )}
-                        <p className="text-slate-500 text-xs line-clamp-1">
-                          {diary.content.substring(0, 60)}...
-                        </p>
+              <div className="space-y-2.5">
+                {diaries.length > 0 ? (
+                  diaries.filter((d: any) => d.date === diaries[0].date).slice(0, 3).map((diary: any, index: number) => (
+                    <Link 
+                      key={index}
+                      href={`/diaries/${diary.id}`}
+                      className="group block bg-white py-3.5 px-5 rounded-2xl border border-teal-50 hover:border-teal-300 hover:shadow-md transition-all relative overflow-hidden"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0 text-center bg-teal-50/70 rounded-xl p-2 min-w-[48px] border border-teal-100/50 group-hover:bg-teal-100/70 transition-colors">
+                          <div className="text-teal-600 font-extrabold text-lg leading-none">{diary.date.split('-')[2]}</div>
+                          <div className="text-teal-500 text-[9px] mt-0.5 uppercase tracking-wider font-bold">{diary.date.split('-')[1]}월</div>
+                        </div>
+                        
+                        <div className="flex-grow min-w-0">
+                          <h3 className="text-base font-bold text-slate-800 mb-0.5 group-hover:text-teal-600 transition-colors truncate">
+                            {diary.title}
+                          </h3>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                      <span className="text-teal-400 font-black text-lg">→</span>
-                    </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="py-8 bg-white rounded-2xl border border-slate-50 text-center">
+                    <p className="text-slate-300 text-sm">새로운 일기를 기다리고 있습니다.</p>
                   </div>
-                </Link>
-            ))
-            ) : (
-              <div className="py-8 bg-white rounded-2xl border border-slate-50 text-center">
-                <p className="text-slate-300 text-sm">새로운 일기를 기다리고 있습니다.</p>
+                )}
               </div>
-            )}
             </div>
-          </div>
 
-            {/* 가운데: 시황 랭킹 */}
-            <div className="w-full lg:w-[240px] xl:w-[280px] flex-shrink-0 mt-2 lg:mt-0">
+            {/* 2. 증시 시황 (20%) */}
+            <div className="w-full lg:w-[20%]">
                <StockRankingWidget data={stockData} />
             </div>
 
-            {/* 오른쪽: 실시간 거제 날씨 위젯 */}
-            <div className="w-full lg:w-[240px] xl:w-[280px] flex-shrink-0 mt-2 lg:mt-0">
-               <div className="flex items-center gap-2 mb-5">
-                 <span className="text-xl">🌤️</span>
-                 <h2 className="text-lg font-bold text-slate-800 pl-1">오늘 거제 날씨</h2>
-               </div>
-               {/* 위젯은 안에서 상하 높이가 최소화(68px)되어 그려집니다 */}
+            {/* 3. 매수 랭킹 (20%) */}
+            <div className="w-full lg:w-[20%]">
+               <StockActiveRankingWidget />
+            </div>
+
+            {/* 4. 날씨 & 도서 (20%) */}
+            <div className="w-full lg:w-[20%] flex flex-col gap-4">
                <WeatherWidget />
-               
-               {/* 하단 책 랭킹 그래픽 컴포넌트 */}
-               <div className="mt-4">
-                 <BookRankingClient data={books} />
-               </div>
+               <BookRankingClient data={books} />
             </div>
 
           </div>

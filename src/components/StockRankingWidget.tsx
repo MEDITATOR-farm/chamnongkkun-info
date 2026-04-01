@@ -16,7 +16,8 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
           console.warn("증시 데이터 응답 이상:", res.status);
           return;
         }
-        const liveData = await res.json();
+        const rawData = await res.json();
+        const liveData = rawData.indices;
         if (liveData && Array.isArray(liveData)) {
           // 모든 항목이 '연결 지연'이 아닌, 실제 숫자가 하나라도 포함되어 있는지 확인
           const hasRealData = liveData.some(s => s.value !== "연결 지연" && s.value !== "정보 없음");

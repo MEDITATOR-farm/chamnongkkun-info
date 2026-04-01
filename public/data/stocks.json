@@ -2,16 +2,16 @@
   {
     "id": 1,
     "name": "KOSPI",
-    "value": "5,052.46",
-    "change": "4.26%",
-    "isUp": false
+    "value": "5,483.21",
+    "change": "8.53%",
+    "isUp": true
   },
   {
     "id": 2,
     "name": "KOSDAQ",
-    "value": "1,052.39",
-    "change": "7.81%",
-    "isUp": false
+    "value": "1,116.74",
+    "change": "0.88%",
+    "isUp": true
   },
   {
     "id": 3,
@@ -30,8 +30,8 @@
   {
     "id": 5,
     "name": "원/달러 환율",
-    "value": "1,504.17",
-    "change": "12.34원",
+    "value": "1,501.88",
+    "change": "2.47원",
     "isUp": false
   }
 ]
