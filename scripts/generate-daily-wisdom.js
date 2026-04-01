@@ -29,6 +29,7 @@ async function generateDailyWisdom() {
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
       
       const prompt = `명심보감(明心寶鑑)이나 옛 성현들의 지혜로운 말씀 중에서 인생의 교훈을 주는 짧고 좋은 한자 문구 1개를 추천해줘.
+**중요: 문구가 'A하고 B하다' 식의 대구(對句)로 이루어져 있다면, 끊지 말고 온전한 두 구절을 모두 포함해줘!** (예: '靜坐常思己過 閑談莫論人非' 처럼 두 마디를 다 써줘)
 현재 표시 중인 문구는 "${currentWisdom}"이야. **이것과는 다른 새로운 문구**로 골라줘야 해!
 형식은 반드시 아래와 같이 JSON 배열 형태로 만들어야 해:
 [
