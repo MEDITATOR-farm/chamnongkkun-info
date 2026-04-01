@@ -167,6 +167,9 @@ export default function Home() {
           <Link href="/" className="hover:text-cyan-200 transition-colors">홈</Link>
           <Link href="/blog" className="hover:text-cyan-200 transition-colors">블로그</Link>
           <Link href="/about" className="hover:text-cyan-200 transition-colors">소개</Link>
+          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-200 transition-colors flex items-center gap-1">
+            <span>🛒</span> 스토어
+          </a>
         </nav>
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
@@ -181,6 +184,16 @@ export default function Home() {
           <p className="text-base md:text-xl font-medium opacity-95">
             푸른 바다와 함께하는 생생한 소식 🐬
           </p>
+          <div className="mt-6">
+            <a 
+              href="https://smartstore.naver.com/chamnongkkun" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+            >
+              <span>🛍️</span> 참농꾼 스토어 바로가기
+            </a>
+          </div>
         </div>
 
         <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-30">
@@ -416,6 +429,7 @@ export default function Home() {
           <div className="flex justify-center gap-6 font-medium tracking-tight">
             <Link href="/about" className="hover:text-slate-600 transition-colors">소개</Link>
             <Link href="/update-events" className="hover:text-slate-600 transition-colors">업데이트</Link>
+            <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-slate-600 transition-colors">스토어</a>
             <span>개인정보처리방침</span>
             <span>문의하기</span>
           </div>
