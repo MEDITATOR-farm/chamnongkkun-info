@@ -11,14 +11,22 @@ export default function StockActiveRankingWidget() {
     const fetchStocks = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/stocks');
-        if (!res.ok) return;
+        let res = await fetch('/api/stocks');
+        let rankingData;
         
-        const data = await res.json();
-        const rankingData = data.rankings;
+        if (res.ok) {
+          const data = await res.json();
+          rankingData = data.rankings;
+        } else {
+          // API 실패 시 (정적으로 배포된 환경) 미리 생성된 JSON 파일을 시도합니다.
+          const staticRes = await fetch('/data/rankings.json');
+          if (staticRes.ok) {
+            rankingData = await staticRes.json();
+          }
+        }
         
         if (rankingData && Array.isArray(rankingData)) {
-          const hasRealData = rankingData.some(s => s.value !== "연결 지연");
+          const hasRealData = rankingData.some(s => s.value !== "연결 지연" && s.value !== "정보 없음");
           setStocks(rankingData);
           if (hasRealData) setIsLive(true);
         }

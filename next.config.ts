@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-//   output: "export", // 실시간 기능을 위해 잠시 꺼두었습니다! Vercel 등으로 배포하면 문제없어요.
+  output: "export", // 배포 완료를 위해 다시 활성화했습니다! 실시간 데이터는 자동 빌드 시 업데이트됩니다.
   images: {
     unoptimized: true,
   },

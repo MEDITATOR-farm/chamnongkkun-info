@@ -11,15 +11,21 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
     const fetchStocks = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/stocks');
-        if (!res.ok) {
-          console.warn("증시 데이터 응답 이상:", res.status);
-          return;
+        let res = await fetch('/api/stocks');
+        let liveData;
+        
+        if (res.ok) {
+          const rawData = await res.json();
+          liveData = rawData.indices;
+        } else {
+          // API 실패 시 (정적 배포 환경 등) 미리 생성된 JSON 파일을 시도합니다.
+          const staticRes = await fetch('/data/stocks.json');
+          if (staticRes.ok) {
+            liveData = await staticRes.json();
+          }
         }
-        const rawData = await res.json();
-        const liveData = rawData.indices;
+
         if (liveData && Array.isArray(liveData)) {
-          // 모든 항목이 '연결 지연'이 아닌, 실제 숫자가 하나라도 포함되어 있는지 확인
           const hasRealData = liveData.some(s => s.value !== "연결 지연" && s.value !== "정보 없음");
           setStocks(liveData);
           if (hasRealData) setIsLive(true);
