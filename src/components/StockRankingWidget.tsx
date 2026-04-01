@@ -12,7 +12,10 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
       try {
         setLoading(true);
         const res = await fetch('/api/stocks');
-        if (!res.ok) throw new Error("Failed to fetch");
+        if (!res.ok) {
+          console.warn("증시 데이터 응답 이상:", res.status);
+          return;
+        }
         const liveData = await res.json();
         if (liveData && Array.isArray(liveData)) {
           setStocks(liveData);
