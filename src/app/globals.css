@@ -34,24 +34,34 @@
     box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
   }
   .glass-card {
-    background-color: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .glass-card:hover {
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 10px 40px 0 rgba(0, 150, 200, 0.08);
+    border-color: rgba(255, 255, 255, 0.4);
   }
   .text-shadow-premium {
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   .bg-aura {
-    background: radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+    background: radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 80%);
   }
+  .wide-card-reveal {
+     animation: slide-in-wide 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+     opacity: 0;
+  }
+}
+
+@keyframes slide-in-wide {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes float {
@@ -74,13 +84,13 @@
 }
 
 body {
-  background-color: #fdfeff;
+  background-color: #f7faff;
   background-image: 
-    radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 0% 0%, rgba(206, 238, 255, 0.4) 0%, transparent 70%),
+    radial-gradient(circle at 100% 100%, rgba(228, 240, 255, 0.4) 0%, transparent 70%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: 'Outfit', var(--font-geist-sans), sans-serif;
   min-height: 100vh;
 }
 

@@ -162,8 +162,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200 overflow-x-hidden">
-      {/* 1. 상단 헤더 (높이 최적화) */}
-      <header className="relative h-[340px] w-full flex items-center justify-center overflow-hidden">
+      {/* 1. 상단 헤더 (와이드 레이아웃 및 높이 최소화) */}
+      <header className="relative min-h-[320px] w-full flex items-center justify-center overflow-hidden">
         {/* 상단 네비게이션 바 추가 */}
         <nav className="absolute top-0 left-0 w-full z-40 px-6 py-6 flex justify-end gap-8 text-white font-bold text-sm">
           <Link href="/" className="hover:text-cyan-300 transition-all hover:scale-105 active:scale-95">홈</Link>
@@ -174,27 +174,27 @@ export default function Home() {
           </a>
         </nav>
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-105 hover:scale-110"
-          style={{ backgroundImage: "url('/images/header-bg.png')" }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-100 hover:scale-[1.02]"
+          style={{ backgroundImage: "url('/images/daebyeongdaedo_lined.png')" }}
         />
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-cyan-900/40" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 via-transparent to-transparent" />
         
-        <div className="relative z-20 text-left text-white p-8 md:p-16 drop-shadow-2xl bg-black/10 backdrop-blur-[4px] rounded-[48px] border border-white/20 mt-[-20px] max-w-4xl w-[90%] ml-4 md:ml-12 lg:ml-24">
-          <h1 className="text-3xl font-black md:text-6xl tracking-tight mb-4 text-shadow-xl animate-fade-in leading-tight">
-            Chamnongkkun <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-cyan-100">과 함께 하는 거제소식</span>
+        {/* 메인 타이틀 (유리 효과 제거 및 선명도 극대화 버전) */}
+        <div className="relative z-20 text-center text-white p-6 md:p-10 mx-4 md:mx-auto mt-8 max-w-6xl w-[100%] transition-all">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 text-shadow-premium animate-fade-in leading-tight drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
+            Chamnongkkun <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-cyan-100">과 함께 하는 거제소식</span>
           </h1>
-          <p className="text-base md:text-2xl font-semibold opacity-90 mb-10 tracking-wide max-w-2xl">
-            푸른 바다와 함께하는 생생한 소식 🐬<br/>
-            거제의 모든 정보를 한눈에 확인하세요.
+          <p className="text-lg md:text-2xl font-bold opacity-100 mb-10 tracking-wide max-w-4xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            푸른 바다와 함께하는 생생한 소식 🐬 거제의 모든 정보를 한눈에 확인하세요.
           </p>
-          <div className="flex justify-start">
+          <div className="flex justify-center">
             <a 
               href="https://smartstore.naver.com/chamnongkkun" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white px-8 md:px-12 py-4 md:py-5 rounded-2xl font-black transition-all shadow-[0_15px_35px_rgba(245,158,11,0.4)] hover:shadow-[0_20px_45px_rgba(245,158,11,0.6)] hover:-translate-y-2 active:translate-y-0 text-base md:text-xl border-2 border-white/20"
+              className="group inline-flex items-center gap-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white px-8 md:px-10 py-3.5 md:py-4 rounded-[16px] font-black transition-all shadow-md hover:shadow-lg hover:-translate-y-1 active:translate-y-0 text-base md:text-lg border-2 border-white/5"
             >
-              <span className="text-2xl group-hover:rotate-[15deg] transition-transform">🛍️</span> 
+              <span className="text-2xl group-hover:rotate-[10deg] transition-transform">🛍️</span> 
               참농꾼 스토어 바로가기
               <svg className="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -204,7 +204,7 @@ export default function Home() {
         </div>
 
         <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-30">
-          <svg className="relative block w-full h-[70px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <svg className="relative block w-full h-[80px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
             <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C57.43,84.43,101.45,112.33,161.85,116.82,222.25,121.3,275.46,65,321.39,56.44Z" fill="#f8fbff"></path>
           </svg>
         </div>
@@ -333,28 +333,36 @@ export default function Home() {
               전체보기 →
             </Link>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {blogPosts.slice(0, 3).map((post) => (
+          <div className="flex flex-col gap-8">
+            {blogPosts.slice(0, 3).map((post, index) => (
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="glass-card group p-6 rounded-[28px] hover:-translate-y-2"
+                className="glass-card group flex flex-col md:flex-row items-center gap-8 p-8 rounded-[40px] hover:-translate-y-1 wide-card-reveal"
+                style={{ animationDelay: `${index * 0.15}s` }}
               >
-                <div className="flex items-center justify-between mb-4">
-                  <time className="text-[10px] text-cyan-600 font-black uppercase tracking-widest bg-cyan-50 px-2 py-1 rounded-lg">{post.date}</time>
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <div className="w-full md:w-[300px] h-[180px] rounded-[30px] overflow-hidden flex-shrink-0 bg-slate-100 flex items-center justify-center text-3xl opacity-60">
+                   {index === 0 ? "🌊" : index === 1 ? "🏘️" : "🌱"}
                 </div>
-                <h3 className="text-lg font-bold text-slate-800 mb-3 group-hover:text-cyan-600 transition-colors line-clamp-2 leading-tight">
-                  {post.title}
-                </h3>
-                <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed mb-6 opacity-80">
-                  {post.summary}
-                </p>
-                <div className="flex items-center gap-2 text-xs font-black text-cyan-500 group-hover:text-cyan-700 transition-colors">
-                  READ MORE
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
+                <div className="flex-grow">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-4 py-1.5 bg-cyan-50 text-cyan-600 text-[10px] font-black rounded-full border border-cyan-100 uppercase tracking-widest">
+                      {post.category || "NEW POST"}
+                    </span>
+                    <time className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{post.date}</time>
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-800 mb-4 group-hover:text-cyan-600 transition-colors leading-[1.2]">
+                    {post.title}
+                  </h3>
+                  <p className="text-slate-500 text-base line-clamp-2 leading-relaxed opacity-80 mb-6">
+                    {post.summary}
+                  </p>
+                  <div className="flex items-center gap-3 text-xs font-black text-cyan-500 group-hover:text-cyan-700 transition-colors">
+                    자세히 보기
+                    <svg className="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -372,26 +380,28 @@ export default function Home() {
               전체보기 →
             </Link>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {data.events.slice(0, 4).map((event) => (
+          <div className="grid gap-8 md:grid-cols-2">
+            {data.events.slice(0, 4).map((event, index) => (
               <Link
                 key={event.id}
                 href={`/events/${event.id}`}
-                className="glass-card group p-6 rounded-[28px] flex flex-col h-full hover:-translate-y-2"
+                className="glass-card group p-8 rounded-[40px] flex items-center gap-8 hover:-translate-y-1 wide-card-reveal"
+                style={{ animationDelay: `${index * 0.15}s` }}
               >
-                <span className="inline-block self-start mb-4 rounded-full px-3 py-1 text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
-                  {event.category}
-                </span>
-                <h3 className="text-base font-bold text-slate-800 mb-3 group-hover:text-emerald-600 transition-colors line-clamp-1">
-                  {event.name}
-                </h3>
-                <div className="text-slate-400 text-[11px] mb-4 flex items-center gap-2 font-medium">
-                  <span className="bg-slate-100 p-1 rounded-md text-sm">📍</span> {event.location}
-                </div>
-                <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed mb-6 flex-grow opacity-80">{event.summary}</p>
-                <div className="flex items-center justify-between text-[11px] font-black text-emerald-500 group-hover:text-emerald-700 transition-colors border-t border-emerald-50/50 pt-4">
-                  <span>DISCOVER NOW</span>
-                  <span className="text-lg">+</span>
+                <div className="flex-grow">
+                  <span className="inline-block mb-4 rounded-full px-4 py-1.5 text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
+                    {event.category}
+                  </span>
+                  <h3 className="text-xl font-black text-slate-800 mb-4 group-hover:text-emerald-600 transition-colors line-clamp-1">
+                    {event.name}
+                  </h3>
+                  <div className="text-slate-400 text-xs mb-6 flex items-center gap-3 font-bold opacity-70">
+                    <span className="text-lg">📍</span> {event.location}
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-black text-emerald-500 group-hover:text-emerald-700 transition-colors">
+                    <span>이벤트 상세보기</span>
+                    <span className="text-2xl">→</span>
+                  </div>
                 </div>
               </Link>
             ))}
