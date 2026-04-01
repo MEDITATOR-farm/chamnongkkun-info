@@ -10,7 +10,7 @@ export async function POST(req) {
     const content = formData.get("content");
     const password = formData.get("password");
     const date = formData.get("date") || new Date().toISOString().split("T")[0];
-    const imageFile = formData.get("image");
+    const imageFiles = formData.getAll("images"); // 여러 장의 이미지를 가져옵니다.
     const videoFile = formData.get("video");
 
     // 비밀번호 확인
@@ -25,14 +25,20 @@ export async function POST(req) {
     let imageUrl = "";
     let videoUrl = "";
 
-    // 이미지 저장
-    if (imageFile && typeof imageFile !== "string") {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const filename = `${Date.now()}-${imageFile.name}`;
-      const uploadPath = path.join(process.cwd(), "public", "uploads", "diaries", "images", filename);
-      await writeFile(uploadPath, buffer);
-      imageUrl = `/uploads/diaries/images/${filename}`;
+    const imageUrls = [];
+
+    // 이미지 저장 (최대 5장)
+    if (imageFiles && imageFiles.length > 0) {
+      for (const imageFile of imageFiles.slice(0, 5)) {
+        if (typeof imageFile !== "string") {
+          const bytes = await imageFile.arrayBuffer();
+          const buffer = Buffer.from(bytes);
+          const filename = `${Date.now()}-${imageFile.name}`;
+          const uploadPath = path.join(process.cwd(), "public", "uploads", "diaries", "images", filename);
+          await writeFile(uploadPath, buffer);
+          imageUrls.push(`/uploads/diaries/images/${filename}`);
+        }
+      }
     }
 
     // 영상 저장
@@ -50,7 +56,8 @@ export async function POST(req) {
       title,
       content,
       date,
-      image: imageUrl,
+      image: imageUrls.length > 0 ? imageUrls[0] : "", // 기존 코드 호환성용 (첫 번째 이미지)
+      images: imageUrls, // 다중 이미지 배열
       video: videoUrl,
     };
 

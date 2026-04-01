@@ -8,6 +8,7 @@ export default function ClientPage() {
   const { id } = useParams();
   const [diary, setDiary] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [currentImgIdx, setCurrentImgIdx] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -61,10 +62,42 @@ export default function ClientPage() {
         <div style={dateStyle}>{diary.date}</div>
         <h1 style={diaryTitle}>{diary.title}</h1>
 
-        {/* 이미지가 있을 경우 */}
-        {diary.image && (
+        {/* 이미지가 있을 경우 (슬라이드 구현) */}
+        {((diary.images && diary.images.length > 0) || diary.image) && (
           <div style={mediaContainer}>
-            <img src={diary.image} alt={diary.title} style={mediaImage} />
+            <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+              {/* 이미지 목록 */}
+              <div style={{ display: "flex", transform: `translateX(-${currentImgIdx * 100}%)`, transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)", width: "100%", height: "100%" }}>
+                {(diary.images && diary.images.length > 0 ? diary.images : [diary.image]).map((img: string, idx: number) => (
+                  <div key={idx} style={{ flex: "0 0 100%", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <img src={img} alt={`${diary.title} - ${idx + 1}`} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+                  </div>
+                ))}
+              </div>
+
+              {/* 좌우 버튼 (2장 이상일 때만) */}
+              {(diary.images && diary.images.length > 1) && (
+                <>
+                  <button 
+                    onClick={() => setCurrentImgIdx(prev => (prev > 0 ? prev - 1 : diary.images.length - 1))}
+                    style={navButtonStyle("left")}
+                  >
+                    ‹
+                  </button>
+                  <button 
+                    onClick={() => setCurrentImgIdx(prev => (prev < diary.images.length - 1 ? prev + 1 : 0))}
+                    style={navButtonStyle("right")}
+                  >
+                    ›
+                  </button>
+                  
+                  {/* 페이지 번호 표시 */}
+                  <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", background: "rgba(0,0,0,0.4)", color: "#fff", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold", backdropFilter: "blur(4px)" }}>
+                    {currentImgIdx + 1} / {diary.images.length}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         )}
 
@@ -97,5 +130,26 @@ const diaryCard: any = {
 const dateStyle: any = { fontSize: 13, color: "#8b4513", opacity: 0.6, marginBottom: 15, letterSpacing: 1 };
 const diaryTitle: any = { fontSize: 26, fontWeight: "900", color: "#2d241e", marginBottom: 30 };
 const diaryContent: any = { fontSize: 17, lineHeight: 2.0, color: "#4d4238", whiteSpace: "pre-wrap" };
-const mediaContainer: any = { marginBottom: 30, borderRadius: 16, overflow: "hidden", border: "1px solid #f4f4f4", background: "#fafafa" };
+const mediaContainer: any = { marginBottom: 30, borderRadius: 16, overflow: "hidden", border: "1px solid #f4f4f4", background: "#000" };
 const mediaImage: any = { width: "100%", maxHeight: 600, objectFit: "contain", display: "block" };
+
+const navButtonStyle = (side: "left" | "right"): any => ({
+  position: "absolute",
+  top: "50%",
+  [side]: "12px",
+  transform: "translateY(-50%)",
+  width: "40px",
+  height: "40px",
+  borderRadius: "50%",
+  background: "rgba(255, 255, 255, 0.2)",
+  backdropFilter: "blur(8px)",
+  color: "#fff",
+  border: "1px solid rgba(255, 255, 255, 0.3)",
+  fontSize: "24px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  transition: "0.2s",
+  zIndex: 10,
+});

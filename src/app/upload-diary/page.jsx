@@ -10,21 +10,42 @@ export default function UploadDiaryPage() {
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [video, setVideo] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files);
+    if (images.length + files.length > 5) {
+      alert("사진은 최대 5장까지만 업로드할 수 있습니다.");
+      return;
     }
+
+    const newImages = [...images, ...files].slice(0, 5);
+    setImages(newImages);
+
+    // 미리보기 생성
+    const newPreviews = [];
+    newImages.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newPreviews.push(reader.result);
+        if (newPreviews.length === newImages.length) {
+          setImagePreviews([...newPreviews]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImagePreviews(newPreviews);
   };
 
   const handleVideoChange = (e) => {
@@ -46,7 +67,7 @@ export default function UploadDiaryPage() {
       formData.append("content", content);
       formData.append("password", password);
       formData.append("date", date);
-      if (image) formData.append("image", image);
+      images.forEach((img) => formData.append("images", img));
       if (video) formData.append("video", video);
 
       const res = await fetch("/api/save-diary", {
@@ -116,10 +137,11 @@ export default function UploadDiaryPage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
             <div style={inputGroup}>
-              <label style={labelStyle}>📸 사진 올리기</label>
+              <label style={labelStyle}>📸 사진 올리기 (최대 5장)</label>
               <input 
                 type="file" 
                 accept="image/*"
+                multiple
                 onChange={handleImageChange}
                 style={{ ...inputStyle, padding: "10px" }}
               />
@@ -164,9 +186,20 @@ export default function UploadDiaryPage() {
             </h3>
             
             {/* 사진 미리보기 */}
-            {imagePreview && (
-              <div style={mediaPreviewContainer}>
-                <img src={imagePreview} alt="Preview" style={mediaPreviewImage} />
+            {imagePreviews.length > 0 && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 12, marginBottom: 20 }}>
+                {imagePreviews.map((prev, idx) => (
+                  <div key={idx} style={{ position: "relative", aspectRatio: "1/1", borderRadius: 8, overflow: "hidden", border: "1px solid #f0eee0" }}>
+                    <img src={prev} alt={`Preview ${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <button 
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.5)", color: "#fff", border: "none", borderRadius: "50%", width: 22, height: 22, cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", justifyCenter: "center" }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
 
