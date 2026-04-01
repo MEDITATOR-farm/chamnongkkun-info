@@ -23,21 +23,24 @@ export default function DailyIdiomClient({ idioms }: { idioms: any[] }) {
   if (!todaysIdiom) return null;
 
   return (
-    <div className="bg-gradient-to-r from-teal-50 to-emerald-50/30 rounded-2xl p-3 sm:p-4 border border-teal-100/50 shadow-sm flex items-center relative overflow-hidden group transition-all hover:shadow-md">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 relative z-10 w-full">
-        {/* 뱃지 */}
-        <div className="flex-shrink-0 bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md tracking-widest whitespace-nowrap w-fit">
-          💡 오늘의 사자성어
+    <div className="glass group p-4 sm:p-5 rounded-[28px] flex items-center relative overflow-hidden transition-all hover:shadow-xl hover:bg-white/80 border-white/40">
+      <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-blue-500 opacity-80" />
+      
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 relative z-10 w-full">
+        {/* 뱃지 프리미엄화 */}
+        <div className="flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-900 text-white text-[9px] font-black px-3 py-1 rounded-full tracking-[0.2em] shadow-lg flex items-center gap-1.5 w-fit">
+          <span className="animate-pulse">💡</span> 오늘의 사자성어
         </div>
         
-        {/* 뜻과 한자 */}
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 flex-grow min-w-0">
-          <div className="flex items-baseline gap-1 whitespace-nowrap">
-            <span className="text-base sm:text-lg font-bold text-slate-800 font-serif">{todaysIdiom.hanja}</span>
-            <span className="text-xs sm:text-sm font-medium text-teal-700/60 font-serif tracking-[0.1em]">({todaysIdiom.chars})</span>
+        {/* 뜻과 한자 - 폰트 및 간격 최적화 */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 flex-grow min-w-0">
+          <div className="flex items-center gap-2 whitespace-nowrap">
+            <span className="text-xl sm:text-2xl font-black text-slate-900 font-serif tracking-tighter drop-shadow-sm">{todaysIdiom.hanja}</span>
+            <span className="text-[11px] sm:text-xs font-bold text-cyan-600/70 font-serif bg-cyan-50/50 px-1.5 py-0.5 rounded tracking-widest leading-none">({todaysIdiom.chars})</span>
           </div>
-          <span className="text-xs sm:text-sm font-medium text-teal-900/80 mt-0.5 sm:mt-0 opacity-90 truncate max-w-full">
-            — {todaysIdiom.meaning}
+          <div className="hidden sm:block w-px h-3 bg-slate-200" />
+          <span className="text-sm sm:text-base font-semibold text-slate-600 italic opacity-90 truncate max-w-full">
+            "{todaysIdiom.meaning}"
           </span>
         </div>
       </div>

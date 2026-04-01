@@ -14,52 +14,54 @@ export default function DailyPoemClient({ poem }: { poem: any }) {
         클릭할 수 있도록 cursor-pointer 속성을 추가했습니다. 
       */}
       <div 
-        className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-md transition-all hover:border-orange-200"
+        className="glass group p-6 sm:p-8 rounded-[36px] flex flex-col relative overflow-hidden transition-all hover:shadow-2xl border-white/40 cursor-pointer min-h-[220px] justify-center bg-white/40"
         onClick={() => setIsOpen(true)}
       >
-        <div className="absolute top-0 left-0 w-0.5 h-full bg-orange-200/50" />
-        <div className="flex flex-col h-full">
-          <div className="flex justify-between items-start mb-4">
-            <span className="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Today's Poem</span>
-            <div className="text-orange-200 group-hover:text-orange-400 transition-colors bg-orange-50 p-1.5 rounded-full">
-              {/* 확대(돋보기) 아이콘 */}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-orange-300 to-amber-500 opacity-60" />
+        
+        <div className="flex flex-col h-full relative z-10">
+          <div className="flex justify-between items-start mb-6">
+            <span className="text-[10px] text-orange-500 font-black uppercase tracking-[0.3em] flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+              DAILY POETRY
+            </span>
+            <div className="text-orange-400 group-hover:scale-110 transition-transform bg-white/60 p-2 rounded-2xl shadow-sm border border-white/40">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 3h6v6M10 14L21 3M18 21H6a3 3 0 01-3-3V6a3 3 0 013-3h3" />
               </svg>
             </div>
           </div>
           
           {poem ? (
-            <div className="flex-grow flex flex-col justify-center">
-              <h3 className="text-lg font-serif font-bold text-slate-800 mb-3 leading-tight group-hover:text-orange-600 transition-colors">
+            <div className="flex-grow">
+              <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-5 font-serif leading-tight group-hover:text-orange-600 transition-colors tracking-tight">
                 {poem.title}
               </h3>
               {(poem.type === "image" || poem.imageUrl) ? (
-                <div className="w-full mb-3 flex justify-center">
-                  <img src={poem.imageUrl} alt={poem.title} className="w-full h-auto object-contain max-h-[400px] rounded-lg" loading="lazy" />
+                <div className="w-full mb-4 overflow-hidden rounded-2xl shadow-sm border border-white/40">
+                  <img src={poem.imageUrl} alt={poem.title} className="w-full h-32 object-cover scale-105 group-hover:scale-110 transition-transform" loading="lazy" />
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 opacity-80">
                   {(poem.content || "").split("\n").slice(0, 3).map((line: string, idx: number) => (
-                    <p key={idx} className="text-slate-500 font-serif leading-relaxed text-sm italic">
+                    <p key={idx} className="text-slate-600 font-serif leading-relaxed text-sm md:text-base italic">
                       {line}
                     </p>
                   ))}
                   {(poem.content || "").split("\n").length > 3 && (
-                    <p className="text-slate-300 text-[10px] font-serif tracking-widest mt-2">. . .</p>
+                    <p className="text-slate-300 text-xs tracking-[0.5em] mt-3 font-serif">. . .</p>
                   )}
                 </div>
               )}
             </div>
           ) : (
-            <p className="text-slate-400 font-serif italic text-sm">소중한 시가 준비 중입니다.</p>
+            <p className="text-slate-400 font-serif italic text-base">소중한 시가 준비 중입니다.</p>
           )}
           
-          <div className="mt-8 flex justify-between items-end border-t border-slate-50 pt-4">
-            <span className="text-[10px] text-slate-400 font-medium">— {poem?.author || "거제의 시인"}</span>
-            <span className="text-orange-400 text-[10px] font-bold group-hover:text-orange-600 transition-colors">
-              클릭해서 크게 보기 👆
+          <div className="mt-8 flex justify-between items-end border-t border-white/20 pt-5">
+            <span className="text-[11px] text-slate-500 font-black tracking-widest">— {poem?.author || "거제의 시인"}</span>
+            <span className="text-orange-500 text-[10px] font-black group-hover:translate-x-1 transition-transform flex items-center gap-1.5">
+              READ FULL STORY <span className="text-base text-orange-400/50">→</span>
             </span>
           </div>
         </div>

@@ -57,30 +57,32 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
   ];
 
   return (
-    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group h-full transition-all">
-      <div className={`absolute top-0 right-0 w-32 h-32 ${isLive ? 'bg-red-50' : 'bg-slate-50'} rounded-bl-full opacity-60 -z-0 transition-all group-hover:scale-110`}></div>
+    <div className="glass-card group p-5 sm:p-6 rounded-[32px] flex flex-col relative overflow-hidden h-full transition-all border-white/40">
+      {/* 장식용 은은한 오라 효과 추가 */}
+      <div className={`absolute -top-10 -right-10 w-32 h-32 ${isLive ? 'bg-cyan-200/30' : 'bg-slate-200/30'} rounded-full blur-3xl opacity-60 -z-0 transition-all group-hover:scale-150`}></div>
       
-      <div className="flex justify-between items-center mb-5 relative z-10">
-        <h3 className="text-[13px] font-bold text-slate-800 flex items-center gap-1.5">
-          <span className={`${isLive ? 'animate-pulse' : ''} text-red-500 text-base`}>📈</span> 실시간 증시
+      <div className="flex justify-between items-center mb-6 relative z-10">
+        <h3 className="text-sm font-black text-slate-800 flex items-center gap-2">
+          <span className={`${isLive ? 'animate-float' : ''} text-lg`}>📈</span> 
+          실시간 증시
         </h3>
-        <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full border transition-colors ${isLive ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
-          {loading ? "연결 중.." : (isLive ? "실시간 연동" : "지연 데이터")}
+        <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border shadow-sm transition-all ${isLive ? 'bg-cyan-500 text-white border-cyan-400' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
+          {loading ? "연결 중" : (isLive ? "LIVE" : "DELAYED")}
         </span>
       </div>
 
-      <div className={`flex-grow flex flex-col justify-between gap-1.5 relative z-10 transition-opacity duration-500 ${loading ? 'opacity-40' : 'opacity-100'}`}>
+      <div className={`flex-grow flex flex-col gap-2 relative z-10 transition-opacity duration-500 ${loading ? 'opacity-40' : 'opacity-100'}`}>
         {displayStocks.map((stock, index) => (
-          <div key={stock.id} className="flex items-center justify-between px-2 py-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-            <div className="flex items-center gap-3">
-              <span className={`w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-black shadow-sm ${index < 2 ? 'bg-red-500 text-white shadow-red-200' : 'bg-slate-100 text-slate-600'}`}>
+          <div key={stock.id} className="flex items-center justify-between px-3 py-3 rounded-[18px] hover:bg-white/40 transition-all border border-transparent hover:border-white/60 hover:shadow-sm">
+            <div className="flex items-center gap-4">
+              <span className={`w-6 h-6 flex items-center justify-center rounded-lg text-[10px] font-black shadow-sm transition-transform group-hover:scale-110 ${index < 2 ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
                 {index + 1}
               </span>
-              <span className="text-[12px] font-bold text-slate-700">{stock.name}</span>
+              <span className="text-[13px] font-black text-slate-700 tracking-tight">{stock.name}</span>
             </div>
             <div className="text-right">
-              <div className="text-[12px] font-black text-slate-800 tracking-tight">{stock.value}</div>
-              <div className={`text-[9px] font-bold flex items-center justify-end gap-0.5 mt-0.5 ${stock.isUp ? 'text-red-500' : 'text-blue-500'}`}>
+              <div className="text-[14px] font-black text-slate-900 tracking-tighter drop-shadow-sm">{stock.value}</div>
+              <div className={`text-[10px] font-bold flex items-center justify-end gap-0.5 mt-0.5 ${stock.isUp ? 'text-cyan-600' : 'text-blue-600'}`}>
                 {stock.isUp ? '▲' : '▼'} {stock.change}
               </div>
             </div>
@@ -88,9 +90,9 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
         ))}
       </div>
       
-      <div className="mt-5 pt-3 border-t border-slate-50 text-center relative z-10">
-        <p className="text-[9px] text-slate-400 font-medium tracking-tight">
-          {loading ? "최신 데이터를 불러오고 있습니다..." : (isLive ? "※ 야후 파이낸스 실시간 데이터를 연동 중입니다" : "※ 연동에 실패하여 임시 데이터를 표시합니다")}
+      <div className="mt-6 pt-4 border-t border-white/20 text-center relative z-10">
+        <p className="text-[10px] text-slate-400 font-bold italic opacity-60">
+          {loading ? "데이터 수집 중..." : "※ Powered by Yahoo Finance"}
         </p>
       </div>
     </div>

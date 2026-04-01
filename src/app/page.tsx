@@ -16,6 +16,7 @@ import StockRankingWidget from "@/components/StockRankingWidget";
 import StockActiveRankingWidget from "@/components/StockActiveRankingWidget";
 import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
+import ScrollToTop from "@/components/ScrollToTop";
 
 interface InfoItem {
   id: number;
@@ -161,94 +162,110 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200 overflow-x-hidden">
-      {/* 1. 상단 헤더 (높이 축소) */}
-      <header className="relative h-[280px] w-full flex items-center justify-center overflow-hidden">
+      {/* 1. 상단 헤더 (높이 최적화) */}
+      <header className="relative h-[340px] w-full flex items-center justify-center overflow-hidden">
         {/* 상단 네비게이션 바 추가 */}
-        <nav className="absolute top-0 left-0 w-full z-40 px-6 py-4 flex justify-end gap-6 text-white font-bold text-sm">
-          <Link href="/" className="hover:text-cyan-200 transition-colors">홈</Link>
-          <Link href="/blog" className="hover:text-cyan-200 transition-colors">블로그</Link>
-          <Link href="/about" className="hover:text-cyan-200 transition-colors">소개</Link>
-          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-200 transition-colors flex items-center gap-1">
-            <span>🛒</span> 스토어
+        <nav className="absolute top-0 left-0 w-full z-40 px-6 py-6 flex justify-end gap-8 text-white font-bold text-sm">
+          <Link href="/" className="hover:text-cyan-300 transition-all hover:scale-105 active:scale-95">홈</Link>
+          <Link href="/blog" className="hover:text-cyan-300 transition-all hover:scale-105 active:scale-95">블로그</Link>
+          <Link href="/about" className="hover:text-cyan-300 transition-all hover:scale-105 active:scale-95">소개</Link>
+          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-all hover:scale-105 active:scale-95 flex items-center gap-1">
+            <span className="text-lg">🛒</span> 스토어
           </a>
         </nav>
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-105 hover:scale-110"
           style={{ backgroundImage: "url('/images/header-bg.png')" }}
         />
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 to-cyan-900/40" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-cyan-900/40" />
         
-        <div className="relative z-20 text-center text-white p-6 md:p-10 drop-shadow-2xl bg-black/10 backdrop-blur-[2px] rounded-3xl border border-white/10">
-          <h1 className="text-3xl font-extrabold md:text-5xl tracking-tight mb-3 text-shadow-lg">
-            Chamnongkkun 과 함께 하는 거제소식
+        <div className="relative z-20 text-left text-white p-8 md:p-16 drop-shadow-2xl bg-black/10 backdrop-blur-[4px] rounded-[48px] border border-white/20 mt-[-20px] max-w-4xl w-[90%] ml-4 md:ml-12 lg:ml-24">
+          <h1 className="text-3xl font-black md:text-6xl tracking-tight mb-4 text-shadow-xl animate-fade-in leading-tight">
+            Chamnongkkun <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-cyan-100">과 함께 하는 거제소식</span>
           </h1>
-          <p className="text-base md:text-xl font-medium opacity-95 mb-6">
-            푸른 바다와 함께하는 생생한 소식 🐬
+          <p className="text-base md:text-2xl font-semibold opacity-90 mb-10 tracking-wide max-w-2xl">
+            푸른 바다와 함께하는 생생한 소식 🐬<br/>
+            거제의 모든 정보를 한눈에 확인하세요.
           </p>
-          <div className="flex justify-center">
+          <div className="flex justify-start">
             <a 
               href="https://smartstore.naver.com/chamnongkkun" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-full font-black transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 active:translate-y-0 text-sm md:text-base border-2 border-white/20"
+              className="group inline-flex items-center gap-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white px-8 md:px-12 py-4 md:py-5 rounded-2xl font-black transition-all shadow-[0_15px_35px_rgba(245,158,11,0.4)] hover:shadow-[0_20px_45px_rgba(245,158,11,0.6)] hover:-translate-y-2 active:translate-y-0 text-base md:text-xl border-2 border-white/20"
             >
-              <span>🛍️</span> 참농꾼 스토어 바로가기
+              <span className="text-2xl group-hover:rotate-[15deg] transition-transform">🛍️</span> 
+              참농꾼 스토어 바로가기
+              <svg className="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
             </a>
           </div>
         </div>
 
         <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-30">
-          <svg className="relative block w-full h-[60px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <svg className="relative block w-full h-[70px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
             <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C57.43,84.43,101.45,112.33,161.85,116.82,222.25,121.3,275.46,65,321.39,56.44Z" fill="#f8fbff"></path>
           </svg>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-16 max-w-7xl relative">
-        <div className="absolute top-20 right-10 w-32 h-32 bg-cyan-200 rounded-full blur-3xl opacity-30 animate-pulse" />
-        <div className="absolute top-80 left-10 w-48 h-48 bg-emerald-200 rounded-full blur-3xl opacity-20" />
+        {/* 프리미엄 배경 오라 효과 추가 */}
+        <div className="absolute top-[10%] -left-[10%] w-[40%] h-[40%] bg-cyan-200/20 rounded-full blur-[120px] animate-glow pointer-events-none" />
+        <div className="absolute top-[40%] -right-[10%] w-[35%] h-[35%] bg-emerald-200/10 rounded-full blur-[100px] animate-glow pointer-events-none" style={{ animationDelay: '-2s' }} />
+        <div className="absolute bottom-[20%] left-[20%] w-[30%] h-[30%] bg-blue-200/15 rounded-full blur-[90px] animate-glow pointer-events-none" style={{ animationDelay: '-4s' }} />
 
         {/* 🧑‍🌾 농부 일기 & 증시 & 날씨 통합 섹션 (4:2:2:2 비율 정렬) */}
-        <section className="mb-16 relative z-10 px-4">
-          <div className="flex flex-col lg:flex-row gap-4 xl:gap-6 items-stretch">
+        <section className="mb-20 relative z-10 px-4">
+          <div className="flex flex-col lg:flex-row gap-6 xl:gap-8 items-stretch">
             
             {/* 1. 최근 농부일기 (40%) */}
             <div className="w-full lg:w-[40%] flex flex-col">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🌱</span>
-                  <h2 className="text-lg font-bold text-slate-800 pl-1">최근 농부일기</h2>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl animate-float">🌱</span>
+                  <h2 className="text-xl font-black text-slate-800 tracking-tight">최근 농부일기</h2>
                 </div>
-                <Link href="/diaries" className="text-slate-400 hover:text-teal-500 text-xs font-bold transition-colors">
+                <Link href="/diaries" className="text-slate-400 hover:text-cyan-600 text-xs font-bold transition-all hover:translate-x-1">
                   전체보기 →
                 </Link>
               </div>
               
-              <div className="space-y-2.5">
+              <div className="space-y-4">
                 {diaries.length > 0 ? (
                   diaries.filter((d: any) => d.date === diaries[0].date).slice(0, 3).map((diary: any, index: number) => (
                     <Link 
                       key={index}
                       href={`/diaries/${diary.id}`}
-                      className="group block bg-white py-3.5 px-5 rounded-2xl border border-teal-50 hover:border-teal-300 hover:shadow-md transition-all relative overflow-hidden"
+                      className="glass-card group block py-4 px-6 rounded-[24px] relative overflow-hidden"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="flex-shrink-0 text-center bg-teal-50/70 rounded-xl p-2 min-w-[48px] border border-teal-100/50 group-hover:bg-teal-100/70 transition-colors">
-                          <div className="text-teal-600 font-extrabold text-lg leading-none">{diary.date.split('-')[2]}</div>
-                          <div className="text-teal-500 text-[9px] mt-0.5 uppercase tracking-wider font-bold">{diary.date.split('-')[1]}월</div>
+                      <div className="flex items-center gap-5">
+                        <div className="flex-shrink-0 text-center bg-gradient-to-br from-cyan-50 to-white rounded-2xl p-2.5 min-w-[56px] border border-cyan-100/50 group-hover:scale-110 transition-transform shadow-sm">
+                          <div className="text-cyan-600 font-black text-xl leading-none">{diary.date.split('-')[2]}</div>
+                          <div className="text-cyan-400 text-[10px] mt-1 uppercase tracking-tighter font-bold">{diary.date.split('-')[1]}월</div>
                         </div>
                         
                         <div className="flex-grow min-w-0">
-                          <h3 className="text-base font-bold text-slate-800 mb-0.5 group-hover:text-teal-600 transition-colors truncate">
+                          <h3 className="text-base md:text-lg font-bold text-slate-800 mb-1 group-hover:text-cyan-600 transition-colors truncate">
                             {diary.title}
                           </h3>
+                          <div className="flex items-center gap-2">
+                             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recent Post</span>
+                          </div>
+                        </div>
+                        <div className="text-slate-300 group-hover:text-cyan-400 transition-colors">
+                          <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                          </svg>
                         </div>
                       </div>
                     </Link>
                   ))
                 ) : (
-                  <div className="py-8 bg-white rounded-2xl border border-slate-50 text-center">
-                    <p className="text-slate-300 text-sm">새로운 일기를 기다리고 있습니다.</p>
+                  <div className="py-12 glass rounded-3xl text-center border-dashed border-2 border-slate-200">
+                    <p className="text-slate-400 text-sm font-medium">새로운 일기를 기다리고 있습니다.</p>
                   </div>
                 )}
               </div>
@@ -321,15 +338,24 @@ export default function Home() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group bg-white p-5 rounded-2xl border border-slate-100 hover:border-teal-100 hover:shadow-sm transition-all"
+                className="glass-card group p-6 rounded-[28px] hover:-translate-y-2"
               >
-                <time className="text-[10px] text-slate-400 font-bold mb-2 block uppercase tracking-wider">{post.date}</time>
-                <h3 className="text-base font-bold text-slate-800 mb-2 group-hover:text-teal-600 transition-colors line-clamp-2 leading-tight">
+                <div className="flex items-center justify-between mb-4">
+                  <time className="text-[10px] text-cyan-600 font-black uppercase tracking-widest bg-cyan-50 px-2 py-1 rounded-lg">{post.date}</time>
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-3 group-hover:text-cyan-600 transition-colors line-clamp-2 leading-tight">
                   {post.title}
                 </h3>
-                <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+                <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed mb-6 opacity-80">
                   {post.summary}
                 </p>
+                <div className="flex items-center gap-2 text-xs font-black text-cyan-500 group-hover:text-cyan-700 transition-colors">
+                  READ MORE
+                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
               </Link>
             ))}
           </div>
@@ -351,16 +377,21 @@ export default function Home() {
               <Link
                 key={event.id}
                 href={`/events/${event.id}`}
-                className="group bg-white p-5 rounded-2xl border border-slate-100 hover:border-teal-100 hover:shadow-sm transition-all flex flex-col h-full"
+                className="glass-card group p-6 rounded-[28px] flex flex-col h-full hover:-translate-y-2"
               >
-                <span className="inline-block self-start mb-3 rounded-full px-2 py-0.5 text-[9px] font-bold bg-slate-50 text-slate-500">{event.category}</span>
-                <h3 className="text-sm font-bold text-slate-800 mb-2 group-hover:text-teal-600 transition-colors line-clamp-1">{event.name}</h3>
-                <p className="text-slate-500 text-[10px] mb-3 flex items-center gap-1 opacity-70">
-                  <span>📍</span> {event.location}
-                </p>
-                <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed mb-4 flex-grow">{event.summary}</p>
-                <div className="text-[10px] font-bold text-teal-400 group-hover:text-teal-600 transition-colors">
-                  상세보기 +
+                <span className="inline-block self-start mb-4 rounded-full px-3 py-1 text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
+                  {event.category}
+                </span>
+                <h3 className="text-base font-bold text-slate-800 mb-3 group-hover:text-emerald-600 transition-colors line-clamp-1">
+                  {event.name}
+                </h3>
+                <div className="text-slate-400 text-[11px] mb-4 flex items-center gap-2 font-medium">
+                  <span className="bg-slate-100 p-1 rounded-md text-sm">📍</span> {event.location}
+                </div>
+                <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed mb-6 flex-grow opacity-80">{event.summary}</p>
+                <div className="flex items-center justify-between text-[11px] font-black text-emerald-500 group-hover:text-emerald-700 transition-colors border-t border-emerald-50/50 pt-4">
+                  <span>DISCOVER NOW</span>
+                  <span className="text-lg">+</span>
                 </div>
               </Link>
             ))}
@@ -407,19 +438,32 @@ export default function Home() {
           <CoupangBanner />
         </div>
       </main>
-      <footer className="bg-white border-t border-slate-50 py-10 text-slate-400 text-[11px] relative z-10">
-        <div className="container mx-auto px-4 text-center space-y-4">
-          <div className="flex justify-center gap-6 font-medium tracking-tight">
-            <Link href="/about" className="hover:text-slate-600 transition-colors">소개</Link>
-            <Link href="/update-events" className="hover:text-slate-600 transition-colors">업데이트</Link>
-            <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-slate-600 transition-colors">스토어</a>
-            <span>개인정보처리방침</span>
-            <span>문의하기</span>
+      <footer className="relative bg-white/30 backdrop-blur-md border-t border-white/50 py-16 text-slate-500 text-sm z-10 overflow-hidden">
+        {/* 푸터 배경 효과 */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-200 to-transparent opacity-50" />
+        
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-10 mb-12">
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl font-black text-slate-800 tracking-tighter mb-2">Chamnongkkun Info</h2>
+              <p className="text-slate-400 text-xs font-semibold tracking-wide uppercase">The Best Guide to Geoje Island 🐬</p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-8 font-bold text-xs tracking-widest text-slate-400">
+              <Link href="/about" className="hover:text-cyan-600 transition-colors hover:scale-105">소개</Link>
+              <Link href="/update-events" className="hover:text-cyan-600 transition-colors hover:scale-105">업데이트</Link>
+              <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-600 transition-colors hover:scale-105">스토어</a>
+              <span className="cursor-help hover:text-slate-800 transition-colors">개인정보처리방침</span>
+            </div>
           </div>
-          <p>© 2025 chamnongkkun-info. Powered by Next.js & Cloudflare</p>
-          <p className="text-[9px] opacity-70 italic font-serif">"푸른 바다와 함께하는 생생한 거제 소식"</p>
+          
+          <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-medium text-slate-400 opacity-60">
+            <p>© 2025 chamnongkkun-info. All rights reserved.</p>
+            <p className="italic font-serif">"푸른 바다와 함께하는 생생한 거제 소식"</p>
+          </div>
         </div>
       </footer>
+      <ScrollToTop />
     </div>
   );
 }

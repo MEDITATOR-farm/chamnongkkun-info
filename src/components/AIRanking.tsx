@@ -33,63 +33,55 @@ export default function AIRanking() {
   if (loading) return <div className="p-4 text-center text-slate-400 text-xs italic">AI 지표 분석 중...</div>;
   if (!data) return <div className="p-4 text-center text-slate-400 text-xs">데이터 연결 실패</div>;
 
-  // Adapt data.ranking to the new structure if needed, or define a new rankingData
-  // For this change, we'll assume the new structure is directly applied to data.ranking
-  // and map existing properties to the new ones (name -> keyword, score -> score, and assign a color)
-  const rankingData = data.ranking.map((item, index) => ({
-    keyword: item.name,
-    score: item.score,
-    color: index === 0 ? 'from-indigo-400 to-indigo-600' :
-           index === 1 ? 'from-purple-400 to-purple-600' :
-           'from-cyan-400 to-cyan-600'
-  }));
-
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col h-full group transition-all hover:border-indigo-100">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">📊</span>
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">AI 트렌드 지표</h3>
+    <div className="glass-card group p-6 sm:p-8 rounded-[36px] flex flex-col h-full bg-white/40 border-white/40 transition-all hover:bg-white/80">
+      <div className="flex justify-between items-center mb-8 relative z-10">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl animate-pulse">📊</span>
+          <h3 className="text-sm font-black text-slate-800 uppercase tracking-[0.2em]">AI Insights</h3>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-          <span className="text-[10px] font-bold text-slate-400 font-mono uppercase italic leading-none">Geoje Live</span>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-cyan-500 animate-glow" />
+          <span className="text-[10px] font-black text-slate-400 font-mono tracking-widest italic leading-none uppercase">Geoje Pulse</span>
         </div>
       </div>
 
-      <div className="space-y-5 flex-grow flex flex-col justify-center">
+      <div className="space-y-6 flex-grow flex flex-col justify-center relative z-10">
         {data.ranking.slice(0, 3).map((item, idx) => (
-          <div key={idx} className="space-y-1.5 group/item">
-            <div className="flex justify-between items-end">
-              <span className="text-xs font-bold text-slate-700 flex items-center gap-2">
-                <span className="text-[10px] text-slate-300 font-serif italic">#0{idx + 1}</span>
+          <div key={idx} className="space-y-2 group/item">
+            <div className="flex justify-between items-end mb-1">
+              <span className="text-[13px] font-black text-slate-800 flex items-center gap-3">
+                <span className="text-[11px] text-cyan-600 font-black italic opacity-40 group-hover/item:opacity-100 transition-opacity">#{idx + 1}</span>
                 {item.name}
               </span>
-              <span className="text-[10px] font-bold text-slate-400 font-mono">{item.score}%</span>
+              <span className="text-[11px] font-black text-cyan-600 font-mono tracking-tighter bg-cyan-50 px-2 py-0.5 rounded-lg border border-cyan-100/50">{item.score}%</span>
             </div>
-            <div className="h-1 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-50 relative">
+            <div className="h-2 w-full bg-slate-100/50 rounded-full overflow-hidden border border-white/20 relative backdrop-blur-sm">
               <div 
-                className={`h-full rounded-full transition-all duration-1000 ease-out ${
-                  idx === 0 ? "bg-indigo-400" : idx === 1 ? "bg-purple-300" : "bg-cyan-300"
+                className={`h-full rounded-full transition-all duration-[1.5s] ease-out shadow-[0_0_15px_rgba(34,211,238,0.4)] ${
+                  idx === 0 ? "bg-gradient-to-r from-cyan-400 to-blue-600" : 
+                  idx === 1 ? "bg-gradient-to-r from-teal-400 to-cyan-500" : 
+                  "bg-gradient-to-r from-blue-300 to-cyan-400"
                 }`}
                 style={{ width: `${item.score}%` }}
-              />
+              >
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+              </div>
             </div>
-            {/* 호기심 유발 태그 (Hover 시 살짝 강조) */}
-            <div className="flex gap-1.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
+            <div className="flex gap-2 opacity-0 group-hover/item:opacity-100 transition-all group-hover/item:translate-x-1 duration-300">
               {item.tags.slice(0, 2).map((tag, tIdx) => (
-                <span key={tIdx} className="text-[9px] text-slate-300 font-medium">#{tag}</span>
+                <span key={tIdx} className="text-[10px] text-slate-400 font-black tracking-wide border-b border-cyan-200/50">#{tag}</span>
               ))}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-8 pt-4 border-t border-slate-50 flex justify-between items-center">
-        <p className="text-[10px] text-slate-300 italic">"거제도의 실시간 관심사를 반영합니다"</p>
-        <div className="flex gap-1">
+      <div className="mt-8 pt-5 border-t border-white/20 flex justify-between items-center relative z-10">
+        <p className="text-[11px] text-slate-300 italic font-medium opacity-80">"Real-time Geoje context analysis"</p>
+        <div className="flex gap-1.5 grayscale opacity-50">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="w-1 h-1 rounded-full bg-indigo-100" />
+            <div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_5px_rgba(34,211,238,0.5)]" />
           ))}
         </div>
       </div>

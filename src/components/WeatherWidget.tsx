@@ -57,18 +57,20 @@ export default function WeatherWidget() {
 
   // 디자인 요구사항: SIMPLE, 은은함(테마 일치), 튀지않게, 상하높이 최소화
   return (
-    <div className="bg-gradient-to-r from-sky-50 to-blue-50/30 hover:from-sky-100/60 hover:to-blue-100/40 rounded-xl p-3 border border-sky-100/80 shadow-sm flex items-center justify-between gap-3 transition-colors h-[68px]">
-      <div className="flex items-center gap-3">
-         <span className="text-2xl drop-shadow-sm opacity-90">{icon}</span>
+    <div className="glass group p-4 rounded-[24px] flex items-center justify-between gap-4 transition-all hover:shadow-lg border-white/40 h-[72px] hover:bg-white/90">
+      <div className="flex items-center gap-4">
+         <div className="text-3xl drop-shadow-md animate-float flex items-center justify-center bg-white/40 w-12 h-12 rounded-2xl border border-white/20">
+           {icon}
+         </div>
          <div className="flex flex-col justify-center">
-            <div className="text-[10px] font-bold text-sky-500 uppercase tracking-widest mb-0.5">Geoje</div>
-            <div className="text-xs sm:text-sm font-bold text-slate-700 truncate">{text}</div>
+            <div className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.2em] mb-0.5">Geoje City</div>
+            <div className="text-sm font-black text-slate-800 truncate tracking-tight">{text}</div>
          </div>
       </div>
       
-      <div className="flex flex-col items-end justify-center border-l border-sky-200/60 pl-3">
-        <div className="text-lg font-bold text-slate-800 tracking-tight">{temp}°C</div>
-        <div className="text-[10px] text-slate-500 font-medium tracking-wide">풍속 {wind}m/s</div>
+      <div className="flex flex-col items-end justify-center border-l border-slate-100/50 pl-4 h-10">
+        <div className="text-2xl font-black text-slate-900 tracking-tighter leading-none">{temp}°</div>
+        <div className="text-[10px] text-slate-400 font-bold mt-1 tracking-wide">Wind {wind}m/s</div>
       </div>
     </div>
   );
