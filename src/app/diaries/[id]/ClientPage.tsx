@@ -68,7 +68,10 @@ export default function ClientPage() {
             <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {/* 이미지 목록 */}
               <div style={{ display: "flex", transform: `translateX(-${currentImgIdx * 100}%)`, transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)", width: "100%", height: "100%" }}>
-                {(diary.images && diary.images.length > 0 ? diary.images : [diary.image]).map((img: string, idx: number) => (
+                {(diary.images && diary.images.length > 0 
+                  ? diary.images 
+                  : (diary.image ? [diary.image] : [])
+                ).filter(Boolean).map((img: string, idx: number) => (
                   <div key={idx} style={{ flex: "0 0 100%", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <img src={img} alt={`${diary.title} - ${idx + 1}`} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
                   </div>

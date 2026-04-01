@@ -31,11 +31,13 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
           >
             {diary.video ? (
               // 동영상일 때는 썸네일(사진)을 깔고 재생 버튼 모양을 예쁘게 올립니다.
-              <img 
-                src={diary.image || ""} 
-                alt="Farm Recent View" 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-              />
+              diary.image ? (
+                <img 
+                  src={diary.image} 
+                  alt="Farm Recent View" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                />
+              ) : null
             ) : (
               // 사진일 때는 그대로 보여줍니다.
               <img 
@@ -107,7 +109,10 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
                 <>
                   {/* 이미지 슬라이드 부분 */}
                   <div className="flex h-full w-full transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentImgIdx * 100}%)` }}>
-                    {(selectedDiary.images && selectedDiary.images.length > 0 ? selectedDiary.images : [selectedDiary.image]).map((img: string, idx: number) => (
+                    {(selectedDiary.images && selectedDiary.images.length > 0 
+                      ? selectedDiary.images 
+                      : (selectedDiary.image ? [selectedDiary.image] : [])
+                    ).filter(Boolean).map((img: string, idx: number) => (
                       <div key={idx} className="min-w-full h-full flex items-center justify-center">
                         <img 
                           src={img} 

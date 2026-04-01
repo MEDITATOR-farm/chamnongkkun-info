@@ -56,7 +56,7 @@ export async function POST(req) {
       title,
       content,
       date,
-      image: imageUrls.length > 0 ? imageUrls[0] : "", // 기존 코드 호환성용 (첫 번째 이미지)
+      image: imageUrls.length > 0 ? imageUrls[0] : null, // 빈 문자열("") 대신 null 사용
       images: imageUrls, // 다중 이미지 배열
       video: videoUrl,
     };
