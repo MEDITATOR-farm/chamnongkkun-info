@@ -19,6 +19,10 @@ export async function GET() {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${item.symbol}`;
         const res = await fetch(url, { 
           next: { revalidate: 60 },
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json',
+          },
           signal: AbortSignal.timeout(5000) // 5초 내 응답 없으면 중단
         });
         

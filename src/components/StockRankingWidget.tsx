@@ -18,8 +18,10 @@ export default function StockRankingWidget({ data }: { data?: any[] }) {
         }
         const liveData = await res.json();
         if (liveData && Array.isArray(liveData)) {
+          // 모든 항목이 '연결 지연'이 아닌, 실제 숫자가 하나라도 포함되어 있는지 확인
+          const hasRealData = liveData.some(s => s.value !== "연결 지연" && s.value !== "정보 없음");
           setStocks(liveData);
-          setIsLive(true);
+          if (hasRealData) setIsLive(true);
         }
       } catch (err) {
         console.error("Stock fetch error:", err);
