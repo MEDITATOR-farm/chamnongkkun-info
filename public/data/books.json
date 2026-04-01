@@ -12,25 +12,25 @@
     },
     {
       "rank": 3,
-      "title": "마음챙김의 시",
-      "author": "류시화"
+      "title": "가만히 부르는 이름",
+      "author": "박준"
     }
   ],
   "farming": [
     {
       "rank": 1,
+      "title": "텃밭 농사 대백과",
+      "author": "김희동"
+    },
+    {
+      "rank": 2,
       "title": "텃밭 농사 무작정 따라하기",
       "author": "박희란"
     },
     {
-      "rank": 2,
-      "title": "귀농 귀촌 바이블",
-      "author": "김창현"
-    },
-    {
       "rank": 3,
-      "title": "텃밭 백과",
-      "author": "김정남"
+      "title": "귀농귀촌 성공 가이드",
+      "author": "전준오"
     }
   ]
 }
