@@ -4,7 +4,6 @@ import AIRanking from "@/components/AIRanking";
 import MapLoader from "@/components/MapLoader";
 import fs from "fs";
 import path from "path";
-import AdBanner from "@/components/AdBanner";
 import CoupangBanner from "@/components/CoupangBanner";
 import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
@@ -12,11 +11,10 @@ import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyNewsClient from "@/components/DailyNewsClient";
 import DailyPoemClient from "@/components/DailyPoemClient";
 import WeatherWidget from "@/components/WeatherWidget";
-import StockRankingWidget from "@/components/StockRankingWidget";
-import StockActiveRankingWidget from "@/components/StockActiveRankingWidget";
 import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
 import ScrollToTop from "@/components/ScrollToTop";
+import AccordionSection from "@/components/AccordionSection";
 
 interface InfoItem {
   id: number;
@@ -115,16 +113,6 @@ function getBooks() {
   }
 }
 
-function getStocks() {
-  const filePath = path.join(process.cwd(), "public/data/stocks.json");
-  if (!fs.existsSync(filePath)) return null;
-  try {
-    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
-  } catch (e) {
-    return null;
-  }
-}
-
 function getData(): Data {
   const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -141,7 +129,6 @@ export default function Home() {
   const aiNews = getAiNews();
   const economyNews = getEconomyNews();
   const books = getBooks();
-  const stockData = getStocks();
   const latestPoem = poems[0];
 
   // 계절별 색상 결정 함수
@@ -220,8 +207,8 @@ export default function Home() {
         <section className="mb-20 relative z-10 px-4">
           <div className="flex flex-col lg:flex-row gap-6 xl:gap-8 items-stretch">
             
-            {/* 1. 최근 농부일기 (40%) */}
-            <div className="w-full lg:w-[40%] flex flex-col">
+            {/* 1. 최근 농부일기 (70%) */}
+            <div className="w-full lg:w-[70%] flex flex-col">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <span className="text-2xl animate-float">🌱</span>
@@ -232,37 +219,20 @@ export default function Home() {
                 </Link>
               </div>
               
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-2">
                 {diaries.length > 0 ? (
-                  diaries.filter((d: any) => d.date === diaries[0].date).slice(0, 3).map((diary: any, index: number) => (
-                    <Link 
-                      key={index}
-                      href={`/diaries/${diary.id}`}
-                      className="glass-card group block py-4 px-6 rounded-[24px] relative overflow-hidden"
-                    >
-                      <div className="flex items-center gap-5">
-                        <div className="flex-shrink-0 text-center bg-gradient-to-br from-cyan-50 to-white rounded-2xl p-2.5 min-w-[56px] border border-cyan-100/50 group-hover:scale-110 transition-transform shadow-sm">
-                          <div className="text-cyan-600 font-black text-xl leading-none">{diary.date.split('-')[2]}</div>
-                          <div className="text-cyan-400 text-[10px] mt-1 uppercase tracking-tighter font-bold">{diary.date.split('-')[1]}월</div>
-                        </div>
-                        
-                        <div className="flex-grow min-w-0">
-                          <h3 className="text-base md:text-lg font-bold text-slate-800 mb-1 group-hover:text-cyan-600 transition-colors truncate">
-                            {diary.title}
-                          </h3>
-                          <div className="flex items-center gap-2">
-                             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recent Post</span>
-                          </div>
-                        </div>
-                        <div className="text-slate-300 group-hover:text-cyan-400 transition-colors">
-                          <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </Link>
-                  ))
+                  <AccordionSection 
+                    type="diary"
+                    items={diaries.filter((d: any) => d.date === diaries[0].date).slice(0, 5).map((d: any) => ({
+                      id: d.id,
+                      title: d.title,
+                      date: d.date,
+                      content: d.content,
+                      image: d.image,
+                      video: d.video,
+                      link: `/diaries/${d.id}`
+                    }))}
+                  />
                 ) : (
                   <div className="py-12 glass rounded-3xl text-center border-dashed border-2 border-slate-200">
                     <p className="text-slate-400 text-sm font-medium">새로운 일기를 기다리고 있습니다.</p>
@@ -271,18 +241,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 2. 증시 시황 (20%) */}
-            <div className="w-full lg:w-[20%]">
-               <StockRankingWidget data={stockData} />
-            </div>
-
-            {/* 3. 매수 랭킹 (20%) */}
-            <div className="w-full lg:w-[20%]">
-               <StockActiveRankingWidget />
-            </div>
-
-            {/* 4. 날씨 & 도서 (20%) */}
-            <div className="w-full lg:w-[20%] flex flex-col gap-4">
+            {/* 2. 날씨 & 도서 (30%) */}
+            <div className="w-full lg:w-[30%] flex flex-col gap-6">
                <WeatherWidget />
                <BookRankingClient data={books} />
             </div>
@@ -333,39 +293,18 @@ export default function Home() {
               전체보기 →
             </Link>
           </div>
-          <div className="flex flex-col gap-8">
-            {blogPosts.slice(0, 3).map((post, index) => (
-              <Link
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                className="glass-card group flex flex-col md:flex-row items-center gap-8 p-8 rounded-[40px] hover:-translate-y-1 wide-card-reveal"
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className="w-full md:w-[300px] h-[180px] rounded-[30px] overflow-hidden flex-shrink-0 bg-slate-100 flex items-center justify-center text-3xl opacity-60">
-                   {index === 0 ? "🌊" : index === 1 ? "🏘️" : "🌱"}
-                </div>
-                <div className="flex-grow">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="px-4 py-1.5 bg-cyan-50 text-cyan-600 text-[10px] font-black rounded-full border border-cyan-100 uppercase tracking-widest">
-                      {post.category || "NEW POST"}
-                    </span>
-                    <time className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{post.date}</time>
-                  </div>
-                  <h3 className="text-2xl font-black text-slate-800 mb-4 group-hover:text-cyan-600 transition-colors leading-[1.2]">
-                    {post.title}
-                  </h3>
-                  <p className="text-slate-500 text-base line-clamp-2 leading-relaxed opacity-80 mb-6">
-                    {post.summary}
-                  </p>
-                  <div className="flex items-center gap-3 text-xs font-black text-cyan-500 group-hover:text-cyan-700 transition-colors">
-                    자세히 보기
-                    <svg className="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </div>
-                </div>
-              </Link>
-            ))}
+          <div className="flex flex-col gap-2">
+            <AccordionSection 
+              type="blog"
+              items={blogPosts.slice(0, 5).map(post => ({
+                id: post.slug,
+                title: post.title,
+                date: post.date,
+                summary: post.summary,
+                category: post.category,
+                link: `/blog/${post.slug}`
+              }))}
+            />
           </div>
         </section>
 
@@ -380,31 +319,19 @@ export default function Home() {
               전체보기 →
             </Link>
           </div>
-          <div className="grid gap-8 md:grid-cols-2">
-            {data.events.slice(0, 4).map((event, index) => (
-              <Link
-                key={event.id}
-                href={`/events/${event.id}`}
-                className="glass-card group p-8 rounded-[40px] flex items-center gap-8 hover:-translate-y-1 wide-card-reveal"
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className="flex-grow">
-                  <span className="inline-block mb-4 rounded-full px-4 py-1.5 text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
-                    {event.category}
-                  </span>
-                  <h3 className="text-xl font-black text-slate-800 mb-4 group-hover:text-emerald-600 transition-colors line-clamp-1">
-                    {event.name}
-                  </h3>
-                  <div className="text-slate-400 text-xs mb-6 flex items-center gap-3 font-bold opacity-70">
-                    <span className="text-lg">📍</span> {event.location}
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] font-black text-emerald-500 group-hover:text-emerald-700 transition-colors">
-                    <span>이벤트 상세보기</span>
-                    <span className="text-2xl">→</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+          <div className="flex flex-col gap-2">
+            <AccordionSection 
+              type="event"
+              items={data.events.slice(0, 6).map(event => ({
+                id: event.id,
+                title: event.name,
+                date: `${event.startDate} ~ ${event.endDate}`,
+                summary: event.summary,
+                category: event.category,
+                location: event.location,
+                link: `/events/${event.id}`
+              }))}
+            />
           </div>
         </section>
 
@@ -439,10 +366,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 💰 광고 섹션 */}
-        <div className="px-4 mb-20">
-          <AdBanner />
-        </div>
+        {/* 💰 광고 섹션 (구글 광고 제거됨) */}
         
         <div className="px-4 mb-20">
           <CoupangBanner />
@@ -468,7 +392,7 @@ export default function Home() {
           </div>
           
           <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-medium text-slate-400 opacity-60">
-            <p>© 2025 chamnongkkun-info. All rights reserved.</p>
+            <p>© 2026 chamnongkkun-info. All rights reserved.</p>
             <p className="italic font-serif">"푸른 바다와 함께하는 생생한 거제 소식"</p>
           </div>
         </div>
