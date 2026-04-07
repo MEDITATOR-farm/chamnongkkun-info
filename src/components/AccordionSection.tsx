@@ -45,12 +45,12 @@ export default function AccordionSection({ items, type }: AccordionSectionProps)
             {/* 1. 일기(diary)일 때는 클릭 시 펼치고 접는 동작을 합니다. */}
             {isDiary ? (
               <div 
-                className={`list-item-slim cursor-pointer group flex-col items-stretch !gap-0 ${isExpanded ? 'border-cyan-200/50 bg-cyan-50/20' : 'bg-transparent'}`}
+                className={`list-item-slim cursor-pointer group flex-col items-stretch !gap-0 ${isExpanded ? 'border-cyan-200/20' : 'border-transparent'}`}
                 onClick={() => setExpandedId(isExpanded ? null : item.id)}
               >
                 <div className="flex items-center justify-between w-full h-12">
                   <div className="flex items-center gap-3 overflow-hidden">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-transparent border border-slate-200/30 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-transparent border border-slate-100/30 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
                       {getIcon()}
                     </span>
                     <h3 className="text-sm md:text-base font-bold text-slate-700 truncate group-hover:text-cyan-600 transition-colors">
@@ -77,13 +77,13 @@ export default function AccordionSection({ items, type }: AccordionSectionProps)
                     )}
                     
                     {item.image && (
-                      <div className="rounded-xl overflow-hidden border border-slate-100 shadow-sm max-w-md">
+                      <div className="rounded-xl overflow-hidden max-w-md">
                         <img src={item.image} alt={item.title} className="w-full h-auto" />
                       </div>
                     )}
 
                     {item.video && (
-                      <div className="rounded-xl overflow-hidden border border-slate-100 shadow-sm max-w-md">
+                      <div className="rounded-xl overflow-hidden max-w-md">
                         <video src={item.video} controls className="w-full h-auto" />
                       </div>
                     )}
@@ -107,7 +107,7 @@ export default function AccordionSection({ items, type }: AccordionSectionProps)
                 className="list-item-slim cursor-pointer group"
               >
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-transparent border border-slate-200/30 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-transparent border border-slate-100/30 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
                     {getIcon()}
                   </span>
                   <h3 className="text-sm md:text-base font-bold text-slate-700 truncate group-hover:text-cyan-600 transition-colors">
