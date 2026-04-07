@@ -125,8 +125,8 @@ export default function RestaurantMap() {
               <Popup className="custom-popup">
                 <div className="p-2 min-w-[200px]">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="w-6 h-6 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-black text-xs">
-                      {res.rank}
+                    <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center font-black text-[10px]">
+                      📍
                     </span>
                     <h4 className="font-bold text-slate-800 m-0">{res.name}</h4>
                   </div>
