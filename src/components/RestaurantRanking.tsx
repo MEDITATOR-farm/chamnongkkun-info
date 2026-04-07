@@ -36,10 +36,10 @@ export default function RestaurantRanking() {
     <section className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 overflow-hidden relative">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-          <span>🏆</span> 실시간 맛집 랭킹
+          <span className="text-blue-500">📍</span> 거제 추천 맛집
         </h2>
         <span className="text-[10px] font-bold text-slate-300 uppercase tracking-tighter">
-          Updated: {new Date(data.updatedAt).toLocaleTimeString()}
+          지역 정보 기반 보관소
         </span>
       </div>
 
@@ -47,16 +47,14 @@ export default function RestaurantRanking() {
         {data.ranking.map((item, index) => (
           <div 
             key={index} 
-            className="group relative flex items-center gap-4 p-3 rounded-2xl transition-all duration-300 hover:bg-slate-50 border border-transparent hover:border-slate-100"
+            className="group relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 hover:bg-slate-50 border border-slate-50 hover:border-blue-100"
           >
-            {/* 순위 숫자 */}
-            <div className={`
-              w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg flex-shrink-0
-              ${index === 0 ? "bg-amber-100 text-amber-600 shadow-sm" : 
-                index === 1 ? "bg-slate-100 text-slate-600" : 
-                index === 2 ? "bg-orange-50 text-orange-600" : "text-slate-400"}
-            `}>
-              {item.rank}
+            {/* 고정 아이콘 (랭킹 숫자 대체) */}
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 flex-shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </div>
 
             {/* 정보 */}
@@ -65,31 +63,18 @@ export default function RestaurantRanking() {
                 <h3 className="font-bold text-slate-800 truncate leading-tight group-hover:text-blue-600 transition-colors">
                   {item.name}
                 </h3>
-                <div className="flex items-center gap-1">
-                   <span className={`text-[10px] font-black ${item.trend === 'up' ? 'text-red-500' : item.trend === 'down' ? 'text-blue-500' : 'text-slate-400'}`}>
-                     {item.trend === 'up' ? '▲' : item.trend === 'down' ? '▼' : '-'}
-                   </span>
-                   <span className="text-xs font-black text-slate-700">{item.score}</span>
-                </div>
               </div>
               
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-medium">{item.menu}</span>
-                <span className="text-[10px] text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full font-bold">{item.tags[0]}</span>
+                <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-bold">{item.menu}</span>
+                {item.tags.slice(0, 2).map((tag: string, i: number) => (
+                  <span key={i} className="text-[10px] text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full font-bold">#{tag}</span>
+                ))}
               </div>
 
-              {/* 그래픽 막대 (Score 시각화) */}
-              <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full rounded-full transition-all duration-1000 ease-out`}
-                  style={{ 
-                    width: `${item.score}%`,
-                    background: index === 0 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)' : 
-                               index === 1 ? 'linear-gradient(90deg, #64748b, #94a3b8)' : 
-                               'linear-gradient(90deg, #3b82f6, #60a5fa)'
-                  }}
-                />
-              </div>
+              <p className="text-xs text-slate-500 line-clamp-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                {item.summary}
+              </p>
             </div>
 
             {/* 링크 버튼 */}
@@ -98,7 +83,7 @@ export default function RestaurantRanking() {
                 href={item.link} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-blue-50 text-blue-600 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-blue-100 hover:bg-blue-600 hover:text-white transition-all whitespace-nowrap"
+                className="bg-white text-blue-600 text-[10px] font-black px-4 py-2 rounded-xl border border-blue-100 hover:bg-blue-600 hover:text-white hover:border-blue-600 shadow-sm transition-all whitespace-nowrap"
               >
                 지도보기
               </a>
@@ -108,14 +93,14 @@ export default function RestaurantRanking() {
       </div>
 
       <div className="mt-6 pt-4 border-t border-dashed border-slate-100 text-center">
-         <p className="text-[10px] text-slate-400 font-medium">
-           AI가 공공데이터와 리뷰를 분석하여 선정한 오늘의 순위입니다.
+         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+           Verified Local Information
          </p>
       </div>
 
       {/* 배경 장식 */}
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full blur-3xl -z-10" />
-      <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-50/50 rounded-full blur-3xl -z-10" />
+      <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-50/30 rounded-full blur-3xl -z-10" />
     </section>
   );
 }
