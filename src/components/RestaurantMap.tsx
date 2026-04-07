@@ -107,12 +107,22 @@ export default function RestaurantMap() {
                 거제시 동부면 208-8<br/>
                 정성껏 가꾸는 소중한 우리 농장입니다.
               </p>
-              <a
-                href="/diaries"
-                className="block text-center text-[10px] font-bold text-white bg-rose-500 px-4 py-2 rounded-xl hover:bg-rose-600 transition-colors shadow-lg shadow-rose-100"
-              >
-                농부 일기 보러가기 →
-              </a>
+              <div className="flex flex-col gap-2">
+                <a
+                  href="https://naver.me/5HySCp3a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center text-[10px] font-bold text-white bg-rose-500 px-4 py-2 rounded-xl hover:bg-rose-600 transition-colors shadow-lg shadow-rose-100"
+                >
+                  상세보기 →
+                </a>
+                <a
+                  href="/diaries"
+                  className="block text-center text-[10px] font-bold text-rose-600 bg-rose-50 px-4 py-2 rounded-xl hover:bg-rose-100 transition-colors"
+                >
+                  농부 일기 보러가기
+                </a>
+              </div>
             </div>
           </Popup>
         </Marker>
