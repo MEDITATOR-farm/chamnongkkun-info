@@ -109,7 +109,7 @@ export default function RestaurantMap() {
               </p>
               <div className="flex flex-col gap-2">
                 <a
-                  href="https://naver.me/5HySCp3a"
+                  href="https://naver.me/F6Qmw94p"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-center text-[10px] font-bold text-white bg-rose-500 px-4 py-2 rounded-xl hover:bg-rose-600 transition-colors shadow-lg shadow-rose-100"
