@@ -150,7 +150,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200 overflow-x-hidden">
       {/* 1. 상단 헤더 (와이드 레이아웃 및 높이 최소화) */}
-      <header className="relative min-h-[320px] w-full flex items-center justify-center overflow-hidden">
+      <header className="relative min-h-[420px] w-full flex items-center justify-center overflow-hidden">
         {/* 상단 네비게이션 바 추가 */}
         <nav className="absolute top-0 left-0 w-full z-40 px-6 py-6 flex justify-end gap-8 text-white font-bold text-sm">
           <Link href="/" className="hover:text-cyan-300 transition-all hover:scale-105 active:scale-95">홈</Link>
@@ -167,7 +167,7 @@ export default function Home() {
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 via-transparent to-transparent" />
         
         {/* 메인 타이틀 (유리 효과 제거 및 선명도 극대화 버전) */}
-        <div className="relative z-20 text-center text-white p-6 md:p-10 mx-4 md:mx-auto mt-8 max-w-6xl w-[100%] transition-all">
+        <div className="relative z-20 text-center text-white p-6 md:p-10 mx-4 md:mx-auto mt-4 max-w-6xl w-[100%] transition-all">
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 text-shadow-premium animate-fade-in leading-tight drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
             Chamnongkkun <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-cyan-100">과 함께 하는 거제소식</span>
           </h1>
