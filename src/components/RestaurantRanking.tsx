@@ -38,9 +38,12 @@ export default function RestaurantRanking() {
         <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
           <span className="text-blue-500">📍</span> 거제 추천 맛집
         </h2>
-        <span className="text-[10px] font-bold text-slate-300 uppercase tracking-tighter">
-          지역 정보 기반 보관소
-        </span>
+        <div className="flex flex-col items-end">
+          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-tighter">
+            Verified Local Guide
+          </span>
+          <span className="text-[9px] text-slate-200">정확한 매장 정보를 기반으로 합니다.</span>
+        </div>
       </div>
 
       <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -49,8 +52,8 @@ export default function RestaurantRanking() {
             key={index} 
             className="group relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 hover:bg-slate-50 border border-slate-50 hover:border-blue-100"
           >
-            {/* 고정 아이콘 (랭킹 숫자 대체) */}
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 flex-shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+            {/* 고정 아이콘 (랭킹 숫자 제거됨) */}
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 flex-shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-all transform group-hover:rotate-12">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -72,7 +75,7 @@ export default function RestaurantRanking() {
                 ))}
               </div>
 
-              <p className="text-xs text-slate-500 line-clamp-1 opacity-80 group-hover:opacity-100 transition-opacity">
+              <p className="text-xs text-slate-500 line-clamp-1 opacity-70 group-hover:opacity-100 transition-opacity">
                 {item.summary}
               </p>
             </div>
@@ -85,7 +88,7 @@ export default function RestaurantRanking() {
                 rel="noopener noreferrer"
                 className="bg-white text-blue-600 text-[10px] font-black px-4 py-2 rounded-xl border border-blue-100 hover:bg-blue-600 hover:text-white hover:border-blue-600 shadow-sm transition-all whitespace-nowrap"
               >
-                지도보기
+                상세보기
               </a>
             )}
           </div>
@@ -93,8 +96,10 @@ export default function RestaurantRanking() {
       </div>
 
       <div className="mt-6 pt-4 border-t border-dashed border-slate-100 text-center">
-         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-           Verified Local Information
+         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+           <span className="w-1 h-1 bg-blue-300 rounded-full"></span>
+           Trusted Information Only
+           <span className="w-1 h-1 bg-blue-300 rounded-full"></span>
          </p>
       </div>
 
