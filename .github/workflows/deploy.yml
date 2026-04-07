@@ -35,27 +35,27 @@ jobs:
           PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          node scripts/generate-daily-idiom.js || true
-          sleep 30
-          node scripts/generate-daily-wisdom.js || true
-          sleep 30
-          node scripts/generate-daily-ai-news.js || true
-          sleep 30
-          node scripts/generate-daily-economy.js || true
-          sleep 30
-          node scripts/generate-daily-stocks.js || true
-          sleep 30
-          node scripts/generate-daily-books.js || true
-          sleep 30
-          node scripts/fetch-public-data.js || true
-          sleep 30
-          node scripts/fetch-geoje-events.js || true
-          sleep 30
-          node scripts/fetch-rss-events.js || true
-          sleep 30
-          node scripts/update-restaurant-ranking.js || true
-          sleep 30
-          node scripts/generate-blog-post.js || true
+          node scripts/run-if-enabled.js update_idioms scripts/generate-daily-idiom.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_wisdom scripts/generate-daily-wisdom.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_news scripts/generate-daily-ai-news.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_economy scripts/generate-daily-economy.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_stocks scripts/generate-daily-stocks.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_books scripts/generate-daily-books.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_public_data scripts/fetch-public-data.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_geoje_events scripts/fetch-geoje-events.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_rss_events scripts/fetch-rss-events.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_restaurants scripts/update-restaurant-ranking.js || true
+          sleep 10
+          node scripts/run-if-enabled.js update_blog_posts scripts/generate-blog-post.js || true
 
       - name: Commit and push changes
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

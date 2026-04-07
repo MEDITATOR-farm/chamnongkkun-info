@@ -4,13 +4,23 @@ const path = require('path');
 async function updateRestaurantRanking() {
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   const DATA_FILE_PATH = path.join(__dirname, '../public/data/restaurant-ranking.json');
-
-  if (!GEMINI_API_KEY) {
-    console.error('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
-    return;
-  }
+  const CONFIG_PATH = path.join(__dirname, '../automation-control.json');
 
   try {
+    // 제어판 설정 확인
+    const configData = await fs.readFile(CONFIG_PATH, 'utf-8');
+    const config = JSON.parse(configData);
+    
+    if (config.update_restaurants === false) {
+      console.log('🚫 제어판에서 맛집 업데이트가 꺼져 있습니다. 작업을 중단합니다.');
+      return;
+    }
+
+    if (!GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
+      return;
+    }
+
     console.log('실시간 맛집 랭킹 생성 중 (AI 기반)...');
 
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;

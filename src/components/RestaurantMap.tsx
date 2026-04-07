@@ -54,7 +54,7 @@ function MapMarkers({ restaurants, L, farmLocation }: { restaurants: Restaurant[
             </div>
             <p className="text-[11px] text-slate-600 mb-4 leading-relaxed font-medium">
               거제시 동부면 208-8<br/>
-              정성껏 가꾸는 소중한 우리 농장입니다.
+              사포닌이 풍부한 이형두릅을 자연과 함께 키우는 게으른 농부의 놀이터
             </p>
             <div className="flex flex-col gap-2">
               <a
@@ -153,7 +153,7 @@ export default function RestaurantMap() {
   const farmLocation: [number, number] = [34.80075, 128.602619];
 
   return (
-    <div className="relative w-full h-[600px] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
+    <div className="relative w-full h-[1000px] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
       <MapContainer
         center={center}
         zoom={11}

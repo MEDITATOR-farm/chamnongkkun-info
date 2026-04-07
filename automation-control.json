@@ -1,0 +1,14 @@
+{
+  "description": "참농꾼 자동 비서 제어판입니다. 각 항목을 true(켜기) 또는 false(끄기)로 설정하여 자동 업데이트를 조절할 수 있습니다.",
+  "update_restaurants": false,
+  "update_news": true,
+  "update_economy": true,
+  "update_stocks": true,
+  "update_idioms": true,
+  "update_wisdom": true,
+  "update_books": true,
+  "update_public_data": true,
+  "update_geoje_events": true,
+  "update_rss_events": true,
+  "update_blog_posts": true
+}

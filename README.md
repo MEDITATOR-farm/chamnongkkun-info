@@ -20,6 +20,14 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## 🗺️ 특별 부록: 거꾸로 세계지도 다운로드
+거꾸로 보면 새로운 세계가 열립니다! '글로벌 해양강국, 대한민국' 거꾸로 세계지도를 다운로드하실 수 있습니다.
+
+- [거꾸로 세계지도 (버전 1) 다운로드](public/assets/upside-down-world-map-v1.jpg)
+- [거꾸로 세계지도 (버전 2 - 해양 테마) 다운로드](public/assets/upside-down-world-map-v2.jpg)
+
+---
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
