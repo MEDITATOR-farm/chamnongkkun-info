@@ -53,6 +53,13 @@ export default function AdBanner() {
 
   return (
     <div className="my-16 flex justify-center w-full max-w-6xl mx-auto overflow-hidden min-h-[280px] bg-white rounded-3xl items-center relative">
+      {/* 📍 광고 예약 안내 문구 추가 */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+        <p className="text-slate-200 text-xs font-bold tracking-widest opacity-60">
+          ( 여기는 구글 광고가 예약 된 위치 입니다 )
+        </p>
+      </div>
+      
       <ins
         className="adsbygoogle"
         style={{ display: "block", width: "100%", height: "280px" }}
