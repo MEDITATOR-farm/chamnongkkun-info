@@ -5,22 +5,7 @@ import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 
 // Leaflet requires window, so we import it dynamically (Client-side only)
-const MapContainer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.TileLayer),
-  { ssr: false }
-);
-const Marker = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Marker),
-  { ssr: false }
-);
-const Popup = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Popup),
-  { ssr: false }
-);
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 
 interface Restaurant {
   rank: number;
@@ -30,6 +15,102 @@ interface Restaurant {
   lat: number;
   lng: number;
   link: string;
+}
+
+// [추가] 지도의 기능을 제어하기 위한 서브 컴포넌트입니다.
+// 이 컴포넌트는 MapContainer 안에 위치해야 지도를 직접 조작할 수 있습니다.
+function MapMarkers({ restaurants, L, farmLocation }: { restaurants: Restaurant[], L: any, farmLocation: [number, number] }) {
+  const map = useMap();
+
+  // 상세보기 클릭 시 팝업을 닫는 마법의 함수
+  const handleLinkClick = () => {
+    map.closePopup();
+  };
+
+  return (
+    <>
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      
+      {/* 🏠 CHAMNONGKKUN 농장 마커 */}
+      <Marker 
+        position={farmLocation} 
+        icon={L.icon({
+          iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+          shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        })}
+      >
+        <Popup className="custom-popup">
+          <div className="p-3 min-w-[220px]">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl">🏠</span>
+              <h4 className="font-black text-rose-600 m-0 text-lg">CHAMNONGKKUN 농장</h4>
+            </div>
+            <p className="text-[11px] text-slate-600 mb-4 leading-relaxed font-medium">
+              거제시 동부면 208-8<br/>
+              정성껏 가꾸는 소중한 우리 농장입니다.
+            </p>
+            <div className="flex flex-col gap-2">
+              <a
+                href="https://naver.me/F6Qmw94p"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleLinkClick}
+                className="block text-center text-[10px] font-bold text-white bg-rose-500 px-4 py-2 rounded-xl hover:bg-rose-600 transition-colors shadow-lg shadow-rose-100"
+              >
+                상세보기 →
+              </a>
+              <a
+                href="/diaries"
+                className="block text-center text-[10px] font-bold text-rose-600 bg-rose-50 px-4 py-2 rounded-xl hover:bg-rose-100 transition-colors"
+              >
+                농부 일기 보러가기
+              </a>
+            </div>
+          </div>
+        </Popup>
+      </Marker>
+
+      {/* 🍴 맛집 마커들 */}
+      {restaurants
+        .filter(res => res.lat && res.lng)
+        .map((res, index) => (
+          <Marker key={index} position={[res.lat, res.lng]}>
+            <Popup className="custom-popup">
+              <div className="p-2 min-w-[200px]">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center font-black text-[10px]">
+                    📍
+                  </span>
+                  <h4 className="font-bold text-slate-800 m-0">{res.name}</h4>
+                </div>
+                <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">{res.summary}</p>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                    {res.menu}
+                  </span>
+                  <a
+                    href={res.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleLinkClick}
+                    className="text-[10px] font-bold text-white bg-slate-800 px-3 py-1.5 rounded-lg hover:bg-black transition-colors"
+                  >
+                    상세보기 →
+                  </a>
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+    </>
+  );
 }
 
 export default function RestaurantMap() {
@@ -80,84 +161,7 @@ export default function RestaurantMap() {
         style={{ height: "100%", width: "100%" }}
         className="z-0"
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        
-        {/* 🏠 CHAMNONGKKUN 농장 마커 (특별 표시) */}
-        <Marker 
-          position={farmLocation} 
-          icon={L.icon({
-            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-          })}
-        >
-          <Popup className="custom-popup">
-            <div className="p-3 min-w-[220px]">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">🏠</span>
-                <h4 className="font-black text-rose-600 m-0 text-lg">CHAMNONGKKUN 농장</h4>
-              </div>
-              <p className="text-[11px] text-slate-600 mb-4 leading-relaxed font-medium">
-                거제시 동부면 208-8<br/>
-                정성껏 가꾸는 소중한 우리 농장입니다.
-              </p>
-              <div className="flex flex-col gap-2">
-                <a
-                  href="https://naver.me/F6Qmw94p"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center text-[10px] font-bold text-white bg-rose-500 px-4 py-2 rounded-xl hover:bg-rose-600 transition-colors shadow-lg shadow-rose-100"
-                >
-                  상세보기 →
-                </a>
-                <a
-                  href="/diaries"
-                  className="block text-center text-[10px] font-bold text-rose-600 bg-rose-50 px-4 py-2 rounded-xl hover:bg-rose-100 transition-colors"
-                >
-                  농부 일기 보러가기
-                </a>
-              </div>
-            </div>
-          </Popup>
-        </Marker>
-
-        {/* 🍴 맛집 마커들 (좌표가 있는 데이터만 렌더링) */}
-        {restaurants
-          .filter(res => res.lat && res.lng)
-          .map((res, index) => (
-            <Marker key={index} position={[res.lat, res.lng]}>
-              <Popup className="custom-popup">
-                <div className="p-2 min-w-[200px]">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center font-black text-[10px]">
-                      📍
-                    </span>
-                    <h4 className="font-bold text-slate-800 m-0">{res.name}</h4>
-                  </div>
-                  <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">{res.summary}</p>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-                      {res.menu}
-                    </span>
-                    <a
-                      href={res.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] font-bold text-white bg-slate-800 px-3 py-1.5 rounded-lg hover:bg-black transition-colors"
-                    >
-                      상세보기 →
-                    </a>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
+        <MapMarkers restaurants={restaurants} L={L} farmLocation={farmLocation} />
       </MapContainer>
       
       {/* 플로팅 컨트롤 (맵 위에 표시될 안내) */}
