@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 interface RankingItem {
   rank: number;
-  name: number;
+  name: string;
   menu: string;
   score: number;
   trend: "up" | "down" | "steady";
@@ -43,7 +43,7 @@ export default function RestaurantRanking() {
         </span>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
         {data.ranking.map((item, index) => (
           <div 
             key={index} 
@@ -51,7 +51,7 @@ export default function RestaurantRanking() {
           >
             {/* 순위 숫자 */}
             <div className={`
-              w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg
+              w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg flex-shrink-0
               ${index === 0 ? "bg-amber-100 text-amber-600 shadow-sm" : 
                 index === 1 ? "bg-slate-100 text-slate-600" : 
                 index === 2 ? "bg-orange-50 text-orange-600" : "text-slate-400"}
