@@ -29,7 +29,7 @@ export default function AdBanner() {
 
   // [수정] 광고가 아직 승인되지 않았으므로, 안내 이미지를 먼저 보여줍니다.
   // 나중에 광고를 정식으로 띄우고 싶으실 때 이 부분만 살짝 고치면 됩니다.
-  const showPlaceholder = true; 
+  const showPlaceholder = false; 
 
   if (showPlaceholder || !adsenseId || adsenseId === "나중에_입력") {
     return (
@@ -52,7 +52,7 @@ export default function AdBanner() {
   }
 
   return (
-    <div className="my-16 flex justify-center w-full max-w-6xl mx-auto overflow-hidden min-h-[280px] bg-neutral-50/50 rounded-[32px] border border-dashed border-cyan-200 items-center text-cyan-400 font-bold relative group">
+    <div className="my-16 flex justify-center w-full max-w-6xl mx-auto overflow-hidden min-h-[280px] bg-white rounded-3xl items-center relative">
       <ins
         className="adsbygoogle"
         style={{ display: "block", width: "100%", height: "280px" }}
@@ -61,14 +61,6 @@ export default function AdBanner() {
         data-ad-format="auto"
         data-full-width-responsive="true"
       />
-      {/* 개발 단계 안내 문구 - 광고 로드 시 가득 채워짐 */}
-      <div className="absolute flex flex-col items-center gap-3 pointer-events-none group-hover:scale-110 transition-transform">
-        <span className="text-4xl">💰</span>
-        <div className="text-center">
-          <p className="text-sm">GOOGLE ADSENSE AREA</p>
-          <p className="text-[10px] opacity-60">광고가 승인되면 이곳에 예쁜 광고가 나타납니다!</p>
-        </div>
-      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import RestaurantRanking from "@/components/RestaurantRanking";
 import AIRanking from "@/components/AIRanking";
+import AdBanner from "@/components/AdBanner";
 import MapLoader from "@/components/MapLoader";
 import fs from "fs";
 import path from "path";
@@ -264,6 +265,7 @@ export default function Home() {
           <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
             <MapLoader />
           </div>
+          <AdBanner />
           
           <div className="mt-8">
             <RestaurantRanking />
