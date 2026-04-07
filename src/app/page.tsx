@@ -265,11 +265,6 @@ export default function Home() {
           <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
             <MapLoader />
           </div>
-          <AdBanner />
-          
-          <div className="mt-8">
-            <RestaurantRanking />
-          </div>
         </section>
 
         {/* ✨ 오늘의 인사이트 요약 (Poem & AI Ranking 통합 슬림화) */}
