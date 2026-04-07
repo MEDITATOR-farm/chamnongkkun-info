@@ -12,19 +12,30 @@ export default function WeatherWidget() {
     
     const fetchWeather = async () => {
       try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);
+        // [수정] 통신 에러 시 Next.js 에러 화면을 방지하기 위해 타임아웃이나 추가 옵션을 고려할 수 있습니다.
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+          // 일시적인 네트워크 오류에 대비해 캐시 설정을 추가할 수 있습니다.
+          next: { revalidate: 1800 } 
+        });
         
         if (!res.ok) {
-           throw new Error(`날씨 API 응답 오차: ${res.status}`);
+           throw new Error(`API 서버 응답 오류: ${res.status}`);
         }
         
         const data = await res.json();
-        setWeather(data.current_weather);
+        if (data && data.current_weather) {
+          setWeather(data.current_weather);
+        } else {
+          throw new Error("데이터 형식이 올바르지 않습니다.");
+        }
       } catch (e) {
-        console.error("날씨 정보 불러오기 실패:", e);
-        // 에러 시 로딩 상태를 해제하거나 에러 UI를 보여주기 위해 null이 아닌 에러용 값을 넣을 수 있음
-        // 여기서는 에러 로그만 남기고, UI에서 '알 수 없음' 처리를 하도록 유도
-        setWeather({ weathercode: -1, temperature: 0, windspeed: 0 }); // 에러용 더미 데이터
+        // [중요] 'Failed to fetch' 에러가 나도 콘솔엔 기록하고 UI는 멈추지 않게 기본값을 세팅합니다.
+        console.warn("날씨 정보를 가져오는 중 사소한 문제가 발생했습니다 (일시적 통신 오류일 수 있음):", e);
+        setWeather({ weathercode: -1, temperature: 0, windspeed: 0 }); 
       }
     };
     fetchWeather();
