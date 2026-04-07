@@ -68,8 +68,8 @@ export default function RestaurantMap() {
   // 거제도 중심 좌표
   const center: [number, number] = [34.88, 128.62];
   
-  // CHAMNONGKKUN 농장 위치 (거제시 동부면 208-8) - 정밀 교정 완료
-  const farmLocation: [number, number] = [34.80905, 128.63660];
+  // CHAMNONGKKUN 농장 위치 (거제시 동부면 구천리) - 최종 DMS 정밀 교정
+  const farmLocation: [number, number] = [34.80075, 128.602619];
 
   return (
     <div className="relative w-full h-[600px] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
