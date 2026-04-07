@@ -275,7 +275,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
             {/* 1. 오늘의 시 */}
-            <DailyPoemClient poem={latestPoem} />
+            <DailyPoemClient poems={poems} />
 
             {/* 2. 실시간 AI 랭킹 */}
             <AIRanking />

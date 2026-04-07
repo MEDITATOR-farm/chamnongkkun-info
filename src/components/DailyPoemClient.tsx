@@ -3,9 +3,30 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export default function DailyPoemClient({ poem }: { poem: any }) {
-  // 모달 창이 열려있는지 여부를 기억하는 기억장치입니다.
+export default function DailyPoemClient({ poems }: { poems: any[] }) {
+  // 현재 어떤 시를 보고 있는지 번호(인덱스)를 기억합니다. 0번이 최신입니다.
+  const [currentIndex, setCurrentIndex] = useState(0);
+  // 모달 창이 열려있는지 여부를 기억합니다.
   const [isOpen, setIsOpen] = useState(false);
+
+  // 현재 인덱스에 해당하는 시 데이터를 가져옵니다.
+  const poem = poems && poems.length > 0 ? poems[currentIndex] : null;
+
+  // 이전(앞선) 작품으로 가기
+  const goPrev = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 카드 클릭(모달 열기) 방지
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  // 다음(뒤의) 작품으로 가기
+  const goNext = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 카드 클릭(모달 열기) 방지
+    if (currentIndex < poems.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
 
   return (
     <>
@@ -14,22 +35,15 @@ export default function DailyPoemClient({ poem }: { poem: any }) {
         클릭할 수 있도록 cursor-pointer 속성을 추가했습니다. 
       */}
       <div 
-        className="glass group p-6 sm:p-8 rounded-[36px] flex flex-col relative overflow-hidden transition-all hover:shadow-2xl border-white/40 cursor-pointer min-h-[220px] justify-center bg-white/40"
+        className="group p-4 sm:p-6 flex flex-col relative transition-all cursor-pointer h-auto justify-start bg-transparent"
         onClick={() => setIsOpen(true)}
       >
-        <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-orange-300 to-amber-500 opacity-60" />
         
         <div className="flex flex-col h-full relative z-10">
-          <div className="flex justify-between items-start mb-6">
-            <span className="text-[10px] text-orange-500 font-black uppercase tracking-[0.3em] flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
-              DAILY POETRY
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-[10px] text-slate-300 font-bold uppercase tracking-[0.2em] flex items-center gap-2">
+              나의 시
             </span>
-            <div className="text-orange-400 group-hover:scale-110 transition-transform bg-white/60 p-2 rounded-2xl shadow-sm border border-white/40">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 3h6v6M10 14L21 3M18 21H6a3 3 0 01-3-3V6a3 3 0 013-3h3" />
-              </svg>
-            </div>
           </div>
           
           {poem ? (
@@ -38,18 +52,19 @@ export default function DailyPoemClient({ poem }: { poem: any }) {
                 {poem.title}
               </h3>
               {(poem.type === "image" || poem.imageUrl) ? (
-                <div className="w-full mb-4 overflow-hidden rounded-2xl shadow-sm border border-white/40">
-                  <img src={poem.imageUrl} alt={poem.title} className="w-full h-32 object-cover scale-105 group-hover:scale-110 transition-transform" loading="lazy" />
+                <div className="w-full mb-6 overflow-hidden rounded-xl">
+                  <img src={poem.imageUrl} alt={poem.title} className="w-full h-auto transition-transform" loading="lazy" />
                 </div>
               ) : (
-                <div className="space-y-3 opacity-80">
-                  {(poem.content || "").split("\n").slice(0, 3).map((line: string, idx: number) => (
-                    <p key={idx} className="text-slate-600 font-serif leading-relaxed text-sm md:text-base italic">
+                <div className="space-y-2 opacity-90">
+                  {/* 시 본문을 5줄 정도로 좀 더 넉넉하게 보여줍니다. */}
+                  {(poem.content || "").split("\n").slice(0, 5).map((line: string, idx: number) => (
+                    <p key={idx} className="text-slate-600 font-serif leading-relaxed text-base italic">
                       {line}
                     </p>
                   ))}
-                  {(poem.content || "").split("\n").length > 3 && (
-                    <p className="text-slate-300 text-xs tracking-[0.5em] mt-3 font-serif">. . .</p>
+                  {(poem.content || "").split("\n").length > 5 && (
+                    <p className="text-slate-300 text-[8px] tracking-[0.3em] mt-2 font-serif">. . .</p>
                   )}
                 </div>
               )}
@@ -58,11 +73,27 @@ export default function DailyPoemClient({ poem }: { poem: any }) {
             <p className="text-slate-400 font-serif italic text-base">소중한 시가 준비 중입니다.</p>
           )}
           
-          <div className="mt-8 flex justify-between items-end border-t border-white/20 pt-5">
-            <span className="text-[11px] text-slate-500 font-black tracking-widest">— {poem?.author || "거제의 시인"}</span>
-            <span className="text-orange-500 text-[10px] font-black group-hover:translate-x-1 transition-transform flex items-center gap-1.5">
-              READ FULL STORY <span className="text-base text-orange-400/50">→</span>
-            </span>
+          <div className="mt-4 flex justify-between items-end pt-3 border-t border-slate-100/50">
+            <span className="text-[10px] text-slate-400 font-medium">— {poem?.author || "거제의 시인"}</span>
+            <div className="flex gap-6 items-center px-2 translate-no" translate="no">
+              <button 
+                onClick={goPrev} 
+                disabled={currentIndex === 0}
+                className={`text-sm font-serif font-black transition-all flex items-center gap-1.5 ${currentIndex === 0 ? 'text-slate-200 cursor-not-allowed' : 'text-orange-600 hover:text-orange-800 hover:underline active:scale-95'}`}
+                title="이전 작품 (前詩)"
+              >
+                <span className="text-xs">◀</span> 前詩
+              </button>
+              <span className="w-[1px] h-4 bg-slate-200"></span>
+              <button 
+                onClick={goNext} 
+                disabled={!poems || currentIndex === poems.length - 1}
+                className={`text-sm font-serif font-black transition-all flex items-center gap-1.5 ${(!poems || currentIndex === poems.length - 1) ? 'text-slate-200 cursor-not-allowed' : 'text-orange-600 hover:text-orange-800 hover:underline active:scale-95'}`}
+                title="다음 작품 (後時)"
+              >
+                後時 <span className="text-xs">▶</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -34,8 +34,8 @@ export default function AIRanking() {
   if (!data) return <div className="p-4 text-center text-slate-400 text-xs">데이터 연결 실패</div>;
 
   return (
-    <div className="glass-card group p-6 sm:p-8 rounded-[36px] flex flex-col h-full bg-white/40 border-white/40 transition-all hover:bg-white/80">
-      <div className="flex justify-between items-center mb-8 relative z-10">
+    <div className="group p-4 sm:p-2 flex flex-col h-full bg-transparent transition-all">
+      <div className="flex justify-between items-center mb-6 relative z-10 border-b border-slate-100/50 pb-3">
         <div className="flex items-center gap-3">
           <span className="text-2xl animate-pulse">📊</span>
           <h3 className="text-sm font-black text-slate-800 uppercase tracking-[0.2em]">AI Insights</h3>
@@ -56,7 +56,7 @@ export default function AIRanking() {
               </span>
               <span className="text-[11px] font-black text-cyan-600 font-mono tracking-tighter bg-cyan-50 px-2 py-0.5 rounded-lg border border-cyan-100/50">{item.score}%</span>
             </div>
-            <div className="h-2 w-full bg-slate-100/50 rounded-full overflow-hidden border border-white/20 relative backdrop-blur-sm">
+            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden relative">
               <div 
                 className={`h-full rounded-full transition-all duration-[1.5s] ease-out shadow-[0_0_15px_rgba(34,211,238,0.4)] ${
                   idx === 0 ? "bg-gradient-to-r from-cyan-400 to-blue-600" : 
@@ -65,7 +65,6 @@ export default function AIRanking() {
                 }`}
                 style={{ width: `${item.score}%` }}
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
               </div>
             </div>
             <div className="flex gap-2 opacity-0 group-hover/item:opacity-100 transition-all group-hover/item:translate-x-1 duration-300">
@@ -77,11 +76,11 @@ export default function AIRanking() {
         ))}
       </div>
 
-      <div className="mt-8 pt-5 border-t border-white/20 flex justify-between items-center relative z-10">
-        <p className="text-[11px] text-slate-300 italic font-medium opacity-80">"Real-time Geoje context analysis"</p>
-        <div className="flex gap-1.5 grayscale opacity-50">
+      <div className="mt-8 pt-3 border-t border-slate-100/50 flex justify-between items-center relative z-10">
+        <p className="text-[10px] text-slate-300 italic font-serif">"실시간 AI 트렌드"</p>
+        <div className="flex gap-1 opacity-20">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_5px_rgba(34,211,238,0.5)]" />
+            <div key={i} className="w-1 h-1 rounded-full bg-cyan-400" />
           ))}
         </div>
       </div>

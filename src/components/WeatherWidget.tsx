@@ -57,7 +57,7 @@ export default function WeatherWidget() {
 
   // 디자인 요구사항: SIMPLE, 은은함(테마 일치), 튀지않게, 상하높이 최소화
   return (
-    <div className="glass group p-4 rounded-[24px] flex items-center justify-between gap-4 transition-all hover:shadow-lg border-white/40 h-[72px] hover:bg-white/90">
+    <div className="group p-3 flex items-center justify-between gap-4 transition-all bg-transparent border-b border-slate-100 h-[72px]">
       <div className="flex items-center gap-4">
          <div className="text-3xl drop-shadow-md animate-float flex items-center justify-center bg-white/40 w-12 h-12 rounded-2xl border border-white/20">
            {icon}

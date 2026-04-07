@@ -22,9 +22,9 @@ export default function BookRankingClient({ data }: { data: BooksData | null }) 
   const isPoetry = activeTab === "poetry";
   const currentList = isPoetry ? data.poetry : data.farming;
   
-  const bgClass = "glass border-white/40 shadow-xl";
-  const tabActive = isPoetry ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg" : "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg";
-  const tabInactive = "text-slate-400 hover:text-slate-600 hover:bg-white/50";
+  const bgClass = "bg-transparent";
+  const tabActive = isPoetry ? "bg-cyan-500 text-white" : "bg-emerald-500 text-white";
+  const tabInactive = "text-slate-400 hover:text-slate-600";
 
   const getMedal = (rank: number) => {
     if (rank === 1) return "🥇";
@@ -41,28 +41,27 @@ export default function BookRankingClient({ data }: { data: BooksData | null }) 
   };
 
   return (
-    <div className={`rounded-[24px] p-4 sm:p-5 ${bgClass} transition-all relative overflow-hidden group hover:bg-white/80`}>
-      {/* 장식용 은은한 오라 효과 */}
-      <div className={`absolute -top-10 -right-10 w-24 h-24 ${isPoetry ? 'bg-cyan-200/20' : 'bg-emerald-200/20'} rounded-full blur-2xl opacity-60 -z-0`}></div>
+    <div className={`p-4 sm:p-2 ${bgClass} transition-all relative group`}>
+      {/* 장식용 은은한 효과 제거됨 */}
 
       {/* 타이틀 바 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-5 gap-3 relative z-10 border-b border-white/40 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3 relative z-10 border-b border-slate-100/50 pb-2">
         <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] flex items-center gap-2">
            <span className={`w-2 h-2 rounded-full ${isPoetry ? "bg-cyan-400 animate-pulse" : "bg-emerald-400 animate-pulse"}`} />
            TOP PICKS
         </h3>
         
-        {/* 미니 탭 버튼 프리미엄화 */}
-        <div className="flex bg-slate-100/30 rounded-xl p-1 backdrop-blur-sm border border-white/20">
+        {/* 미니 탭 버튼 깔끔하게 */}
+        <div className="flex bg-slate-50/50 rounded-lg p-0.5 border border-slate-200/50">
            <button 
              onClick={() => setActiveTab("poetry")} 
-             className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all duration-300 ${isPoetry ? "bg-white text-slate-800 shadow-md" : "text-slate-400 hover:text-slate-600"}`}
+             className={`px-3 py-1 text-[10px] font-black rounded-md transition-all duration-300 ${isPoetry ? "bg-white text-slate-800 border border-slate-200/50 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
            >
              국내 시집
            </button>
            <button 
              onClick={() => setActiveTab("farming")} 
-             className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all duration-300 ${!isPoetry ? "bg-white text-slate-800 shadow-md" : "text-slate-400 hover:text-slate-600"}`}
+             className={`px-3 py-1 text-[10px] font-black rounded-md transition-all duration-300 ${!isPoetry ? "bg-white text-slate-800 border border-slate-200/50 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
            >
              농업/지식
            </button>
@@ -70,14 +69,14 @@ export default function BookRankingClient({ data }: { data: BooksData | null }) 
       </div>
 
       {/* 랭킹 리스트 */}
-      <div className="flex flex-col gap-1 relative z-10">
+      <div className="flex flex-col gap-0.5 relative z-10">
          {currentList && currentList.length > 0 ? (
            currentList.map((book) => (
              <div key={book.rank} className="relative group/item">
                 {/* 배경 막대 디자인 개선 */}
-                <div className={`absolute left-0 top-0 h-full ${getWidth(book.rank)} ${isPoetry ? "bg-cyan-50" : "bg-emerald-50"} rounded-xl opacity-0 group-hover/item:opacity-100 transition-all duration-500 -z-10`} />
+                <div className={`absolute left-0 top-0 h-full ${getWidth(book.rank)} ${isPoetry ? "bg-cyan-50/30" : "bg-emerald-50/30"} rounded-lg opacity-0 group-hover/item:opacity-100 transition-all duration-500 -z-10`} />
                 
-                <div className="flex items-center gap-4 p-2.5 rounded-xl transition-all hover:translate-x-1">
+                <div className="flex items-center gap-4 p-2 rounded-lg transition-all hover:translate-x-1">
                    <div className="text-xl flex-shrink-0 w-8 text-center drop-shadow-sm group-hover/item:scale-125 transition-transform">
                      {getMedal(book.rank)}
                    </div>

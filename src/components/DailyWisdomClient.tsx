@@ -21,10 +21,10 @@ export default function DailyWisdomClient({ wisdoms }: { wisdoms: any[] }) {
   if (!todaysWisdom) return null;
 
   return (
-    <div className="bg-gradient-to-r from-amber-50 to-orange-50/40 rounded-2xl p-3 sm:p-4 border border-amber-100/60 shadow-sm flex items-center relative overflow-hidden group transition-all hover:shadow-md mt-4">
+    <div className="p-4 sm:p-5 flex items-center relative overflow-hidden group transition-all mt-1 bg-transparent border-b border-slate-100/50" translate="no">
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 relative z-10 w-full">
         {/* 뱃지 */}
-        <div className="flex-shrink-0 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md tracking-widest whitespace-nowrap w-fit">
+        <div className="flex-shrink-0 border border-amber-600 text-amber-700 text-[9px] font-bold px-2 py-0.5 rounded tracking-widest whitespace-nowrap w-fit">
           📜 오늘의 명심보감
         </div>
         

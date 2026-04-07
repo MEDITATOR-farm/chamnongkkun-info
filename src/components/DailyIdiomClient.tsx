@@ -23,13 +23,13 @@ export default function DailyIdiomClient({ idioms }: { idioms: any[] }) {
   if (!todaysIdiom) return null;
 
   return (
-    <div className="glass group p-4 sm:p-5 rounded-[28px] flex items-center relative overflow-hidden transition-all hover:shadow-xl hover:bg-white/80 border-white/40">
-      <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-blue-500 opacity-80" />
+    <div className="group p-4 sm:p-5 flex items-center relative overflow-hidden transition-all bg-transparent border-b border-slate-100/50" translate="no">
+      <div className="absolute top-0 left-0 w-0.5 h-full bg-cyan-400 opacity-30" />
       
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 relative z-10 w-full">
         {/* 뱃지 프리미엄화 */}
-        <div className="flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-900 text-white text-[9px] font-black px-3 py-1 rounded-full tracking-[0.2em] shadow-lg flex items-center gap-1.5 w-fit">
-          <span className="animate-pulse">💡</span> 오늘의 사자성어
+        <div className="flex-shrink-0 border border-slate-800 text-slate-800 text-[9px] font-black px-2 py-0.5 rounded tracking-widest flex items-center gap-1.5 w-fit">
+          💡 오늘의 사자성어
         </div>
         
         {/* 뜻과 한자 - 폰트 및 간격 최적화 */}
