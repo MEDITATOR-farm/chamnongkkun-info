@@ -356,16 +356,72 @@ export default function Home() {
 
         {/* 🗺️ 거꾸로 세계지도 */}
         <section className="mb-20 relative z-10 px-4">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-xl">🌍</span>
-            <h2 className="text-lg font-bold text-slate-800">해양수산부 거꾸로 세계지도</h2>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <span className="text-xl animate-bounce-slow">🌍</span>
+              <h2 className="text-lg font-bold text-slate-800">해양수산부 거꾸로 세계지도</h2>
+            </div>
+            <div className="flex gap-2">
+              <span className="px-3 py-1 bg-cyan-100 text-cyan-700 text-[10px] font-bold rounded-full">고화질 무료 배포</span>
+              <span className="px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full">인쇄용 최적화</span>
+            </div>
           </div>
-          <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-white p-2">
-            <img 
-              src="/images/upside-down-map.jpg" 
-              alt="해양수산부 거꾸로 세계지도" 
-              className="w-full h-auto rounded-xl hover:scale-[1.02] transition-transform duration-500"
-            />
+          
+          <div className="flex flex-col lg:flex-row gap-8 items-center py-4">
+            {/* 좌측: 지도 미리보기 */}
+            <div className="w-full lg:w-1/2 relative group">
+              <img 
+                src="/assets/upside-down-world-map-v1.jpg" 
+                alt="해양수산부 거꾸로 세계지도" 
+                className="w-full h-auto rounded-3xl group-hover:scale-[1.02] transition-transform duration-700"
+              />
+              <div className="absolute top-4 left-4 z-20 bg-black/30 backdrop-blur-sm text-white text-[10px] px-3 py-1 rounded-full font-bold">
+                미리보기
+              </div>
+            </div>
+
+            {/* 우측: 안내 및 다운로드 버튼 */}
+            <div className="w-full lg:w-1/2 flex flex-col gap-8">
+              <div>
+                <h3 className="text-3xl font-black text-slate-800 mb-4 leading-tight">
+                  거꾸로 보면 <span className="text-cyan-600">새로운 세계</span>가 펼쳐집니다
+                </h3>
+                <p className="text-base text-slate-500 leading-relaxed font-medium opacity-80">
+                  해양수산부에서 제작한 '글로벌 해양강국' 거꾸로 세계지도입니다. 
+                  대륙 중심이 아닌 해양 중심으로 세상을 바라보는 새로운 시각을 경험해보세요. 
+                  고화질 이미지로 제작되어 교육용이나 인쇄용으로 좋습니다.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <a 
+                  href="/assets/upside-down-world-map-v1.jpg" 
+                  download="거꾸로-세계지도-일반형.jpg"
+                  className="flex flex-col gap-1 border-l-2 border-slate-200 hover:border-cyan-400 pl-6 py-2 transition-all hover:translate-x-2 group"
+                >
+                  <span className="text-[10px] font-black text-slate-400 group-hover:text-cyan-500 transition-colors uppercase tracking-widest">Version 01</span>
+                  <span className="text-lg font-bold text-slate-700">일반형 다운로드</span>
+                  <span className="text-xs text-slate-400">High Quality JPG</span>
+                </a>
+                
+                <a 
+                  href="/assets/upside-down-world-map-v2.jpg" 
+                  download="거꾸로-세계지도-해양테마.jpg"
+                  className="flex flex-col gap-1 border-l-2 border-slate-200 hover:border-cyan-600 pl-6 py-2 transition-all hover:translate-x-2 group"
+                >
+                  <span className="text-[10px] font-black text-slate-400 group-hover:text-cyan-600 transition-colors uppercase tracking-widest">Version 02</span>
+                  <span className="text-lg font-bold text-slate-700">해양 테마형 다운로드</span>
+                  <span className="text-xs text-slate-400">Maritime Theme JPG</span>
+                </a>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100/50">
+                <p className="text-[11px] text-slate-400 leading-relaxed opacity-60">
+                  * 본 지도는 해양수산부에서 배포한 공공저작물입니다. 
+                  누구나 자유롭게 이용할 수 있습니다. 상업적 이용시 출처를 명확히 밝혀주세요.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
