@@ -33,20 +33,13 @@ export default function AdBanner() {
 
   if (showPlaceholder || !adsenseId || adsenseId === "나중에_입력") {
     return (
-      <div className="my-16 flex flex-col items-center justify-center w-full max-w-6xl mx-auto overflow-hidden rounded-[32px] border border-cyan-100 shadow-xl bg-white group transition-all hover:shadow-2xl">
-        <div className="relative w-full aspect-[21/6]">
-          <img 
-            src="/images/google_ad_placeholder.png" 
-            alt="Ad Placeholder" 
-            className="w-full h-full object-cover group-hover:scale-[1.02] transition-all duration-700"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center">
-            <span className="px-4 py-1.5 bg-cyan-500/80 backdrop-blur-md rounded-full text-[10px] font-black tracking-widest mb-4 uppercase">Chamnongkkun Official</span>
-            <h3 className="text-xl md:text-3xl font-black mb-2 text-shadow-premium">거제의 가치를 더하는 정보 나눔</h3>
-            <p className="text-xs md:text-sm font-bold opacity-90">구글 광고 승인 대기 중입니다! 조금만 기다려 주세요. ✨</p>
-          </div>
-        </div>
+      <div className="my-12 flex flex-col items-center justify-center w-full max-w-6xl mx-auto py-16 border-y border-slate-100/50 opacity-40">
+        <p className="text-slate-300 text-[10px] font-black tracking-[0.3em] uppercase mb-2">
+          Ad Space Reserved
+        </p>
+        <p className="text-slate-400 text-xs font-bold">
+          ( 여기는 구글 광고가 예약 된 위치 입니다 )
+        </p>
       </div>
     );
   }
