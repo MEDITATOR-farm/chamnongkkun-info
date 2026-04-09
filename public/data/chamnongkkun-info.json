@@ -1,6 +1,17 @@
 {
   "events": [
     {
+      "name": "데이터 없음",
+      "startDate": "2026-04-09",
+      "endDate": "2026-04-09",
+      "location": "N/A",
+      "target": "N/A",
+      "summary": "제공된 데이터 원본에 행사 정보가 포함되어 있지 않으며, API 호출 오류(INVALID REQUEST PARAMETER ERROR)가 발생한 상태입니다.",
+      "link": "#",
+      "category": "행사",
+      "id": 1775715002046
+    },
+    {
       "name": "제11회 거제 맹종죽 대나무 축제",
       "startDate": "2026-04-24",
       "endDate": "2026-04-27",
@@ -83,17 +94,6 @@
       "link": "http://www.geoje.go.kr:80/board/view.geoje?boardId=BBS_0000008&dataSid=306391609",
       "category": "행사",
       "id": 1775065365911
-    },
-    {
-      "name": "조회된 행사 없음",
-      "startDate": "2026-03-29",
-      "endDate": "2026-03-29",
-      "location": "N/A",
-      "target": "N/A",
-      "summary": "제공된 데이터 원본에 유효한 행사 정보가 포함되어 있지 않습니다(API 호출 오류: INVALID REQUEST PARAMETER ERROR).",
-      "link": "#",
-      "category": "행사",
-      "id": 1774825494259
     }
   ],
   "benefits": [
