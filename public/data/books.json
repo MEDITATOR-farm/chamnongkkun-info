@@ -2,18 +2,18 @@
   "poetry": [
     {
       "rank": 1,
+      "title": "서랍에 저녁을 넣어 두었다",
+      "author": "한강"
+    },
+    {
+      "rank": 2,
       "title": "꽃을 보듯 너를 본다",
       "author": "나태주"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "title": "마음챙김의 시",
       "author": "류시화"
-    },
-    {
-      "rank": 3,
-      "title": "가장 예쁜 생각을 너에게 주고 싶다",
-      "author": "나태주"
     }
   ],
   "farming": [
@@ -25,12 +25,12 @@
     {
       "rank": 2,
       "title": "텃밭 가꾸기 대백과",
-      "author": "채소 가꾸기 연구회"
+      "author": "이병갑"
     },
     {
       "rank": 3,
-      "title": "귀농 귀촌 가이드북",
-      "author": "농민신문사"
+      "title": "나는 농사지어 먹고산다",
+      "author": "최성현"
     }
   ]
 }
