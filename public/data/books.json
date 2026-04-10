@@ -2,35 +2,35 @@
   "poetry": [
     {
       "rank": 1,
-      "title": "마음의 허기를 채우는 법",
-      "author": "이해인"
+      "title": "서랍에 저녁을 넣어 두었다",
+      "author": "한강"
     },
     {
       "rank": 2,
-      "title": "가지 마라 잡지 마라 하더니",
+      "title": "꽃을 보듯 너를 본다",
       "author": "나태주"
     },
     {
       "rank": 3,
-      "title": "꽃을 보듯 너를 본다",
-      "author": "나태주"
+      "title": "마음챙김의 시",
+      "author": "류시화"
     }
   ],
   "farming": [
     {
       "rank": 1,
-      "title": "텃밭 농사 무작정 따라하기",
-      "author": "장광표"
+      "title": "텃밭 가꾸기 대백과",
+      "author": "장광웅"
     },
     {
       "rank": 2,
-      "title": "귀농귀촌 핵심전략",
-      "author": "김덕현"
+      "title": "귀농귀촌 바이블",
+      "author": "김남근"
     },
     {
       "rank": 3,
-      "title": "채소 재배의 정석",
-      "author": "최종남"
+      "title": "도시농부 텃밭 가꾸기",
+      "author": "박희란"
     }
   ]
 }
