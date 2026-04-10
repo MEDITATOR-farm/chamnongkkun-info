@@ -148,6 +148,37 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
                 {poem.date && <p className="text-slate-400 text-sm mt-2">{poem.date}</p>}
               </div>
 
+              {/* 다운로드 버튼 섹션 */}
+              <div className="mt-8 flex flex-col items-center gap-4">
+                {poem.imageUrl ? (
+                  <a 
+                    href={poem.imageUrl} 
+                    download={`${poem.title}_${poem.author}.png`}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-white text-slate-400 border border-slate-100 rounded-full text-[13px] font-bold hover:bg-orange-50 hover:text-orange-600 hover:border-orange-100 transition-all active:scale-95"
+                  >
+                    <span>💾</span>
+                    이미지로 소장하기
+                  </a>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      const element = document.createElement("a");
+                      const file = new Blob([`${poem.title}\n\n${poem.content}\n\n— ${poem.author}`], {type: 'text/plain'});
+                      element.href = URL.createObjectURL(file);
+                      element.download = `${poem.title}_${poem.author}.txt`;
+                      document.body.appendChild(element);
+                      element.click();
+                      document.body.removeChild(element);
+                    }}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-white text-slate-400 border border-slate-100 rounded-full text-[13px] font-bold hover:bg-slate-50 hover:text-slate-600 hover:border-slate-200 transition-all active:scale-95"
+                  >
+                    <span>📝</span>
+                    시 구절 저장하기 (.txt)
+                  </button>
+                )}
+                <p className="text-[10px] text-slate-300 font-medium">따뜻한 감동을 개인 소장용으로 간직해보세요. ✨</p>
+              </div>
+
               {/* 다른 시 보러가기 버튼 */}
               <div className="mt-12 flex justify-center pb-2">
                 <Link 
