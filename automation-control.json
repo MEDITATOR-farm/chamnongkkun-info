@@ -5,7 +5,7 @@
   "update_economy": true,
   "update_stocks": true,
   "update_idioms": true,
-  "update_wisdom": true,
+  "update_wisdom": false,
   "update_books": true,
   "update_public_data": true,
   "update_geoje_events": true,
