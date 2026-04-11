@@ -285,6 +285,28 @@ export default function Home() {
           </div>
         </section>
 
+        {/* 🎮 테트리스 게임 섹션 */}
+        <section className="mb-20 relative z-10 px-4">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-xl">🎮</span>
+            <h2 className="text-lg font-bold text-slate-800">잠시 쉬어가는 테트리스</h2>
+          </div>
+          
+          <div className="bg-[#111] rounded-[2.5rem] p-2 md:p-6 shadow-2xl overflow-hidden flex justify-center border-4 border-slate-800/50">
+            <div className="w-full max-w-[500px] aspect-[4/5] md:aspect-auto md:h-[650px] relative">
+              <iframe 
+                src="/tetris.html" 
+                className="w-full h-full border-none rounded-xl" 
+                title="Tetris Game"
+              />
+            </div>
+          </div>
+          <p className="mt-4 text-center text-xs text-slate-400 font-medium">
+            키보드 방향키(←, →, ↑, ↓)와 스페이스바를 사용하여 즐길 수 있습니다. 🕹️
+          </p>
+        </section>
+
+
         {/* 📝 지역 소식 (블로그) - 슬림화 */}
         <section className="mb-20 relative z-10 px-4">
           <div className="flex items-center justify-between mb-8">
