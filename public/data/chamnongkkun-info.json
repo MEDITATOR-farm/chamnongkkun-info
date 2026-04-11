@@ -304,6 +304,17 @@
       "target": "어업인(어선의 선주, 선장, 기관장, 통신장 등)",
       "summary": "어업인을 대상으로 안전조업 교육 프로그램 지원",
       "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000067"
+    },
+    {
+      "id": 20,
+      "name": "창업어가멘토링지원",
+      "category": "혜택",
+      "startDate": "2024-05-23",
+      "endDate": "상시",
+      "location": "해양수산부",
+      "target": "어업인 후계자로 선정된 지 5년 이내인 자 또는 귀어 후 5개년 이내인 자",
+      "summary": "어업후계자 및 창업어가에게 기술·경영 교육 지도를 위해 월 60만원 한도의 멘토링을 지원함",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000070"
     }
   ],
   "blogPosts": [
