@@ -70,19 +70,19 @@ export default async function PostPage({ params }: Props) {
         "@type": "ListItem",
         "position": 1,
         "name": "홈",
-        "item": "https://chamnongkkun-info.pages.dev"
+        "item": "https://chamnongkkun.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "블로그",
-        "item": "https://chamnongkkun-info.pages.dev/blog"
+        "item": "https://chamnongkkun.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": postData.title,
-        "item": `https://chamnongkkun-info.pages.dev/blog/${slug}`
+        "item": `https://chamnongkkun.com/blog/${slug}`
       }
     ]
   };
