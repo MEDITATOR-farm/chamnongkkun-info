@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://chamnongkkun.com/sitemap.xml',
+    sitemap: 'https://www.chamnongkkun.com/sitemap.xml',
   };
 }
