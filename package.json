@@ -10,11 +10,13 @@
     "update-poem": "node --env-file=.env.local scripts/update-poem.js",
     "update-idiom": "node --env-file=.env.local scripts/generate-daily-idiom.js",
     "update-wisdom": "node --env-file=.env.local scripts/generate-daily-wisdom.js",
-    "update-daily-all": "npm run update-idiom && npm run update-wisdom && node --env-file=.env.local scripts/generate-daily-ai-news.js && node --env-file=.env.local scripts/generate-daily-economy.js && node --env-file=.env.local scripts/generate-daily-books.js && node --env-file=.env.local scripts/generate-daily-stocks.js",
+    "update-realestate": "node --env-file=.env.local scripts/update-realestate.js",
+    "update-daily-all": "npm run update-idiom && npm run update-wisdom && npm run update-realestate && node --env-file=.env.local scripts/generate-daily-ai-news.js && node --env-file=.env.local scripts/generate-daily-economy.js && node --env-file=.env.local scripts/generate-daily-books.js && node --env-file=.env.local scripts/generate-daily-stocks.js",
     "fetch-events": "node scripts/fetch-rss-events.js",
     "generate-blog": "node scripts/generate-blog-post.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@tailwindcss/typography": "^0.5.19",
     "@types/leaflet": "^1.9.21",
     "gray-matter": "^4.0.3",
