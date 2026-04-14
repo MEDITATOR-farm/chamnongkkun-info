@@ -47,12 +47,15 @@ export default function RootLayout({
     >
       <head>
         {adsenseId && adsenseId !== "나중에_입력" && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
+          <>
+            <meta name="google-adsense-account" content={adsenseId} />
+            <Script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
+              crossOrigin="anonymous"
+              strategy="afterInteractive"
+            />
+          </>
         )}
         {gaId && 
          gaId !== "나중에_입력" && 
