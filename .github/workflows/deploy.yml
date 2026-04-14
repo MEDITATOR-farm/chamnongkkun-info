@@ -5,8 +5,8 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 */2 * * *' # 2?쒓컙留덈떎 ?먮룞 ?낅뜲?댄듃 ?ㅽ뻾 (?쒓뎅?쒓컙 湲곗? 吏앹닔??
-  workflow_dispatch: # ?섎룞 ?ㅽ뻾???꾪븳 ?ㅼ젙
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 紐⑤뱺 湲곕줉??媛?몄????먮룞 而ㅻ컠 ??異⑸룎 諛⑹?
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -71,9 +71,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          # 蹂寃쎌궗??씠 ?덈뒗 寃쎌슦?먮쭔 而ㅻ컠 ?섑뻾
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "?먮룞 ?낅뜲?댄듃: 怨듦났?곗씠???섏쭛 諛?釉붾줈洹?湲 ?앹꽦"
+            git commit -m "자동 업데이트: 공공데이터 수집 및 블로그 글 생성"
             git push
           else
             echo "No changes to commit"
@@ -91,4 +90,3 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
