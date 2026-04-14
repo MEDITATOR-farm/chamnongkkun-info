@@ -16,6 +16,8 @@ import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
 import ScrollToTop from "@/components/ScrollToTop";
 import AccordionSection from "@/components/AccordionSection";
+import HighRevenueSection from "@/components/HighRevenueSection";
+
 
 interface InfoItem {
   id: number;
@@ -161,12 +163,12 @@ export default function Home() {
             <span className="text-lg">🛒</span> 스토어
           </a>
         </nav>
-        <div 
+        <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-100 hover:scale-[1.02]"
           style={{ backgroundImage: "url('/images/daebyeongdaedo_lined.png')" }}
         />
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 via-transparent to-transparent" />
-        
+
         {/* 메인 타이틀 (유리 효과 제거 및 선명도 극대화 버전) */}
         <div className="relative z-20 text-center text-white p-6 md:p-10 mx-4 md:mx-auto mt-4 max-w-6xl w-[100%] transition-all">
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 text-shadow-premium animate-fade-in leading-tight drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
@@ -176,13 +178,13 @@ export default function Home() {
             푸른 바다와 함께하는 생생한 소식 🐬 거제의 모든 정보를 한눈에 확인하세요.
           </p>
           <div className="flex justify-center">
-            <a 
-              href="https://smartstore.naver.com/chamnongkkun" 
-              target="_blank" 
+            <a
+              href="https://smartstore.naver.com/chamnongkkun"
+              target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white px-8 md:px-10 py-3.5 md:py-4 rounded-[16px] font-black transition-all shadow-md hover:shadow-lg hover:-translate-y-1 active:translate-y-0 text-base md:text-lg border-2 border-white/5"
             >
-              <span className="text-2xl group-hover:rotate-[10deg] transition-transform">🛍️</span> 
+              <span className="text-2xl group-hover:rotate-[10deg] transition-transform">🛍️</span>
               참농꾼 스토어 바로가기
               <svg className="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -204,10 +206,14 @@ export default function Home() {
         <div className="absolute top-[40%] -right-[10%] w-[35%] h-[35%] bg-emerald-200/10 rounded-full blur-[100px] animate-glow pointer-events-none" style={{ animationDelay: '-2s' }} />
         <div className="absolute bottom-[20%] left-[20%] w-[30%] h-[30%] bg-blue-200/15 rounded-full blur-[90px] animate-glow pointer-events-none" style={{ animationDelay: '-4s' }} />
 
+        {/* 💡 알면 돈이 되는 정보 (가장 먼저 노출) */}
+        <HighRevenueSection />
+
         {/* 🧑‍🌾 농부 일기 & 증시 & 날씨 통합 섹션 (4:2:2:2 비율 정렬) */}
+
         <section className="mb-20 relative z-10 px-4">
           <div className="flex flex-col lg:flex-row gap-6 xl:gap-8 items-stretch">
-            
+
             {/* 1. 최근 농부일기 (70%) */}
             <div className="w-full lg:w-[70%] flex flex-col">
               <div className="flex items-center justify-between mb-6">
@@ -219,10 +225,10 @@ export default function Home() {
                   전체보기 →
                 </Link>
               </div>
-              
+
               <div className="grid grid-cols-1 gap-2">
                 {diaries.length > 0 ? (
-                  <AccordionSection 
+                  <AccordionSection
                     type="diary"
                     items={diaries.filter((d: any) => d.date === diaries[0].date).slice(0, 5).map((d: any) => ({
                       id: d.id,
@@ -244,8 +250,8 @@ export default function Home() {
 
             {/* 2. 날씨 & 도서 (30%) */}
             <div className="w-full lg:w-[30%] flex flex-col gap-6">
-               <WeatherWidget />
-               <BookRankingClient data={books} />
+              <WeatherWidget />
+              <BookRankingClient data={books} />
             </div>
 
           </div>
@@ -253,8 +259,8 @@ export default function Home() {
 
         {/* 🎬 농장의 생생한 현장 (Farm's Recent View) - 갤러리 팝업 모드로 대체 */}
         {diaries.length > 0 && diaries.filter((d: any) => d.date === diaries[0].date).some((d: any) => d.image || d.video) && (
-          <FarmGallery 
-            diaries={diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video))} 
+          <FarmGallery
+            diaries={diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video))}
           />
         )}
         <section className="mb-16 relative z-10 px-4">
@@ -265,17 +271,19 @@ export default function Home() {
           <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
             <MapLoader />
           </div>
-          
+
           <AdBanner />
         </section>
 
+
         {/* ✨ 오늘의 인사이트 요약 (Poem & AI Ranking 통합 슬림화) */}
+
         <section className="mb-20 relative z-10 px-4">
           <div className="flex items-center gap-3 mb-6">
             <span className="text-xl">✨</span>
             <h2 className="text-lg font-bold text-slate-800">오늘의 인사이트</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
             {/* 1. 오늘의 시 */}
             <DailyPoemClient poems={poems} />
@@ -291,14 +299,14 @@ export default function Home() {
             <span className="text-xl">🎮</span>
             <h2 className="text-lg font-bold text-slate-800">잠시 쉬어가는 게임</h2>
           </div>
-          
+
           <div className="flex flex-col gap-12 items-center justify-center">
             {/* 오목 AI 대전 영역 */}
             <div className="w-full max-w-4xl rounded-[2.5rem] p-0 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-[#3d2b1a]/50">
               <div className="w-full h-[1080px] relative">
-                <iframe 
-                  src="/omok-ai.html" 
-                  className="w-full h-full border-none rounded-xl" 
+                <iframe
+                  src="/omok-ai.html"
+                  className="w-full h-full border-none rounded-xl"
                   title="Omok AI Game"
                   scrolling="no"
                 />
@@ -323,7 +331,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="flex flex-col gap-2">
-            <AccordionSection 
+            <AccordionSection
               type="blog"
               items={blogPosts.slice(0, 5).map(post => ({
                 id: post.slug,
@@ -349,7 +357,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="flex flex-col gap-2">
-            <AccordionSection 
+            <AccordionSection
               type="event"
               items={data.events.slice(0, 6).map(event => ({
                 id: event.id,
@@ -370,10 +378,10 @@ export default function Home() {
             {/* 상단: AI 및 경제 핫이슈 */}
             {aiNews.length > 0 && <DailyNewsClient data={aiNews} type="ai" />}
             {economyNews.length > 0 && <DailyNewsClient data={economyNews} type="economy" />}
-            
+
             {/* 간격 여백 */}
             <div className="h-4"></div>
-            
+
             {/* 하단: 사자성어 및 명심보감 */}
             {idioms.length > 0 && <DailyIdiomClient idioms={idioms} />}
             {wisdoms.length > 0 && <DailyWisdomClient wisdoms={wisdoms} />}
@@ -392,13 +400,13 @@ export default function Home() {
               <span className="px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full">인쇄용 최적화</span>
             </div>
           </div>
-          
+
           <div className="flex flex-col gap-10 py-6 items-center">
             {/* 상단: 지도 미리보기 (가장 크게 배치) */}
             <div className="w-full relative group">
-              <img 
-                src="/assets/upside-down-world-map-v1.jpg" 
-                alt="해양수산부 거꾸로 세계지도" 
+              <img
+                src="/assets/upside-down-world-map-v1.jpg"
+                alt="해양수산부 거꾸로 세계지도"
                 className="w-full h-auto rounded-[2.5rem] shadow-none group-hover:scale-[1.01] transition-transform duration-700"
               />
               <div className="absolute top-6 left-6 z-20 bg-black/20 backdrop-blur-md text-white text-[12px] px-4 py-1.5 rounded-full font-bold opacity-0 group-hover:opacity-100 transition-opacity">
@@ -413,23 +421,23 @@ export default function Home() {
                   거꾸로 보면 <span className="text-cyan-600">새로운 세계</span>가 펼쳐집니다
                 </h3>
                 <p className="text-sm text-slate-500 leading-relaxed font-medium opacity-70">
-                  해양수산부에서 제작한 '글로벌 해양강국' 거꾸로 세계지도입니다. 
+                  해양수산부에서 제작한 '글로벌 해양강국' 거꾸로 세계지도입니다.
                   대륙 중심이 아닌 해양 중심으로 세상을 바라보는 새로운 시각을 경험해보세요.
                 </p>
               </div>
 
               <div className="flex flex-wrap justify-center gap-6 md:gap-12">
-                <a 
-                  href="/assets/upside-down-world-map-v1.jpg" 
+                <a
+                  href="/assets/upside-down-world-map-v1.jpg"
                   download="거꾸로-세계지도-일반형.jpg"
                   className="flex items-center gap-3 border-b border-transparent hover:border-cyan-400 pb-1 transition-all group"
                 >
                   <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">v1</span>
                   <span className="text-sm font-bold text-slate-600 group-hover:text-cyan-600">일반형 내려받기</span>
                 </a>
-                
-                <a 
-                  href="/assets/upside-down-world-map-v2.jpg" 
+
+                <a
+                  href="/assets/upside-down-world-map-v2.jpg"
                   download="거꾸로-세계지도-해양테마.jpg"
                   className="flex items-center gap-3 border-b border-transparent hover:border-cyan-600 pb-1 transition-all group"
                 >
@@ -446,7 +454,7 @@ export default function Home() {
         </section>
 
         {/* 💰 광고 섹션 (구글 광고 제거됨) */}
-        
+
         <div className="px-4 mb-20">
           <CoupangBanner />
         </div>
@@ -454,14 +462,14 @@ export default function Home() {
       <footer className="relative bg-white/30 backdrop-blur-md border-t border-white/50 py-16 text-slate-500 text-sm z-10 overflow-hidden">
         {/* 푸터 배경 효과 */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-200 to-transparent opacity-50" />
-        
+
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="flex flex-col md:flex-row justify-between items-center gap-10 mb-12">
             <div className="text-center md:text-left">
               <h2 className="text-2xl font-black text-slate-800 tracking-tighter mb-2">Chamnongkkun Info</h2>
               <p className="text-slate-400 text-xs font-semibold tracking-wide uppercase">The Best Guide to Geoje Island 🐬</p>
             </div>
-            
+
             <div className="flex flex-wrap justify-center gap-8 font-bold text-xs tracking-widest text-slate-400">
               <Link href="/about" className="hover:text-cyan-600 transition-colors hover:scale-105">소개</Link>
               <Link href="/update-events" className="hover:text-cyan-600 transition-colors hover:scale-105">업데이트</Link>
@@ -469,7 +477,7 @@ export default function Home() {
               <span className="cursor-help hover:text-slate-800 transition-colors">개인정보처리방침</span>
             </div>
           </div>
-          
+
           <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-medium text-slate-400 opacity-60">
             <p>© 2026 chamnongkkun-info. All rights reserved.</p>
             <p className="italic font-serif">"푸른 바다와 함께하는 생생한 거제 소식"</p>
