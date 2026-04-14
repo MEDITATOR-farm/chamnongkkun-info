@@ -2,35 +2,35 @@
   "poetry": [
     {
       "rank": 1,
-      "title": "서랍에 저녁을 넣어 두었다",
-      "author": "한강"
-    },
-    {
-      "rank": 2,
       "title": "꽃을 보듯 너를 본다",
       "author": "나태주"
     },
     {
-      "rank": 3,
-      "title": "사랑하라 한번도 상처받지 않은 것처럼",
+      "rank": 2,
+      "title": "마음챙김의 시",
       "author": "류시화"
+    },
+    {
+      "rank": 3,
+      "title": "너무 잘하려고 애쓰지 마라",
+      "author": "나태주"
     }
   ],
   "farming": [
     {
       "rank": 1,
-      "title": "텃밭 농사 무작정 따라하기",
-      "author": "윤인수"
+      "title": "텃밭 백과",
+      "author": "박원만"
     },
     {
       "rank": 2,
-      "title": "귀농귀촌 무작정 따라하기",
-      "author": "이재석"
+      "title": "귀농귀촌 핸드북",
+      "author": "농수축산신문 편집부"
     },
     {
       "rank": 3,
-      "title": "도시농부 올빼미의 텃밭 가꾸기",
-      "author": "유다경"
+      "title": "1평 텃밭",
+      "author": "장진규"
     }
   ]
 }
