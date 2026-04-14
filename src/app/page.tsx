@@ -292,31 +292,33 @@ export default function Home() {
             <h2 className="text-lg font-bold text-slate-800">잠시 쉬어가는 게임</h2>
           </div>
           
-          <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+          <div className="flex flex-col gap-12 items-center justify-center">
             {/* 테트리스 영역 */}
-            <div className="flex-1 bg-[#111] rounded-[2.5rem] p-4 md:p-8 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-slate-800/50">
-              <div className="w-full max-w-[500px] aspect-[4/5] md:aspect-auto md:h-[600px] relative">
+            <div className="w-full max-w-2xl rounded-[2.5rem] p-0 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-slate-800/50">
+              <div className="w-full h-[580px] relative">
                 <iframe 
                   src="/tetris.html" 
                   className="w-full h-full border-none rounded-xl" 
                   title="Tetris Game"
+                  scrolling="no"
                 />
               </div>
-              <p className="mt-6 text-center text-[11px] text-slate-400 font-black tracking-widest uppercase">
+              <p className="mt-4 mb-4 text-center text-[11px] text-slate-400 font-black tracking-widest uppercase">
                 TETRIS : 방향키와 스페이스바 사용 🕹️
               </p>
             </div>
 
             {/* 오목 영역 */}
-            <div className="flex-1 bg-[#2a1f12] rounded-[2.5rem] p-4 md:p-8 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-[#3d2b1a]/50">
-              <div className="w-full max-w-[500px] aspect-[4/5] md:aspect-auto md:h-[600px] relative">
+            <div className="w-full max-w-3xl rounded-[2.5rem] p-0 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-[#3d2b1a]/50">
+              <div className="w-full h-[800px] relative">
                 <iframe 
                   src="/gomoku.html" 
                   className="w-full h-full border-none rounded-xl" 
                   title="Gomoku Game"
+                  scrolling="no"
                 />
               </div>
-              <p className="mt-6 text-center text-[11px] text-[#9c8060] font-black tracking-widest uppercase">
+              <p className="mt-4 mb-4 text-center text-[11px] text-[#9c8060] font-black tracking-widest uppercase">
                 GOMOKU : 마우스로 돌을 놓으세요 ⚪⚫
               </p>
             </div>
