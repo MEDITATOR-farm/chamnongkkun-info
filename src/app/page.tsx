@@ -285,7 +285,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 🎮 게임 섹션 (테트리스 & 오목) */}
+        {/* 🎮 게임 섹션 (오목 AI 가로 단일 배치) */}
         <section className="mb-20 relative z-10 px-4">
           <div className="flex items-center gap-3 mb-6">
             <span className="text-xl">🎮</span>
@@ -293,33 +293,18 @@ export default function Home() {
           </div>
           
           <div className="flex flex-col gap-12 items-center justify-center">
-            {/* 테트리스 영역 */}
-            <div className="w-full max-w-2xl rounded-[2.5rem] p-0 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-slate-800/50">
-              <div className="w-full h-[580px] relative">
+            {/* 오목 AI 대전 영역 */}
+            <div className="w-full max-w-4xl rounded-[2.5rem] p-0 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-[#3d2b1a]/50">
+              <div className="w-full h-[1080px] relative">
                 <iframe 
-                  src="/tetris.html" 
+                  src="/omok-ai.html" 
                   className="w-full h-full border-none rounded-xl" 
-                  title="Tetris Game"
-                  scrolling="no"
-                />
-              </div>
-              <p className="mt-4 mb-4 text-center text-[11px] text-slate-400 font-black tracking-widest uppercase">
-                TETRIS : 방향키와 스페이스바 사용 🕹️
-              </p>
-            </div>
-
-            {/* 오목 영역 */}
-            <div className="w-full max-w-3xl rounded-[2.5rem] p-0 shadow-2xl overflow-hidden flex flex-col items-center border-4 border-[#3d2b1a]/50">
-              <div className="w-full h-[800px] relative">
-                <iframe 
-                  src="/gomoku.html" 
-                  className="w-full h-full border-none rounded-xl" 
-                  title="Gomoku Game"
+                  title="Omok AI Game"
                   scrolling="no"
                 />
               </div>
               <p className="mt-4 mb-4 text-center text-[11px] text-[#9c8060] font-black tracking-widest uppercase">
-                GOMOKU : 마우스로 돌을 놓으세요 ⚪⚫
+                OMOK AI : 마우스로 돌을 놓으세요 ⚪⚫
               </p>
             </div>
           </div>

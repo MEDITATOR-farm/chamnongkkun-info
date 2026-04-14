@@ -32,85 +32,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+// src/app/layout.tsx
 
+export default function RootLayout({ children }) {
   return (
-    <html
-      lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable} h-full antialiased`}
-    >
+    <html lang="ko">
       <head>
-        {adsenseId && adsenseId !== "나중에_입력" && (
-          <>
-            <meta name="google-adsense-account" content={adsenseId} />
-            <Script
-              async
-              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
-              crossOrigin="anonymous"
-              strategy="afterInteractive"
-            />
-          </>
-        )}
-        {gaId && 
-         gaId !== "나중에_입력" && 
-         gaId !== "나중애_입력" && (
-          <>
-            <Script 
-              async 
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} 
-              strategy="afterInteractive"
-            />
-            <Script
-              id="google-analytics"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${gaId}');
-                `,
-              }}
-            />
-          </>
-        )}
+        {/* ✅ 정적 빌드에서 가장 안정적인 방식 */}
         <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              "name": "Chamnongkkun 과 함께 하는 거제소식",
-              "url": "https://www.chamnongkkun.com",
-              "description": "거제시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보"
-            })
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "홈",
-                  "item": "https://www.chamnongkkun.com"
-                }
-              ]
-            })
-          }}
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+          crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body>{children}</body>
     </html>
-  );
+  )
 }
