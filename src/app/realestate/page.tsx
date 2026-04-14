@@ -1,82 +1,26 @@
-import Link from "next/link";
-
-export default function RealEstatePage() {
-  // 샘플 데이터 (나중에 실제 데이터로 연결할 수 있습니다)
-  const realEstateData = [
-    { name: "고현 e편한세상", type: "아파트", size: "84㎡", price: "3억 8,000만", change: "▲ 500" },
-    { name: "상동 힐스테이트 거제", type: "아파트", size: "84㎡", price: "4억 2,000만", change: "▼ 200" },
-    { name: "장평 포레나 거제", type: "아파트", size: "84㎡", price: "3억 9,000만", change: "-", },
-    { name: "수월 자이", type: "아파트", size: "110㎡", price: "5억 5,000만", change: "▲ 1,000" },
-    { name: "아주 KCC 스위첸", type: "아파트", size: "84㎡", price: "2억 9,000만", change: "▲ 300" },
-  ];
-
+﻿import fs from "fs"; import path from "path";
+export default function Page() {
+  let data: any = null;
+  try { data = JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/data/realestate.json"),"utf-8")); } catch(e) {}
+  if (!data) return <div className="p-8 text-center text-slate-400">데이터 준비 중입니다...</div>;
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fbff", padding: "2rem 1rem" }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-        {/* 헤더 */}
-        <div style={{ marginBottom: "2rem" }}>
-          <Link href="/" style={{ textDecoration: "none", color: "#1a73e8", fontWeight: "bold", fontSize: "0.9rem" }}>
-            ← 홈으로 돌아가기
-          </Link>
-          <h1 style={{ fontSize: "2rem", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
-            🏠 거제 부동산 실거래가 시세
-          </h1>
-          <p style={{ color: "#666" }}>거제시 주요 아파트 및 토지의 최신 거래 정보를 확인하세요.</p>
+    <div className="min-h-screen bg-[#f8fbff] py-12 px-4">
+      <div className="max-w-3xl mx-auto">
+        <div className="flex items-center gap-3 mb-2"><span className="text-3xl">🏠</span><h1 className="text-2xl font-black text-slate-800">거제 부동산 시세</h1></div>
+        <p className="text-sm text-slate-400 mb-2">업데이트: {data.updatedAt}</p>
+        <p className="text-base text-slate-600 mb-8 font-medium">{data.summary}</p>
+        <div className="grid grid-cols-1 gap-4 mb-10">
+          {data.areas?.map((a: any, i: number) => (
+            <div key={i} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">
+              <div><div className="font-bold text-slate-800 text-lg">{a.name}</div><div className="text-sm text-slate-500 mt-1">{a.highlight}</div></div>
+              <div className="text-right"><div className="font-black text-slate-700">{a.avgPrice}</div>
+              <div className={`text-lg font-bold mt-1 ${a.trend==="상승"?"text-red-500":a.trend==="하락"?"text-blue-500":"text-slate-400"}`}>{a.trendIcon} {a.trend}</div></div>
+            </div>
+          ))}
         </div>
-
-        {/* 안내 카드 */}
-        <div style={{ 
-          background: "#fff", 
-          padding: "20px", 
-          borderRadius: "16px", 
-          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          marginBottom: "2rem",
-          border: "1px solid #eef2f6"
-        }}>
-          <h2 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "10px" }}>💡 부동산 거래 팁</h2>
-          <p style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.6" }}>
-            실거래가는 국토교통부 데이터를 기준으로 하며, 실제 매물 가격과는 차이가 있을 수 있습니다. 
-            정확한 시세 파악을 위해서는 주변 공인중개사 사무소 방문을 권장드립니다.
-          </p>
-        </div>
-
-        {/* 시세 리스트 */}
-        <div style={{ background: "#fff", borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-            <thead>
-              <tr style={{ background: "#f1f5f9" }}>
-                <th style={{ padding: "15px", fontSize: "0.85rem", color: "#64748b" }}>단지명</th>
-                <th style={{ padding: "15px", fontSize: "0.85rem", color: "#64748b" }}>면적</th>
-                <th style={{ padding: "15px", fontSize: "0.85rem", color: "#64748b" }}>실거래가</th>
-                <th style={{ padding: "15px", fontSize: "0.85rem", color: "#64748b" }}>변동</th>
-              </tr>
-            </thead>
-            <tbody>
-              {realEstateData.map((item, index) => (
-                <tr key={index} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                  <td style={{ padding: "15px", fontWeight: "700", color: "#1a1a1a" }}>{item.name}</td>
-                  <td style={{ padding: "15px", color: "#666", fontSize: "0.9rem" }}>{item.size}</td>
-                  <td style={{ padding: "15px", fontWeight: "800", color: "#1a73e8" }}>{item.price}</td>
-                  <td style={{ 
-                    padding: "15px", 
-                    fontSize: "0.85rem", 
-                    fontWeight: "700",
-                    color: item.change.includes("▲") ? "#d32f2f" : item.change.includes("▼") ? "#1976d2" : "#666"
-                  }}>
-                    {item.change}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* 하단 안내 */}
-        <div style={{ marginTop: "2rem", textAlign: "center", paddingBottom: "4rem" }}>
-          <p style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
-            데이터 업데이트: 2026년 4월 15일 기준<br/>
-            제공: 국토교통부 실거래가 공개시스템
-          </p>
+        <div className="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+          <div className="font-bold text-amber-800 mb-3">💡 알아두면 좋은 팁</div>
+          <ul className="space-y-2">{data.tips?.map((t: string, i: number) => <li key={i} className="text-sm text-amber-700 flex gap-2"><span>•</span><span>{t}</span></li>)}</ul>
         </div>
       </div>
     </div>
