@@ -1,3 +1,4 @@
+"use clent";
 import Link from "next/link";
 
 export default function InsuranceTipsPage() {
