@@ -1,9 +1,8 @@
-import Link from "next/link";
+import fs from "fs";
+import path from "path";
 import AIRanking from "@/components/AIRanking";
 import AdBanner from "@/components/AdBanner";
 import MapLoader from "@/components/MapLoader";
-import fs from "fs";
-import path from "path";
 import CoupangBanner from "@/components/CoupangBanner";
 import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
@@ -16,6 +15,7 @@ import { getSortedPostsData } from "@/lib/posts";
 import ScrollToTop from "@/components/ScrollToTop";
 import AccordionSection from "@/components/AccordionSection";
 import HighRevenueSection from "@/components/HighRevenueSection";
+import { SupportCard, BlogCard, NavLinks, HeroButton, GlassCard } from "@/components/GlassCard";
 
 interface InfoItem {
   id: number; name: string; category: string;
@@ -27,11 +27,6 @@ interface Data { events: InfoItem[]; blogPosts: any[]; }
 function readJson(filePath: string, fallback: any = []) {
   if (!fs.existsSync(filePath)) return fallback;
   try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch { return fallback; }
-}
-
-function getDiaries() {
-  const d = readJson(path.join(process.cwd(), "public/data/diaries.json"));
-  return d.sort((a: any, b: any) => b.id - a.id);
 }
 
 const getData = (): Data =>
@@ -51,9 +46,9 @@ function SectionTitle({ icon, text, href }: { icon: string; text: string; href?:
       <span style={{ fontSize: "1.1rem" }}>{icon}</span>
       <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "white", margin: 0 }}>{text}</h2>
       {href && (
-        <Link href={href} style={{ marginLeft: "auto", fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+        <a href={href} style={{ marginLeft: "auto", fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
           전체보기 →
-        </Link>
+        </a>
       )}
     </div>
   );
@@ -65,7 +60,7 @@ function Divider() {
 
 export default function Home() {
   const data = getData();
-  let diaries = getDiaries();
+  let diaries = readJson(path.join(process.cwd(), "public/data/diaries.json"));
   diaries = diaries.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const poems = readJson(path.join(process.cwd(), "public/data/poems.json"));
   const idioms = readJson(path.join(process.cwd(), "public/data/idioms.json"));
@@ -86,10 +81,9 @@ export default function Home() {
     <div style={{
       minHeight: "100vh",
       background: "linear-gradient(135deg, #060f1e 0%, #0a1e3a 35%, #0b2d3e 65%, #081a14 100%)",
-      color: "white",
-      cursor: "none",
-      overflowX: "hidden",
+      color: "white", cursor: "none", overflowX: "hidden",
     }}>
+
       {/* 배경 오브 */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
         <div style={{ position: "absolute", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(14,165,233,0.15), transparent 70%)", top: -150, left: -150, filter: "blur(60px)" }} />
@@ -107,13 +101,7 @@ export default function Home() {
         <div style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.02em" }}>
           Chamnongkkun <span style={{ color: "#22d3ee" }}>거제소식</span>
         </div>
-        <div style={{ display: "flex", gap: "1.8rem", alignItems: "center" }}>
-          {([["홈", "/"], ["블로그", "/blog"], ["지원금", "/support/youth"], ["소개", "/about"]] as [string,string][]).map(([t, h]) => (
-            <Link key={h} href={h} style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.82rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>{t}</Link>
-          ))}
-          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer"
-            style={{ color: "#22d3ee", fontSize: "0.82rem", fontWeight: 700, textDecoration: "none", cursor: "none" }}>🛒 스토어</a>
-        </div>
+        <NavLinks />
       </nav>
 
       {/* ── 히어로 ── */}
@@ -132,13 +120,7 @@ export default function Home() {
           <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.55)", marginBottom: "1.8rem", lineHeight: 1.7 }}>
             지원금 · 농업 · 행사 · 맛집 — 거제 생활의 모든 정보
           </p>
-          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" data-hover="true"
-            style={{
-              display: "inline-flex", alignItems: "center", gap: "8px", cursor: "none",
-              background: "linear-gradient(135deg, #f59e0b, #ef4444)",
-              color: "white", fontWeight: 700, fontSize: "0.9rem",
-              padding: "12px 28px", borderRadius: "40px", textDecoration: "none",
-            }}>🛍️ 참농꾼 스토어 바로가기 →</a>
+          <HeroButton />
         </div>
       </header>
 
@@ -154,20 +136,11 @@ export default function Home() {
           <section>
             <SectionTitle icon="💸" text="오늘의 지원금 요약" href="/support/youth" />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "10px" }}>
-              {[...(youthSupport?.supports?.slice(0, 3) || []), ...(farmSupport?.supports?.slice(0, 3) || [])].map((s: any, i: number) => (
-                <Link key={i} href={i < 3 ? "/support/youth" : "/support/farm"} style={{ textDecoration: "none" }}>
-                  <div data-hover="true" style={{ ...G, padding: "14px 16px", cursor: "none", display: "flex", alignItems: "center", gap: "12px", transition: "background 0.2s, transform 0.2s" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.11)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}>
-                    <div style={{ width: "34px", height: "34px", borderRadius: "10px", background: "rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>{i < 3 ? "💰" : "🌾"}</div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: "0.7rem", color: i < 3 ? "#22d3ee" : "#34d399", fontWeight: 700, marginBottom: "2px" }}>{s.tag}</div>
-                      <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "white", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
-                      <div style={{ fontSize: "0.75rem", color: "#34d399", fontWeight: 700 }}>{s.amount}</div>
-                    </div>
-                    <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-                  </div>
-                </Link>
+              {(youthSupport?.supports?.slice(0, 3) || []).map((s: any, i: number) => (
+                <SupportCard key={`y${i}`} href="/support/youth" icon="💰" tag={s.tag} tagColor="#22d3ee" title={s.title} amount={s.amount} />
+              ))}
+              {(farmSupport?.supports?.slice(0, 3) || []).map((s: any, i: number) => (
+                <SupportCard key={`f${i}`} href="/support/farm" icon="🌾" tag={s.tag} tagColor="#34d399" title={s.title} amount={s.amount} />
               ))}
             </div>
           </section>
@@ -209,23 +182,15 @@ export default function Home() {
           <SectionTitle icon="📝" text="최신 블로그" href="/blog" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
             {blogPosts.map((post: any) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration: "none" }}>
-                <div data-hover="true" style={{ ...G, padding: "1rem 1.1rem", cursor: "none", display: "flex", flexDirection: "column", gap: "6px", height: "100%", transition: "background 0.2s, transform 0.2s" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.11)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    {post.category && (
-                      <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: "20px", color: tagColors[post.category] || "rgba(255,255,255,0.5)", background: "rgba(255,255,255,0.08)" }}>{post.category}</span>
-                    )}
-                    <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.3)", marginLeft: "auto" }}>{post.date}</span>
-                  </div>
-                  <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "white", lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>{post.title}</div>
-                  {post.summary && (
-                    <div style={{ fontSize: "0.74rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.5, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>{post.summary}</div>
-                  )}
-                  <div style={{ fontSize: "0.72rem", color: "#22d3ee", fontWeight: 700, marginTop: "auto" }}>읽기 →</div>
-                </div>
-              </Link>
+              <BlogCard
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                category={post.category}
+                date={post.date}
+                title={post.title}
+                summary={post.summary}
+                tagColor={tagColors[post.category] || "rgba(255,255,255,0.5)"}
+              />
             ))}
           </div>
         </section>
@@ -276,10 +241,10 @@ export default function Home() {
         )}
         <Divider />
 
-        {/* 10. 거꾸로 세계지도 (슬림) */}
+        {/* 10. 거꾸로 세계지도 슬림 */}
         <section>
           <SectionTitle icon="🌍" text="해양수산부 거꾸로 세계지도" />
-          <div style={{ ...G, padding: "1.2rem", display: "flex", gap: "1.2rem", alignItems: "center", flexWrap: "wrap" }}>
+          <GlassCard style={{ padding: "1.2rem", display: "flex", gap: "1.2rem", alignItems: "center", flexWrap: "wrap" }}>
             <img src="/assets/upside-down-world-map-v1.jpg" alt="거꾸로 세계지도" style={{ width: "200px", height: "auto", borderRadius: "12px", flexShrink: 0 }} />
             <div>
               <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: "1rem" }}>해양 중심으로 세상을 바라보는 시각 — 해양수산부 공공저작물</p>
@@ -288,7 +253,7 @@ export default function Home() {
                 <a href="/assets/upside-down-world-map-v2.jpg" download style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>v2 내려받기 ↓</a>
               </div>
             </div>
-          </div>
+          </GlassCard>
         </section>
         <Divider />
 
@@ -304,8 +269,8 @@ export default function Home() {
               <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.06em" }}>THE BEST GUIDE TO GEOJE ISLAND 🐬</div>
             </div>
             <div style={{ display: "flex", gap: "1.8rem", flexWrap: "wrap" }}>
-              {([["소개", "/about"], ["업데이트", "/update-events"]] as [string,string][]).map(([t, h]) => (
-                <Link key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>{t}</Link>
+              {([["소개", "/about"], ["업데이트", "/update-events"]] as [string, string][]).map(([t, h]) => (
+                <a key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>{t}</a>
               ))}
               <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>스토어</a>
             </div>
