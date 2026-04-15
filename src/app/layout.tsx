@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nanum_Myeongjo } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
+import CursorEffect from "@/components/CursorEffect";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const nanumMyeongjo = Nanum_Myeongjo({
   weight: ["400", "700", "800"],
   subsets: ["latin"],
@@ -30,22 +22,23 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     type: "website",
   },
+  verification: { google: "f106dc695fea681f" },
 };
-
-// src/app/layout.tsx
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <head>
-        {/* ✅ 정적 빌드에서 가장 안정적인 방식 */}
         <script
           async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
           crossOrigin="anonymous"
         />
       </head>
-      <body>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable}`}>
+        <CursorEffect />
+        {children}
+      </body>
     </html>
-  )
+  );
 }

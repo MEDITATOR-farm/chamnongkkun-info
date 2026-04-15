@@ -18,361 +18,301 @@ import AccordionSection from "@/components/AccordionSection";
 import HighRevenueSection from "@/components/HighRevenueSection";
 
 interface InfoItem {
-  id: number;
-  name: string;
-  category: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  target: string;
-  summary: string;
-  link: string;
+  id: number; name: string; category: string;
+  startDate: string; endDate: string; location: string;
+  target: string; summary: string; link: string;
 }
+interface Data { events: InfoItem[]; blogPosts: any[]; }
 
-interface BlogPost {
-  id: number;
-  title: string;
-  date: string;
-  summary: string;
-  link: string;
-}
-
-interface Data {
-  events: InfoItem[];
-  blogPosts: BlogPost[];
+function readJson(filePath: string, fallback: any = []) {
+  if (!fs.existsSync(filePath)) return fallback;
+  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch { return fallback; }
 }
 
 function getDiaries() {
-  const filePath = path.join(process.cwd(), "public/data/diaries.json");
-  if (!fs.existsSync(filePath)) return [];
-  try {
-    const diaries = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    return diaries.sort((a: any, b: any) => b.id - a.id);
-  } catch (e) { return []; }
+  const d = readJson(path.join(process.cwd(), "public/data/diaries.json"));
+  return d.sort((a: any, b: any) => b.id - a.id);
 }
 
-function getPoems() {
-  const filePath = path.join(process.cwd(), "public/data/poems.json");
-  if (!fs.existsSync(filePath)) return [];
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return []; }
+const getData = (): Data =>
+  JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/data/chamnongkkun-info.json"), "utf-8"));
+
+const G: React.CSSProperties = {
+  background: "rgba(255,255,255,0.06)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: "1px solid rgba(255,255,255,0.12)",
+  borderRadius: "20px",
+};
+
+function SectionTitle({ icon, text, href }: { icon: string; text: string; href?: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "1rem" }}>
+      <span style={{ fontSize: "1.1rem" }}>{icon}</span>
+      <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "white", margin: 0 }}>{text}</h2>
+      {href && (
+        <Link href={href} style={{ marginLeft: "auto", fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
+          전체보기 →
+        </Link>
+      )}
+    </div>
+  );
 }
 
-function getIdioms() {
-  const filePath = path.join(process.cwd(), "public/data/idioms.json");
-  if (!fs.existsSync(filePath)) return [];
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return []; }
-}
-
-function getWisdoms() {
-  const filePath = path.join(process.cwd(), "public/data/wisdom.json");
-  if (!fs.existsSync(filePath)) return [];
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return []; }
-}
-
-function getAiNews() {
-  const filePath = path.join(process.cwd(), "public/data/ai-news.json");
-  if (!fs.existsSync(filePath)) return [];
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return []; }
-}
-
-function getEconomyNews() {
-  const filePath = path.join(process.cwd(), "public/data/economy.json");
-  if (!fs.existsSync(filePath)) return [];
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return []; }
-}
-
-function getBooks() {
-  const filePath = path.join(process.cwd(), "public/data/books.json");
-  if (!fs.existsSync(filePath)) return null;
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return null; }
-}
-
-function getYouthSupport() {
-  const filePath = path.join(process.cwd(), "public/data/youth-support.json");
-  if (!fs.existsSync(filePath)) return null;
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return null; }
-}
-
-function getFarmSupport() {
-  const filePath = path.join(process.cwd(), "public/data/farm-support.json");
-  if (!fs.existsSync(filePath)) return null;
-  try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch (e) { return null; }
-}
-
-function getData(): Data {
-  const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
-  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+function Divider() {
+  return <div style={{ height: "1px", background: "rgba(255,255,255,0.07)", margin: "2.8rem 0" }} />;
 }
 
 export default function Home() {
   const data = getData();
-  const poems = getPoems();
   let diaries = getDiaries();
   diaries = diaries.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  const idioms = getIdioms();
-  const wisdoms = getWisdoms();
-  const aiNews = getAiNews();
-  const economyNews = getEconomyNews();
-  const books = getBooks();
-  const youthSupport = getYouthSupport();
-  const farmSupport = getFarmSupport();
+  const poems = readJson(path.join(process.cwd(), "public/data/poems.json"));
+  const idioms = readJson(path.join(process.cwd(), "public/data/idioms.json"));
+  const wisdoms = readJson(path.join(process.cwd(), "public/data/wisdom.json"));
+  const aiNews = readJson(path.join(process.cwd(), "public/data/ai-news.json"));
+  const economyNews = readJson(path.join(process.cwd(), "public/data/economy.json"));
+  const books = readJson(path.join(process.cwd(), "public/data/books.json"), null);
+  const youthSupport = readJson(path.join(process.cwd(), "public/data/youth-support.json"), null);
+  const farmSupport = readJson(path.join(process.cwd(), "public/data/farm-support.json"), null);
   const blogPosts = getSortedPostsData().slice(0, 6);
 
-  return (
-    <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200 overflow-x-hidden">
+  const tagColors: Record<string, string> = {
+    행사: "#22d3ee", 농업: "#34d399", 부동산: "#60a5fa",
+    복지: "#fdba74", 지원금: "#a78bfa", 귀농: "#86efac",
+  };
 
-      {/* ── 헤더 ── */}
-      <header className="relative min-h-[400px] w-full flex items-center justify-center overflow-hidden">
-        <nav className="absolute top-0 left-0 w-full z-40 px-6 py-5 flex justify-end gap-8 text-white font-bold text-sm">
-          <Link href="/" className="hover:text-cyan-300 transition-all">홈</Link>
-          <Link href="/blog" className="hover:text-cyan-300 transition-all">블로그</Link>
-          <Link href="/about" className="hover:text-cyan-300 transition-all">소개</Link>
-          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-all flex items-center gap-1">
-            <span>🛒</span> 스토어
-          </a>
-        </nav>
-        <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/daebyeongdaedo_lined.png')" }} />
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 via-transparent to-transparent" />
-        <div className="relative z-20 text-center text-white p-6 md:p-10 mx-4 mt-4 max-w-5xl w-full">
-          <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-4 drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
-            Chamnongkkun <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-cyan-100">과 함께 하는 거제소식</span>
-          </h1>
-          <p className="text-base md:text-xl font-bold mb-8 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-            푸른 바다와 함께하는 생생한 소식 🐬 거제의 모든 정보를 한눈에
-          </p>
-          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white px-8 py-3 rounded-2xl font-black transition-all shadow-md hover:-translate-y-1 text-base">
-            <span>🛍️</span> 참농꾼 스토어 바로가기 →
-          </a>
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #060f1e 0%, #0a1e3a 35%, #0b2d3e 65%, #081a14 100%)",
+      color: "white",
+      cursor: "none",
+      overflowX: "hidden",
+    }}>
+      {/* 배경 오브 */}
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+        <div style={{ position: "absolute", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(14,165,233,0.15), transparent 70%)", top: -150, left: -150, filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(6,182,212,0.1), transparent 70%)", bottom: "10%", right: -100, filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%)", top: "40%", left: "50%", filter: "blur(50px)" }} />
+      </div>
+
+      {/* ── 네비게이션 ── */}
+      <nav style={{
+        position: "sticky", top: 0, zIndex: 50, height: "56px",
+        padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: "rgba(6,15,30,0.75)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+      }}>
+        <div style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.02em" }}>
+          Chamnongkkun <span style={{ color: "#22d3ee" }}>거제소식</span>
         </div>
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-30">
-          <svg className="relative block w-full h-[60px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C57.43,84.43,101.45,112.33,161.85,116.82,222.25,121.3,275.46,65,321.39,56.44Z" fill="#f8fbff" />
-          </svg>
+        <div style={{ display: "flex", gap: "1.8rem", alignItems: "center" }}>
+          {([["홈", "/"], ["블로그", "/blog"], ["지원금", "/support/youth"], ["소개", "/about"]] as [string,string][]).map(([t, h]) => (
+            <Link key={h} href={h} style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.82rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>{t}</Link>
+          ))}
+          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer"
+            style={{ color: "#22d3ee", fontSize: "0.82rem", fontWeight: 700, textDecoration: "none", cursor: "none" }}>🛒 스토어</a>
+        </div>
+      </nav>
+
+      {/* ── 히어로 ── */}
+      <header style={{ position: "relative", zIndex: 1, minHeight: "440px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/images/daebyeongdaedo_lined.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.22 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,15,30,0.35), rgba(6,15,30,0.65))" }} />
+        <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "2rem 1.5rem", maxWidth: "680px" }}>
+          <div style={{
+            display: "inline-block", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em",
+            color: "#22d3ee", border: "1px solid rgba(34,211,238,0.3)", padding: "4px 16px",
+            borderRadius: "30px", marginBottom: "1.2rem", background: "rgba(34,211,238,0.08)",
+          }}>GEOJE · 거제 🐬</div>
+          <h1 style={{ fontSize: "clamp(1.8rem,5vw,3rem)", fontWeight: 800, lineHeight: 1.25, marginBottom: "1rem", letterSpacing: "-0.02em" }}>
+            Chamnongkkun과<br /><span style={{ color: "#22d3ee" }}>함께하는 거제소식</span>
+          </h1>
+          <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.55)", marginBottom: "1.8rem", lineHeight: 1.7 }}>
+            지원금 · 농업 · 행사 · 맛집 — 거제 생활의 모든 정보
+          </p>
+          <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" data-hover="true"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "8px", cursor: "none",
+              background: "linear-gradient(135deg, #f59e0b, #ef4444)",
+              color: "white", fontWeight: 700, fontSize: "0.9rem",
+              padding: "12px 28px", borderRadius: "40px", textDecoration: "none",
+            }}>🛍️ 참농꾼 스토어 바로가기 →</a>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-10 max-w-6xl">
+      {/* ── 메인 ── */}
+      <main style={{ position: "relative", zIndex: 1, maxWidth: "1100px", margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
 
-        {/* ── 1. 알면 돈이 되는 정보 ── */}
+        {/* 1. 알면 돈이 되는 정보 */}
         <HighRevenueSection />
+        <Divider />
 
-        {/* ── 2. 오늘의 지원금 요약 카드 ── */}
+        {/* 2. 오늘의 지원금 */}
         {(youthSupport || farmSupport) && (
-          <section className="mb-14 px-2">
-            <div className="flex items-center gap-2 mb-5">
-              <span className="text-xl">💸</span>
-              <h2 className="text-lg font-bold text-slate-800">오늘의 지원금 요약</h2>
-              <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">바로 신청 가능</span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* 청년 지원금 TOP 3 */}
-              {youthSupport?.supports?.slice(0, 3).map((s: any, i: number) => (
-                <Link href="/support/youth" key={i}
-                  className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl flex-shrink-0">💰</div>
-                  <div className="min-w-0">
-                    <div className="text-xs text-blue-500 font-bold mb-0.5">{s.tag}</div>
-                    <div className="font-bold text-slate-800 text-sm truncate">{s.title}</div>
-                    <div className="text-emerald-600 font-black text-sm">{s.amount}</div>
+          <section>
+            <SectionTitle icon="💸" text="오늘의 지원금 요약" href="/support/youth" />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "10px" }}>
+              {[...(youthSupport?.supports?.slice(0, 3) || []), ...(farmSupport?.supports?.slice(0, 3) || [])].map((s: any, i: number) => (
+                <Link key={i} href={i < 3 ? "/support/youth" : "/support/farm"} style={{ textDecoration: "none" }}>
+                  <div data-hover="true" style={{ ...G, padding: "14px 16px", cursor: "none", display: "flex", alignItems: "center", gap: "12px", transition: "background 0.2s, transform 0.2s" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.11)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}>
+                    <div style={{ width: "34px", height: "34px", borderRadius: "10px", background: "rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>{i < 3 ? "💰" : "🌾"}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: "0.7rem", color: i < 3 ? "#22d3ee" : "#34d399", fontWeight: 700, marginBottom: "2px" }}>{s.tag}</div>
+                      <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "white", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
+                      <div style={{ fontSize: "0.75rem", color: "#34d399", fontWeight: 700 }}>{s.amount}</div>
+                    </div>
+                    <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
                   </div>
-                  <div className="ml-auto text-slate-300 text-lg">›</div>
                 </Link>
               ))}
-              {/* 농업 지원금 TOP 3 */}
-              {farmSupport?.supports?.slice(0, 3).map((s: any, i: number) => (
-                <Link href="/support/farm" key={i}
-                  className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">🌾</div>
-                  <div className="min-w-0">
-                    <div className="text-xs text-green-600 font-bold mb-0.5">{s.tag}</div>
-                    <div className="font-bold text-slate-800 text-sm truncate">{s.title}</div>
-                    <div className="text-emerald-600 font-black text-sm">{s.amount}</div>
-                  </div>
-                  <div className="ml-auto text-slate-300 text-lg">›</div>
-                </Link>
-              ))}
-            </div>
-            <div className="flex gap-3 mt-3">
-              <Link href="/support/youth" className="text-xs text-blue-500 hover:underline font-bold">청년지원금 전체보기 →</Link>
-              <Link href="/support/farm" className="text-xs text-green-600 hover:underline font-bold">농업지원금 전체보기 →</Link>
             </div>
           </section>
         )}
+        <Divider />
 
-        {/* ── 3. 농부일기 + 날씨/도서 ── */}
-        <section className="mb-14 px-2">
-          <div className="flex flex-col lg:flex-row gap-6 items-stretch">
-            <div className="w-full lg:w-[68%] flex flex-col">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🌱</span>
-                  <h2 className="text-lg font-bold text-slate-800">최근 농부일기</h2>
-                </div>
-                <Link href="/diaries" className="text-slate-400 hover:text-cyan-600 text-xs font-bold transition-all">전체보기 →</Link>
-              </div>
-              <div className="grid grid-cols-1 gap-2">
+        {/* 3. 농부일기 + 날씨/도서 */}
+        <section>
+          <SectionTitle icon="🌱" text="최근 농부일기" href="/diaries" />
+          <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 58%", minWidth: "280px" }}>
+              <div style={{ ...G, padding: "1.2rem" }}>
                 {diaries.length > 0 ? (
                   <AccordionSection type="diary"
                     items={diaries.filter((d: any) => d.date === diaries[0].date).slice(0, 5).map((d: any) => ({
                       id: d.id, title: d.title, date: d.date, content: d.content,
-                      image: d.image, video: d.video, link: `/diaries/${d.id}`
-                    }))}
-                  />
+                      image: d.image, video: d.video, link: `/diaries/${d.id}`,
+                    }))} />
                 ) : (
-                  <div className="py-10 text-center border-dashed border-2 border-slate-200 rounded-2xl">
-                    <p className="text-slate-400 text-sm">새로운 일기를 기다리고 있습니다.</p>
-                  </div>
+                  <p style={{ color: "rgba(255,255,255,0.3)", textAlign: "center", padding: "2rem 0", fontSize: "0.85rem" }}>새로운 일기를 기다리고 있습니다.</p>
                 )}
               </div>
             </div>
-            <div className="w-full lg:w-[32%] flex flex-col gap-5">
-              <WeatherWidget />
-              <BookRankingClient data={books} />
+            <div style={{ flex: "1 1 28%", minWidth: "210px", display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ ...G, overflow: "hidden" }}><WeatherWidget /></div>
+              <div style={{ ...G, overflow: "hidden" }}><BookRankingClient data={books} /></div>
             </div>
           </div>
         </section>
 
-        {/* ── 4. 농장 갤러리 ── */}
+        {/* 4. 농장 갤러리 */}
         {diaries.length > 0 && diaries.filter((d: any) => d.date === diaries[0].date).some((d: any) => d.image || d.video) && (
-          <FarmGallery diaries={diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video))} />
+          <><Divider /><FarmGallery diaries={diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video))} /></>
         )}
+        <Divider />
 
-        {/* ── 5. 거제 맛집 지도 ── */}
-        <section className="mb-14 px-2">
-          <div className="flex items-center gap-2 mb-5">
-            <span className="text-xl">📍</span>
-            <h2 className="text-lg font-bold text-slate-800">거제 맛집 지도</h2>
-          </div>
-          <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-            <MapLoader />
-          </div>
-          <AdBanner />
-        </section>
-
-        {/* ── 6. 최신 블로그 글 (카드형) ── */}
-        <section className="mb-14 px-2">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">📝</span>
-              <h2 className="text-lg font-bold text-slate-800">최신 블로그</h2>
-            </div>
-            <Link href="/blog" className="text-slate-400 hover:text-teal-600 text-xs font-bold transition-all">전체보기 →</Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* 5. 최신 블로그 카드형 */}
+        <section>
+          <SectionTitle icon="📝" text="최신 블로그" href="/blog" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
             {blogPosts.map((post: any) => (
-              <Link href={`/blog/${post.slug}`} key={post.slug}
-                className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  {post.category && (
-                    <span className="text-xs bg-cyan-50 text-cyan-600 px-2 py-0.5 rounded-full font-bold">{post.category}</span>
+              <Link key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration: "none" }}>
+                <div data-hover="true" style={{ ...G, padding: "1rem 1.1rem", cursor: "none", display: "flex", flexDirection: "column", gap: "6px", height: "100%", transition: "background 0.2s, transform 0.2s" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.11)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    {post.category && (
+                      <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: "20px", color: tagColors[post.category] || "rgba(255,255,255,0.5)", background: "rgba(255,255,255,0.08)" }}>{post.category}</span>
+                    )}
+                    <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.3)", marginLeft: "auto" }}>{post.date}</span>
+                  </div>
+                  <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "white", lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>{post.title}</div>
+                  {post.summary && (
+                    <div style={{ fontSize: "0.74rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.5, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>{post.summary}</div>
                   )}
-                  <span className="text-xs text-slate-400 ml-auto">{post.date}</span>
+                  <div style={{ fontSize: "0.72rem", color: "#22d3ee", fontWeight: 700, marginTop: "auto" }}>읽기 →</div>
                 </div>
-                <div className="font-bold text-slate-800 text-sm leading-snug line-clamp-2">{post.title}</div>
-                {post.summary && (
-                  <div className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{post.summary}</div>
-                )}
-                <div className="text-xs text-cyan-500 font-bold mt-auto">읽기 →</div>
               </Link>
             ))}
           </div>
         </section>
+        <Divider />
 
-        {/* ── 7. 이달의 행사 ── */}
-        <section className="mb-14 px-2">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🌸</span>
-              <h2 className="text-lg font-bold text-slate-800">이달의 행사</h2>
-            </div>
-            <Link href="/events" className="text-slate-400 hover:text-teal-600 text-xs font-bold transition-all">전체보기 →</Link>
-          </div>
-          <AccordionSection type="event"
-            items={data.events.slice(0, 5).map(event => ({
-              id: event.id, title: event.name,
-              date: `${event.startDate} ~ ${event.endDate}`,
-              summary: event.summary, category: event.category,
-              location: event.location, link: `/events/${event.id}`
-            }))}
-          />
+        {/* 6. 거제 맛집 지도 */}
+        <section>
+          <SectionTitle icon="📍" text="거제 맛집 지도" />
+          <div style={{ ...G, overflow: "hidden" }}><MapLoader /></div>
+          <div style={{ marginTop: "12px" }}><AdBanner /></div>
         </section>
+        <Divider />
 
-        {/* ── 8. 오늘의 인사이트 (시 + AI랭킹) ── */}
-        <section className="mb-14 px-2">
-          <div className="flex items-center gap-2 mb-5">
-            <span className="text-xl">✨</span>
-            <h2 className="text-lg font-bold text-slate-800">오늘의 인사이트</h2>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <DailyPoemClient poems={poems} />
-            <AIRanking />
+        {/* 7. 이달의 행사 */}
+        <section>
+          <SectionTitle icon="🌸" text="이달의 행사" href="/events" />
+          <div style={{ ...G, padding: "1.2rem" }}>
+            <AccordionSection type="event"
+              items={data.events.slice(0, 5).map(event => ({
+                id: event.id, title: event.name,
+                date: `${event.startDate} ~ ${event.endDate}`,
+                summary: event.summary, category: event.category,
+                location: event.location, link: `/events/${event.id}`,
+              }))} />
           </div>
         </section>
+        <Divider />
 
-        {/* ── 9. 트렌드 & 지식 (통합 슬림) ── */}
+        {/* 8. 오늘의 인사이트 */}
+        <section>
+          <SectionTitle icon="✨" text="오늘의 인사이트" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "12px" }}>
+            <div style={{ ...G, overflow: "hidden" }}><DailyPoemClient poems={poems} /></div>
+            <div style={{ ...G, overflow: "hidden" }}><AIRanking /></div>
+          </div>
+        </section>
+        <Divider />
+
+        {/* 9. 트렌드 & 지식 */}
         {(aiNews.length > 0 || economyNews.length > 0 || idioms.length > 0 || wisdoms.length > 0) && (
-          <section className="mb-14 px-2 flex flex-col gap-2">
-            {aiNews.length > 0 && <DailyNewsClient data={aiNews} type="ai" />}
-            {economyNews.length > 0 && <DailyNewsClient data={economyNews} type="economy" />}
-            <div className="h-3" />
-            {idioms.length > 0 && <DailyIdiomClient idioms={idioms} />}
-            {wisdoms.length > 0 && <DailyWisdomClient wisdoms={wisdoms} />}
+          <section style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <SectionTitle icon="📡" text="트렌드 & 지식" />
+            {aiNews.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyNewsClient data={aiNews} type="ai" /></div>}
+            {economyNews.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyNewsClient data={economyNews} type="economy" /></div>}
+            {idioms.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyIdiomClient idioms={idioms} /></div>}
+            {wisdoms.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyWisdomClient wisdoms={wisdoms} /></div>}
           </section>
         )}
+        <Divider />
 
-        {/* ── 10. 거꾸로 세계지도 (하단 슬림) ── */}
-        <section className="mb-14 px-2">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🌍</span>
-              <h2 className="text-base font-bold text-slate-700">해양수산부 거꾸로 세계지도</h2>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-[10px] bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full font-bold">무료 배포</span>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 items-center bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-            <img src="/assets/upside-down-world-map-v1.jpg" alt="거꾸로 세계지도"
-              className="w-full sm:w-64 h-auto rounded-xl object-cover" />
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-slate-500 leading-relaxed">
-                해양 중심으로 세상을 바라보는 새로운 시각 — 해양수산부 공공저작물
-              </p>
-              <div className="flex gap-4">
-                <a href="/assets/upside-down-world-map-v1.jpg" download="거꾸로세계지도-일반형.jpg"
-                  className="text-sm font-bold text-cyan-600 hover:underline">v1 내려받기</a>
-                <a href="/assets/upside-down-world-map-v2.jpg" download="거꾸로세계지도-해양테마.jpg"
-                  className="text-sm font-bold text-cyan-600 hover:underline">v2 내려받기</a>
+        {/* 10. 거꾸로 세계지도 (슬림) */}
+        <section>
+          <SectionTitle icon="🌍" text="해양수산부 거꾸로 세계지도" />
+          <div style={{ ...G, padding: "1.2rem", display: "flex", gap: "1.2rem", alignItems: "center", flexWrap: "wrap" }}>
+            <img src="/assets/upside-down-world-map-v1.jpg" alt="거꾸로 세계지도" style={{ width: "200px", height: "auto", borderRadius: "12px", flexShrink: 0 }} />
+            <div>
+              <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: "1rem" }}>해양 중심으로 세상을 바라보는 시각 — 해양수산부 공공저작물</p>
+              <div style={{ display: "flex", gap: "1.5rem" }}>
+                <a href="/assets/upside-down-world-map-v1.jpg" download style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>v1 내려받기 ↓</a>
+                <a href="/assets/upside-down-world-map-v2.jpg" download style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>v2 내려받기 ↓</a>
               </div>
             </div>
           </div>
         </section>
+        <Divider />
 
-        {/* ── 쿠팡 배너 ── */}
-        <div className="px-2 mb-14">
-          <CoupangBanner />
-        </div>
-
+        <CoupangBanner />
       </main>
 
-      <footer className="bg-white/30 backdrop-blur-md border-t border-white/50 py-12 text-slate-500 text-sm">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
+      {/* ── 푸터 ── */}
+      <footer style={{ position: "relative", zIndex: 1, background: "rgba(0,0,0,0.45)", backdropFilter: "blur(20px)", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "3rem 2rem" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1.5rem", marginBottom: "2rem" }}>
             <div>
-              <h2 className="text-xl font-black text-slate-800 mb-1">Chamnongkkun Info</h2>
-              <p className="text-slate-400 text-xs">The Best Guide to Geoje Island 🐬</p>
+              <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "white", marginBottom: "4px" }}>Chamnongkkun Info</div>
+              <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.06em" }}>THE BEST GUIDE TO GEOJE ISLAND 🐬</div>
             </div>
-            <div className="flex flex-wrap justify-center gap-6 font-bold text-xs text-slate-400">
-              <Link href="/about" className="hover:text-cyan-600">소개</Link>
-              <Link href="/update-events" className="hover:text-cyan-600">업데이트</Link>
-              <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-600">스토어</a>
-              <span className="cursor-help">개인정보처리방침</span>
+            <div style={{ display: "flex", gap: "1.8rem", flexWrap: "wrap" }}>
+              {([["소개", "/about"], ["업데이트", "/update-events"]] as [string,string][]).map(([t, h]) => (
+                <Link key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>{t}</Link>
+              ))}
+              <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>스토어</a>
             </div>
           </div>
-          <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-3 text-[10px] text-slate-400">
-            <p>© 2026 chamnongkkun-info. All rights reserved.</p>
-            <p className="italic font-serif">"푸른 바다와 함께하는 생생한 거제 소식"</p>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "1.5rem", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
+            <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.18)" }}>© 2026 chamnongkkun-info. All rights reserved.</p>
+            <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.18)", fontStyle: "italic" }}>"푸른 바다와 함께하는 생생한 거제 소식"</p>
           </div>
         </div>
       </footer>
