@@ -1,4 +1,5 @@
-﻿import fs from "fs"; import path from "path";
+﻿import Link from "next/link";
+import fs from "fs"; import path from "path";
 export default function Page() {
   let data: any = null;
   try { data = JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/data/realestate.json"),"utf-8")); } catch(e) {}
@@ -6,6 +7,11 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-[#f8fbff] py-12 px-4">
       <div className="max-w-3xl mx-auto">
+        <div style={{ marginBottom: "1.5rem" }}>
+  <Link href="/" style={{ textDecoration: "none", color: "#1565c0", fontWeight: "bold", fontSize: "0.9rem" }}>
+    ← 홈으로 돌아가기
+  </Link>
+</div>
         <div className="flex items-center gap-3 mb-2"><span className="text-3xl">🏠</span><h1 className="text-2xl font-black text-slate-800">거제 부동산 시세</h1></div>
         <p className="text-sm text-slate-400 mb-2">업데이트: {data.updatedAt}</p>
         <p className="text-base text-slate-600 mb-8 font-medium">{data.summary}</p>
