@@ -1,0 +1,124 @@
+name: Update Youth Support Data
+
+on:
+  schedule:
+    - cron: '0 1 * * 1'  # 매주 월요일 오전 10시 (KST)
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install node-html-parser
+
+      - name: Scrape youth support data
+        run: |
+          node << 'SCRIPT'
+          const https = require('https');
+          const fs = require('fs');
+          const { parse } = require('node-html-parser');
+
+          function fetchPage(url) {
+            return new Promise((resolve, reject) => {
+              https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => resolve(data));
+              }).on('error', reject);
+            });
+          }
+
+          async function main() {
+            const listUrl = 'https://www.geoje.go.kr/board/list.geoje?boardId=BBS_0000712&menuCd=DOM_000011201003001000';
+            const html = await fetchPage(listUrl);
+            const root = parse(html);
+
+            const supports = [];
+            const items = root.querySelectorAll('.board-list li, .bbs-list tr, li[class*="item"]');
+
+            // 링크와 제목 추출
+            const links = root.querySelectorAll('a');
+            for (const link of links) {
+              const href = link.getAttribute('href') || '';
+              const title = link.text.trim();
+              if (href.includes('dataSid=') && title.length > 3 && title.length < 50) {
+                const fullUrl = href.startsWith('http') ? href : 'https://www.geoje.go.kr' + href;
+                supports.push({
+                  title,
+                  link: fullUrl,
+                  category: '거제시',
+                  amount: '상세페이지 확인',
+                  target: '거제시 청년',
+                  desc: '거제YOUth 청년정보플랫폼의 청년 지원 정책입니다.',
+                });
+              }
+            }
+
+            // 중복 제거
+            const unique = supports.filter((item, index, self) =>
+              index === self.findIndex(t => t.title === item.title)
+            ).slice(0, 10);
+
+            const now = new Date();
+            const output = {
+              updatedAt: `${now.getFullYear()}년 ${now.getMonth()+1}월 자동 업데이트`,
+              source: "거제YOUth 청년정보플랫폼 (geoje.go.kr/youth)",
+              supports: unique.length > 0 ? unique : [
+                {
+                  title: "청년 월세 한시 특별지원",
+                  category: "주거",
+                  amount: "월 최대 20만원",
+                  target: "만 19~34세 무주택 청년",
+                  desc: "경제적 어려움을 겪는 청년들의 주거비 부담 경감을 위한 월세 지원 사업입니다.",
+                  link: "https://www.geoje.go.kr/youth/index.geoje"
+                },
+                {
+                  title: "경남 청년구직활동수당",
+                  category: "일자리",
+                  amount: "총 200만원 (월 50만x4회)",
+                  target: "만 18~34세 미취업 청년",
+                  desc: "적극적인 구직활동을 하는 청년들에게 교육비, 도서구입비 등을 지원합니다.",
+                  link: "https://www.geoje.go.kr/youth/index.geoje"
+                },
+                {
+                  title: "청년 내일저축계좌",
+                  category: "자산형성",
+                  amount: "본인 저축액의 1~3배 매칭",
+                  target: "만 19~34세 일하는 청년",
+                  desc: "청년이 일정 금액을 저축하면 정부가 지원금을 추가로 적립해 목돈 마련을 돕습니다.",
+                  link: "https://www.geoje.go.kr/youth/index.geoje"
+                },
+                {
+                  title: "거제시 청년 창업 지원",
+                  category: "창업",
+                  amount: "최대 1,500만원",
+                  target: "거제시 내 예비 창업 청년",
+                  desc: "참신한 아이디어를 가진 청년들의 성공적인 창업을 위해 사업화 자금을 지원합니다.",
+                  link: "https://www.geoje.go.kr/youth/index.geoje"
+                }
+              ]
+            };
+
+            fs.writeFileSync('public/data/youth-support.json', JSON.stringify(output, null, 2), 'utf-8');
+            console.log('youth-support.json 업데이트 완료:', output.supports.length, '개 항목');
+          }
+
+          main().catch(console.error);
+          SCRIPT
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/youth-support.json
+          git diff --staged --quiet || git commit -m "auto: update youth support data $(date +'%Y-%m-%d')"
+          git push

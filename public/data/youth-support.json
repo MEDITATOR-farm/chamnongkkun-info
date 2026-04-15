@@ -1,0 +1,46 @@
+{
+  "updatedAt": "2026년 4월 자동 업데이트",
+  "source": "거제YOUth 청년정보플랫폼 (geoje.go.kr/youth)",
+  "supports": [
+    {
+      "title": "청년 월세 한시 특별지원",
+      "category": "주거",
+      "amount": "월 최대 20만원",
+      "target": "만 19~34세 무주택 청년",
+      "desc": "경제적 어려움을 겪는 청년들의 주거비 부담 경감을 위한 월세 지원 사업입니다.",
+      "link": "https://www.geoje.go.kr/youth/index.geoje"
+    },
+    {
+      "title": "경남 청년구직활동수당",
+      "category": "일자리",
+      "amount": "총 200만원 (월 50만x4회)",
+      "target": "만 18~34세 미취업 청년",
+      "desc": "적극적인 구직활동을 하는 청년들에게 교육비, 도서구입비 등을 지원합니다.",
+      "link": "https://www.geoje.go.kr/youth/index.geoje"
+    },
+    {
+      "title": "청년 내일저축계좌",
+      "category": "자산형성",
+      "amount": "본인 저축액의 1~3배 매칭",
+      "target": "만 19~34세 일하는 청년",
+      "desc": "청년이 일정 금액을 저축하면 정부가 지원금을 추가로 적립해 목돈 마련을 돕습니다.",
+      "link": "https://www.geoje.go.kr/youth/index.geoje"
+    },
+    {
+      "title": "거제시 청년 창업 지원",
+      "category": "창업",
+      "amount": "최대 1,500만원",
+      "target": "거제시 내 예비 창업 청년",
+      "desc": "참신한 아이디어를 가진 청년들의 성공적인 창업을 위해 사업화 자금을 지원합니다.",
+      "link": "https://www.geoje.go.kr/youth/index.geoje"
+    },
+    {
+      "title": "청년창업농 맞춤형 지원",
+      "category": "농업",
+      "amount": "영농정착지원금 + 교육비",
+      "target": "만 18~40세 창업농 희망 청년",
+      "desc": "농업 분야 창업을 희망하는 청년에게 영농정착지원금 및 교육 프로그램을 지원합니다.",
+      "link": "https://www.geoje.go.kr/youth/index.geoje"
+    }
+  ]
+}
