@@ -1,3 +1,4 @@
+import { SupportCard, BlogCard, NavLinks, HeroButton, GlassCard, ContentCard } from "@/components/GlassCard";
 import fs from "fs";
 import path from "path";
 import AIRanking from "@/components/AIRanking";
@@ -133,18 +134,23 @@ export default function Home() {
         <Divider />
 
         {/* ② 거제시 이달의 행사 */}
-        <section>
-          <SectionTitle icon="🌸" text="거제시 이달의 행사" href="/events" badge="이달" />
-          <div style={{ ...G, padding: "1.2rem" }}>
-            <AccordionSection type="event"
-              items={data.events.slice(0, 6).map(event => ({
-                id: event.id, title: event.name,
-                date: `${event.startDate} ~ ${event.endDate}`,
-                summary: event.summary, category: event.category,
-                location: event.location, link: `/events/${event.id}`,
-              }))} />
-          </div>
-        </section>
+<section>
+  <SectionTitle icon="🌸" text="거제시 이달의 행사" href="/events" badge="이달" />
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
+    {data.events.slice(0, 6).map((event: any) => (
+      <ContentCard
+        key={event.id}
+        href={`/events/${event.id}`}
+        category={event.category}
+        date={`${event.startDate} ~ ${event.endDate}`}
+        title={event.name}
+        summary={event.summary}
+        tagColor={tagColors[event.category] || "rgba(255,255,255,0.5)"}
+        meta={event.location}
+      />
+    ))}
+  </div>
+</section>
         <Divider />
 
         {/* ③ 내가 자주 찾는 거제 숨은 맛집 */}
