@@ -40,11 +40,14 @@ const G: React.CSSProperties = {
   borderRadius: "20px",
 };
 
-function SectionTitle({ icon, text, href }: { icon: string; text: string; href?: string }) {
+function SectionTitle({ icon, text, href, badge }: { icon: string; text: string; href?: string; badge?: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "1rem" }}>
       <span style={{ fontSize: "1.1rem" }}>{icon}</span>
       <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "white", margin: 0 }}>{text}</h2>
+      {badge && (
+        <span style={{ fontSize: "0.62rem", background: "#ef4444", color: "white", padding: "2px 7px", borderRadius: "20px", fontWeight: 700 }}>{badge}</span>
+      )}
       {href && (
         <a href={href} style={{ marginLeft: "auto", fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>
           전체보기 →
@@ -68,8 +71,6 @@ export default function Home() {
   const aiNews = readJson(path.join(process.cwd(), "public/data/ai-news.json"));
   const economyNews = readJson(path.join(process.cwd(), "public/data/economy.json"));
   const books = readJson(path.join(process.cwd(), "public/data/books.json"), null);
-  const youthSupport = readJson(path.join(process.cwd(), "public/data/youth-support.json"), null);
-  const farmSupport = readJson(path.join(process.cwd(), "public/data/farm-support.json"), null);
   const blogPosts = getSortedPostsData().slice(0, 6);
 
   const tagColors: Record<string, string> = {
@@ -127,27 +128,77 @@ export default function Home() {
       {/* ── 메인 ── */}
       <main style={{ position: "relative", zIndex: 1, maxWidth: "1100px", margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
 
-        {/* 1. 알면 돈이 되는 정보 */}
+        {/* ① 알면 돈이 되는 정보 */}
         <HighRevenueSection />
         <Divider />
 
-        {/* 2. 오늘의 지원금 */}
-        {(youthSupport || farmSupport) && (
-          <section>
-            <SectionTitle icon="💸" text="오늘의 지원금 요약" href="/support/youth" />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "10px" }}>
-              {(youthSupport?.supports?.slice(0, 3) || []).map((s: any, i: number) => (
-                <SupportCard key={`y${i}`} href="/support/youth" icon="💰" tag={s.tag} tagColor="#22d3ee" title={s.title} amount={s.amount} />
-              ))}
-              {(farmSupport?.supports?.slice(0, 3) || []).map((s: any, i: number) => (
-                <SupportCard key={`f${i}`} href="/support/farm" icon="🌾" tag={s.tag} tagColor="#34d399" title={s.title} amount={s.amount} />
-              ))}
-            </div>
+        {/* ② 거제시 이달의 행사 */}
+        <section>
+          <SectionTitle icon="🌸" text="거제시 이달의 행사" href="/events" badge="이달" />
+          <div style={{ ...G, padding: "1.2rem" }}>
+            <AccordionSection type="event"
+              items={data.events.slice(0, 6).map(event => ({
+                id: event.id, title: event.name,
+                date: `${event.startDate} ~ ${event.endDate}`,
+                summary: event.summary, category: event.category,
+                location: event.location, link: `/events/${event.id}`,
+              }))} />
+          </div>
+        </section>
+        <Divider />
+
+        {/* ③ 내가 자주 찾는 거제 숨은 맛집 */}
+        <section>
+          <SectionTitle icon="🍽️" text="내가 자주 찾는 거제 숨은 맛집" badge="현지인 픽" />
+          <div style={{ ...G, overflow: "hidden" }}>
+            <MapLoader />
+          </div>
+          <div style={{ marginTop: "12px" }}><AdBanner /></div>
+        </section>
+        <Divider />
+
+        {/* ④ 최신 거제시 블로그 */}
+        <section>
+          <SectionTitle icon="📝" text="최신 거제시 블로그" href="/blog" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
+            {blogPosts.map((post: any) => (
+              <BlogCard
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                category={post.category}
+                date={post.date}
+                title={post.title}
+                summary={post.summary}
+                tagColor={tagColors[post.category] || "rgba(255,255,255,0.5)"}
+              />
+            ))}
+          </div>
+        </section>
+        <Divider />
+
+        {/* ⑤ 트렌드 & 지식 */}
+        {(aiNews.length > 0 || economyNews.length > 0 || idioms.length > 0 || wisdoms.length > 0) && (
+          <section style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <SectionTitle icon="📡" text="트렌드 & 지식" />
+            {aiNews.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyNewsClient data={aiNews} type="ai" /></div>}
+            {economyNews.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyNewsClient data={economyNews} type="economy" /></div>}
+            {idioms.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyIdiomClient idioms={idioms} /></div>}
+            {wisdoms.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyWisdomClient wisdoms={wisdoms} /></div>}
           </section>
         )}
         <Divider />
 
-        {/* 3. 농부일기 + 날씨/도서 */}
+        {/* ⑥ 오늘의 인사이트 */}
+        <section>
+          <SectionTitle icon="✨" text="오늘의 인사이트" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "12px" }}>
+            <div style={{ ...G, overflow: "hidden" }}><DailyPoemClient poems={poems} /></div>
+            <div style={{ ...G, overflow: "hidden" }}><AIRanking /></div>
+          </div>
+        </section>
+        <Divider />
+
+        {/* ⑦ 최근 농부일기 + 날씨/도서 */}
         <section>
           <SectionTitle icon="🌱" text="최근 농부일기" href="/diaries" />
           <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
@@ -170,87 +221,36 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <Divider />
 
-        {/* 4. 농장 갤러리 */}
+        {/* ⑧ 농장 최근 현황 (갤러리) */}
         {diaries.length > 0 && diaries.filter((d: any) => d.date === diaries[0].date).some((d: any) => d.image || d.video) && (
-          <><Divider /><FarmGallery diaries={diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video))} /></>
-        )}
-        <Divider />
-
-        {/* 5. 최신 블로그 카드형 */}
-        <section>
-          <SectionTitle icon="📝" text="최신 블로그" href="/blog" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
-            {blogPosts.map((post: any) => (
-              <BlogCard
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                category={post.category}
-                date={post.date}
-                title={post.title}
-                summary={post.summary}
-                tagColor={tagColors[post.category] || "rgba(255,255,255,0.5)"}
-              />
-            ))}
-          </div>
-        </section>
-        <Divider />
-
-        {/* 6. 거제 맛집 지도 */}
-        <section>
-          <SectionTitle icon="📍" text="거제 맛집 지도" />
-          <div style={{ ...G, overflow: "hidden" }}><MapLoader /></div>
-          <div style={{ marginTop: "12px" }}><AdBanner /></div>
-        </section>
-        <Divider />
-
-        {/* 7. 이달의 행사 */}
-        <section>
-          <SectionTitle icon="🌸" text="이달의 행사" href="/events" />
-          <div style={{ ...G, padding: "1.2rem" }}>
-            <AccordionSection type="event"
-              items={data.events.slice(0, 5).map(event => ({
-                id: event.id, title: event.name,
-                date: `${event.startDate} ~ ${event.endDate}`,
-                summary: event.summary, category: event.category,
-                location: event.location, link: `/events/${event.id}`,
-              }))} />
-          </div>
-        </section>
-        <Divider />
-
-        {/* 8. 오늘의 인사이트 */}
-        <section>
-          <SectionTitle icon="✨" text="오늘의 인사이트" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "12px" }}>
-            <div style={{ ...G, overflow: "hidden" }}><DailyPoemClient poems={poems} /></div>
-            <div style={{ ...G, overflow: "hidden" }}><AIRanking /></div>
-          </div>
-        </section>
-        <Divider />
-
-        {/* 9. 트렌드 & 지식 */}
-        {(aiNews.length > 0 || economyNews.length > 0 || idioms.length > 0 || wisdoms.length > 0) && (
-          <section style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <SectionTitle icon="📡" text="트렌드 & 지식" />
-            {aiNews.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyNewsClient data={aiNews} type="ai" /></div>}
-            {economyNews.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyNewsClient data={economyNews} type="economy" /></div>}
-            {idioms.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyIdiomClient idioms={idioms} /></div>}
-            {wisdoms.length > 0 && <div style={{ ...G, overflow: "hidden" }}><DailyWisdomClient wisdoms={wisdoms} /></div>}
+          <section>
+            <SectionTitle icon="🎬" text="농장 최근 현황" />
+            <FarmGallery diaries={diaries.filter((d: any) => d.date === diaries[0].date && (d.image || d.video))} />
           </section>
         )}
         <Divider />
 
-        {/* 10. 거꾸로 세계지도 슬림 */}
+        {/* ⑨ 거꾸로 세계지도 */}
         <section>
           <SectionTitle icon="🌍" text="해양수산부 거꾸로 세계지도" />
           <GlassCard style={{ padding: "1.2rem", display: "flex", gap: "1.2rem", alignItems: "center", flexWrap: "wrap" }}>
-            <img src="/assets/upside-down-world-map-v1.jpg" alt="거꾸로 세계지도" style={{ width: "200px", height: "auto", borderRadius: "12px", flexShrink: 0 }} />
+            <img src="/assets/upside-down-world-map-v1.jpg" alt="거꾸로 세계지도"
+              style={{ width: "200px", height: "auto", borderRadius: "12px", flexShrink: 0 }} />
             <div>
-              <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: "1rem" }}>해양 중심으로 세상을 바라보는 시각 — 해양수산부 공공저작물</p>
+              <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: "1rem" }}>
+                해양 중심으로 세상을 바라보는 시각 — 해양수산부 공공저작물
+              </p>
               <div style={{ display: "flex", gap: "1.5rem" }}>
-                <a href="/assets/upside-down-world-map-v1.jpg" download style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>v1 내려받기 ↓</a>
-                <a href="/assets/upside-down-world-map-v2.jpg" download style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>v2 내려받기 ↓</a>
+                <a href="/assets/upside-down-world-map-v1.jpg" download
+                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>
+                  v1 내려받기 ↓
+                </a>
+                <a href="/assets/upside-down-world-map-v2.jpg" download
+                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>
+                  v2 내려받기 ↓
+                </a>
               </div>
             </div>
           </GlassCard>
@@ -261,7 +261,13 @@ export default function Home() {
       </main>
 
       {/* ── 푸터 ── */}
-      <footer style={{ position: "relative", zIndex: 1, background: "rgba(0,0,0,0.45)", backdropFilter: "blur(20px)", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "3rem 2rem" }}>
+      <footer style={{
+        position: "relative", zIndex: 1,
+        background: "rgba(0,0,0,0.45)",
+        backdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(255,255,255,0.07)",
+        padding: "3rem 2rem",
+      }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1.5rem", marginBottom: "2rem" }}>
             <div>
@@ -272,7 +278,8 @@ export default function Home() {
               {([["소개", "/about"], ["업데이트", "/update-events"]] as [string, string][]).map(([t, h]) => (
                 <a key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>{t}</a>
               ))}
-              <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>스토어</a>
+              <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer"
+                style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>스토어</a>
             </div>
           </div>
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "1.5rem", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
@@ -281,6 +288,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
       <ScrollToTop />
     </div>
   );
