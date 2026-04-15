@@ -7,47 +7,47 @@ async function updateRestaurantRanking() {
   const CONFIG_PATH = path.join(__dirname, '../automation-control.json');
 
   try {
-    // 제어판 설정 확인
+    // ?�어???�정 ?�인
     const configData = await fs.readFile(CONFIG_PATH, 'utf-8');
     const config = JSON.parse(configData);
     
     if (config.update_restaurants === false) {
-      console.log('🚫 제어판에서 맛집 업데이트가 꺼져 있습니다. 작업을 중단합니다.');
+      console.log('?�� ?�어?�에??맛집 ?�데?�트가 꺼져 ?�습?�다. ?�업??중단?�니??');
       return;
     }
 
     if (!GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
+      console.error('GEMINI_API_KEY ?�경 변?��? ?�정?��? ?�았?�니??');
       return;
     }
 
-    console.log('실시간 맛집 랭킹 생성 중 (AI 기반)...');
+    console.log('?�시�?맛집 ??�� ?�성 �?(AI 기반)...');
 
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
     
-    // 거제도 9미(9가지 맛)와 현지인 추천 맛집 정보를 기반으로 랭킹 생성 유도
-    const prompt = `거제도 현지인들과 관광객들에게 가장 인기 있는 맛집 TOP 5를 선정해줘. 
-거제 9미(대구탕, 굴 요리, 멍게비빔밥, 도다리쑥국, 물회, 볼락구이, 생대구탕, 거제 한우, 거제 숭어) 정보를 참고해서, 
-실제로 유명한 식당 이름과 메뉴를 아래 JSON 형식으로 응답해줘.
+    // 거제??9�?9가지 �??� ?��???추천 맛집 ?�보�?기반?�로 ??�� ?�성 ?�도
+    const prompt = `거제???��??�들�?관광객?�에�?가???�기 ?�는 맛집 TOP 5�??�정?�줘. 
+거제 9�??�구탕, �??�리, 멍게비빔�? ?�다리쑥�? 물회, 볼락구이, ?��?구탕, 거제 ?�우, 거제 ??��) ?�보�?참고?�서, 
+?�제�??�명???�당 ?�름�?메뉴�??�래 JSON ?�식?�로 ?�답?�줘.
 
-형식:
+?�식:
 [
   {
     "rank": 1,
-    "name": "식당 이름",
-    "menu": "대표 메뉴",
+    "name": "?�당 ?�름",
+    "menu": "?�??메뉴",
     "score": 98,
     "trend": "up", // up, down, steady
-    "tags": ["가족외식", "경치좋은", "현지인맛집"],
-    "summary": "AI 한줄 평",
-    "link": "네이버 지도 URL",
-    "lat": 34.880, // 위도 (숫자)
-    "lng": 128.625 // 경도 (숫자)
+    "tags": ["가족외??, "경치좋�?", "?��??�맛�?],
+    "summary": "AI ?�줄 ??,
+    "link": "?�이�?지??URL",
+    "lat": 34.880, // ?�도 (?�자)
+    "lng": 128.625 // 경도 (?�자)
   },
-  ... (총 5개)
+  ... (�?5�?
 ]
 
-위도(lat)와 경도(lng)는 소수점 3자리까지 정확한 숫자로 제공해줘. 반드시 순수 JSON 객체(배열)만 출력해.`;
+?�도(lat)?� 경도(lng)???�수??3?�리까�? ?�확???�자�??�공?�줘. 반드???�수 JSON 객체(배열)�?출력??`;
 
     const response = await fetch(geminiUrl, {
       method: 'POST',
@@ -58,7 +58,7 @@ async function updateRestaurantRanking() {
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API 호출 실패: ${response.status}`);
+      throw new Error(`Gemini API ?�출 ?�패: ${response.status}`);
     }
 
     const json = await response.json();
@@ -67,17 +67,17 @@ async function updateRestaurantRanking() {
 
     const rankingData = JSON.parse(resultText);
 
-    // 저장
+    // ?�??
     const finalData = {
       updatedAt: new Date().toISOString(),
       ranking: rankingData
     };
 
     await fs.writeFile(DATA_FILE_PATH, JSON.stringify(finalData, null, 2), 'utf-8');
-    console.log('🎉 맛집 랭킹 업데이트 완료!');
+    console.log('?�� 맛집 ??�� ?�데?�트 ?�료!');
 
   } catch (error) {
-    console.error('맛집 랭킹 업데이트 중 오류 발생:', error);
+    console.error('맛집 ??�� ?�데?�트 �??�류 발생:', error);
   }
 }
 

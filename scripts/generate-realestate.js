@@ -1,13 +1,13 @@
-ï»¿const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 const path = require("path");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 async function main() {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const prompt = `2026ë…„ ê¸°ì¤€ ê±°ì œì‹œ ì£¼ìš” ì§€ì—­ë³„ ë¶€ë™ì‚° ì‹œì„¸ ì •ë³´ë¥¼ ì•„ë˜ JSON í˜•ì‹ìœ¼ë¡œ ìƒì„±í•´ì¤˜. ë§ˆí¬ë‹¤ìš´ ì—†ì´ ìˆœìˆ˜ JSONë§Œ ì¶œë ¥: {"updatedAt":"ì˜¤ëŠ˜ë‚ ì§œ","summary":"ê±°ì œ ë¶€ë™ì‚° ì‹œì¥ í•œì¤„ìš”ì•½","areas":[{"name":"ê³ í˜„ë™","avgPrice":"ê°€ê²©ë²”ìœ„","trend":"ë³´í•©","trendIcon":"â†’","highlight":"íŠ¹ì§•"},{"name":"ì¥ìŠ¹í¬ë™","avgPrice":"ê°€ê²©ë²”ìœ„","trend":"ìƒìŠ¹","trendIcon":"â†‘","highlight":"íŠ¹ì§•"},{"name":"ì˜¥í¬ë™","avgPrice":"ê°€ê²©ë²”ìœ„","trend":"ë³´í•©","trendIcon":"â†’","highlight":"íŠ¹ì§•"},{"name":"ì•„ì£¼ë™","avgPrice":"ê°€ê²©ë²”ìœ„","trend":"í•˜ë½","trendIcon":"â†“","highlight":"íŠ¹ì§•"},{"name":"ê±°ì œë©´","avgPrice":"ê°€ê²©ë²”ìœ„","trend":"ìƒìŠ¹","trendIcon":"â†‘","highlight":"íŠ¹ì§•"}],"tips":["íŒ1","íŒ2","íŒ3"]}`;
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const prompt = `2026³â ±âÁØ °ÅÁ¦½Ã ÁÖ¿ä Áö¿ªº° ºÎµ¿»ê ½Ã¼¼ Á¤º¸¸¦ ¾Æ·¡ JSON Çü½ÄÀ¸·Î »ı¼ºÇØÁà. ¸¶Å©´Ù¿î ¾øÀÌ ¼ø¼ö JSON¸¸ Ãâ·Â: {"updatedAt":"¿À´Ã³¯Â¥","summary":"°ÅÁ¦ ºÎµ¿»ê ½ÃÀå ÇÑÁÙ¿ä¾à","areas":[{"name":"°íÇöµ¿","avgPrice":"°¡°İ¹üÀ§","trend":"º¸ÇÕ","trendIcon":"¡æ","highlight":"Æ¯Â¡"},{"name":"Àå½ÂÆ÷µ¿","avgPrice":"°¡°İ¹üÀ§","trend":"»ó½Â","trendIcon":"¡è","highlight":"Æ¯Â¡"},{"name":"¿ÁÆ÷µ¿","avgPrice":"°¡°İ¹üÀ§","trend":"º¸ÇÕ","trendIcon":"¡æ","highlight":"Æ¯Â¡"},{"name":"¾ÆÁÖµ¿","avgPrice":"°¡°İ¹üÀ§","trend":"ÇÏ¶ô","trendIcon":"¡é","highlight":"Æ¯Â¡"},{"name":"°ÅÁ¦¸é","avgPrice":"°¡°İ¹üÀ§","trend":"»ó½Â","trendIcon":"¡è","highlight":"Æ¯Â¡"}],"tips":["ÆÁ1","ÆÁ2","ÆÁ3"]}`;
   const result = await model.generateContent(prompt);
   const text = result.response.text().replace(/```json|```/g,"").trim();
   fs.writeFileSync(path.join(process.cwd(),"public/data/realestate.json"),text,"utf-8");
-  console.log("realestate.json ì™„ë£Œ");
+  console.log("realestate.json ¿Ï·á");
 }
 main().catch(console.error);

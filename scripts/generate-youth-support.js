@@ -1,13 +1,13 @@
-ï»¿const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 const path = require("path");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 async function main() {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const prompt = `2026ë…„ ê²½ë‚¨ ê±°ì œì‹œ ì²­ë…„(ë§Œ19~39ì„¸) ì§€ì›ê¸ˆ ì •ë³´ë¥¼ JSONìœ¼ë¡œ ìƒì„±í•´ì¤˜. ë§ˆí¬ë‹¤ìš´ ì—†ì´ ìˆœìˆ˜ JSONë§Œ ì¶œë ¥: {"updatedAt":"ì˜¤ëŠ˜ë‚ ì§œ","summary":"í•œì¤„ìš”ì•½","supports":[{"title":"ì§€ì›ê¸ˆëª…","amount":"ê¸ˆì•¡","target":"ëŒ€ìƒ","deadline":"ê¸°í•œ","how":"ì‹ ì²­ë°©ë²•","link":"URL","tag":"ì£¼ê±°"},{"title":"ì§€ì›ê¸ˆëª…2","amount":"ê¸ˆì•¡","target":"ëŒ€ìƒ","deadline":"ê¸°í•œ","how":"ì‹ ì²­ë°©ë²•","link":"URL","tag":"ì°½ì—…"}],"tips":["íŒ1","íŒ2","íŒ3"]} ì‹¤ì œ ì •ë¶€ ì‚¬ì—… 6ê°œ ì´ìƒ ì‘ì„±`;
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const prompt = `2026³â °æ³² °ÅÁ¦½Ã Ã»³â(¸¸19~39¼¼) Áö¿ø±İ Á¤º¸¸¦ JSONÀ¸·Î »ı¼ºÇØÁà. ¸¶Å©´Ù¿î ¾øÀÌ ¼ø¼ö JSON¸¸ Ãâ·Â: {"updatedAt":"¿À´Ã³¯Â¥","summary":"ÇÑÁÙ¿ä¾à","supports":[{"title":"Áö¿ø±İ¸í","amount":"±İ¾×","target":"´ë»ó","deadline":"±âÇÑ","how":"½ÅÃ»¹æ¹ı","link":"URL","tag":"ÁÖ°Å"},{"title":"Áö¿ø±İ¸í2","amount":"±İ¾×","target":"´ë»ó","deadline":"±âÇÑ","how":"½ÅÃ»¹æ¹ı","link":"URL","tag":"Ã¢¾÷"}],"tips":["ÆÁ1","ÆÁ2","ÆÁ3"]} ½ÇÁ¦ Á¤ºÎ »ç¾÷ 6°³ ÀÌ»ó ÀÛ¼º`;
   const result = await model.generateContent(prompt);
   const text = result.response.text().replace(/```json|```/g,"").trim();
   fs.writeFileSync(path.join(process.cwd(),"public/data/youth-support.json"),text,"utf-8");
-  console.log("youth-support.json ì™„ë£Œ");
+  console.log("youth-support.json ¿Ï·á");
 }
 main().catch(console.error);

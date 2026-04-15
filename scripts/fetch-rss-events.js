@@ -7,49 +7,49 @@ async function fetchRssEvents() {
   const RSS_URL = 'http://www.geoje.go.kr/board/openApi/rss.geoje?boardId=BBS_0000008';
 
   if (!GEMINI_API_KEY) {
-    console.error('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
+    console.error('GEMINI_API_KEY ?�경 변?��? ?�정?��? ?�았?�니??');
     return;
   }
 
   try {
-    console.log('거제시청 RSS 피드 가져오는 중...');
+    console.log('거제?�청 RSS ?�드 가?�오??�?..');
     const response = await fetch(RSS_URL);
     if (!response.ok) {
-      throw new Error(`RSS 요청 실패: ${response.status}`);
+      throw new Error(`RSS ?�청 ?�패: ${response.status}`);
     }
     const xmlText = await response.text();
 
-    // RSS 피드에서 항목 추출 (단순 문자열 매칭으로 <item> 태그 추출)
+    // RSS ?�드?�서 ??�� 추출 (?�순 문자??매칭?�로 <item> ?�그 추출)
     const items = xmlText.match(/<item>[\s\S]*?<\/item>/g) || [];
-    console.log(`총 ${items.length}개의 항목을 찾았습니다. AI 분석을 시작합니다...`);
+    console.log(`�?${items.length}개의 ??��??찾았?�니?? AI 분석???�작?�니??..`);
 
     if (items.length === 0) return;
 
-    // 최근 10개 항목만 AI에게 전달하여 분석 (효율성)
+    // 최근 10�???���?AI?�게 ?�달?�여 분석 (?�율??
     const recentItems = items.slice(0, 10).join('\n');
 
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
     
-    const prompt = `아래는 거제시청의 최신 공고 RSS 데이터야. 
-이 중에서 '축제', '문화 행사', '시민 혜택', '지원금' 등 일반 시민들에게 매우 유익하고 흥미로운 소식만 **최대 1건** 찾아줘. 
-행정적인 단순 공고(입찰, 결과 발표 등)는 무시해.
+    const prompt = `?�래??거제?�청??최신 공고 RSS ?�이?�야. 
+??중에??'축제', '문화 ?�사', '?��? ?�택', '지?�금' ???�반 ?��??�에�?매우 ?�익?�고 ?��?로운 ?�식�?**최�? 1�?* 찾아�? 
+?�정?�인 ?�순 공고(?�찰, 결과 발표 ????무시??
 
-있다면 아래 JSON 형식으로 응답해줘. 만약 진짜로 중요한 소식이 하나도 없다면 null 이라고만 답해.
+?�다�??�래 JSON ?�식?�로 ?�답?�줘. 만약 진짜�?중요???�식???�나???�다�?null ?�라고만 ?�해.
 
-형식:
+?�식:
 {
-  "name": "행사/소식 이름",
-  "startDate": "YYYY-MM-DD (본문에 없으면 오늘 날짜)",
-  "endDate": "YYYY-MM-DD (본문에 없으면 시작일로부터 1개월 뒤)",
-  "location": "장소 (없으면 거제시 일원)",
-  "target": "대상 (예: 거제 시민, 관광객 등)",
-  "summary": "핵심 내용 1~2문장 요약",
-  "detailContent": "블로그 포스팅 형식의 아주 상세한 설명 (추천 이유 3가지, 팁 포함, 800자 내외)",
-  "link": "관련 URL (<link> 태그의 주소)",
-  "category": "행사"
+  "name": "?�사/?�식 ?�름",
+  "startDate": "YYYY-MM-DD (본문???�으�??�늘 ?�짜)",
+  "endDate": "YYYY-MM-DD (본문???�으�??�작?�로부??1개월 ??",
+  "location": "?�소 (?�으�?거제???�원)",
+  "target": "?�??(?? 거제 ?��?, 관광객 ??",
+  "summary": "?�심 ?�용 1~2문장 ?�약",
+  "detailContent": "블로�??�스???�식???�주 ?�세???�명 (추천 ?�유 3가지, ???�함, 800???�외)",
+  "link": "관??URL (<link> ?�그??주소)",
+  "category": "?�사"
 }
 
-RSS 데이터:
+RSS ?�이??
 ${recentItems}`;
 
     const geminiResponse = await fetch(geminiUrl, {
@@ -61,47 +61,46 @@ ${recentItems}`;
     });
 
     if (!geminiResponse.ok) {
-      throw new Error(`Gemini API 호출 실패: ${geminiResponse.status}`);
+      throw new Error(`Gemini API ?�출 ?�패: ${geminiResponse.status}`);
     }
 
     const geminiJson = await geminiResponse.json();
     let resultText = geminiJson.candidates[0].content.parts[0].text.trim();
     
-    // Markdown 제거
+    // Markdown ?�거
     resultText = resultText.replace(/```json|```/g, '').trim();
 
     if (resultText === 'null' || !resultText.startsWith('{')) {
-      console.log('AI가 선정한 새로운 주요 소식이 없습니다.');
+      console.log('AI가 ?�정???�로??주요 ?�식???�습?�다.');
       return;
     }
 
     const newEvent = JSON.parse(resultText);
-    newEvent.category = newEvent.category || '행사';
+    newEvent.category = newEvent.category || '?�사';
 
-    // 기존 데이터 로드
+    // 기존 ?�이??로드
     const fileContent = await fs.readFile(DATA_FILE_PATH, 'utf-8');
     const db = JSON.parse(fileContent);
 
-    // 중복 확인 (이름과 날짜 기준)
+    // 중복 ?�인 (?�름�??�짜 기�?)
     const isDuplicate = db.events.some(e => e.name === newEvent.name);
     if (isDuplicate) {
-      console.log(`이미 등록된 소식입니다: ${newEvent.name}`);
+      console.log(`?��? ?�록???�식?�니?? ${newEvent.name}`);
       return;
     }
 
-    // ID 부여
-    const currentMaxId = db.events.length > 0 ? Math.max(...db.events.map(i => i.id)) : 0;
+    // ID 부??    const currentMaxId = db.events.length > 0 ? Math.max(...db.events.map(i => i.id)) : 0;
     newEvent.id = Math.max(currentMaxId + 1, Date.now());
 
-    // 데이터 추가
+    // ?�이??추�?
     db.events.unshift(newEvent);
     if (db.events.length > 8) db.events = db.events.slice(0, 8);
 
     await fs.writeFile(DATA_FILE_PATH, JSON.stringify(db, null, 2), 'utf-8');
-    console.log(`🎉 새로운 소식을 자동으로 찾았습니다: ${newEvent.name}`);
+    console.log(`?�� ?�로???�식???�동?�로 찾았?�니?? ${newEvent.name}`);
 
   } catch (error) {
-    console.error('RSS 수집 중 오류 발생:', error);
+    console.error('RSS ?�집 �??�류 발생:', error);
   }
 }
 

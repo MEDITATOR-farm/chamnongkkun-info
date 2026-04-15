@@ -13,27 +13,27 @@ const scripts = [
 ];
 
 async function runWithDelay() {
-  console.log('🚀 [똑똑한 업데이트기]를 시작합니다. (AI가 지치지 않게 천천히 진행합니다)');
+  console.log('?? [?�똑???�데?�트�?�??�작?�니?? (AI가 지치�? ?�게 천천??진행?�니??');
   
   for (const cmd of scripts) {
       try {
           console.log(`\n-----------------------------------------`);
-          console.log(`📡 실행 중: ${cmd}`);
-          // 60초 대기 (Gemini Free Tier의 429 에러 방지)
-          console.log(`⏳ AI가 쉴 수 있게 60초간 대기합니다...`);
+          console.log(`?�� ?�행 �? ${cmd}`);
+          // 60�??��?(Gemini Free Tier??429 ?�러 방�?)
+          console.log(`??AI가 ?????�게 60초간 ?�기합?�다...`);
           await new Promise(resolve => setTimeout(resolve, 60000));
           
           const output = execSync(cmd, { stdio: 'inherit' });
-          console.log(`✅ 완료!`);
+          console.log(`???�료!`);
       } catch (error) {
-          console.error(`❌ 오류 발생: ${cmd}`);
-          console.error(`이유: ${error.message}`);
+          console.error(`???�류 발생: ${cmd}`);
+          console.error(`?�유: ${error.message}`);
       }
   }
   
   console.log(`\n=========================================`);
-  console.log(`✨ 모든 업데이트가 완료되었습니다!`);
-  console.log(`이제 브라우저에서 최신 정보를 확인해 보세요.`);
+  console.log(`??모든 ?�데?�트가 ?�료?�었?�니??`);
+  console.log(`?�제 브라?��??�서 최신 ?�보�??�인??보세??`);
   console.log(`=========================================`);
 }
 

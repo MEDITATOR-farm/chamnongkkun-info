@@ -1,13 +1,13 @@
-ï»¿const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 const path = require("path");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 async function main() {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const prompt = `2026ë…„ ë†ì—…ì§ë¶ˆê¸ˆ ë° ê·€ë†ê·€ì´Œ ì§€ì›ê¸ˆ ì •ë³´ë¥¼ JSONìœ¼ë¡œ ìƒì„±í•´ì¤˜. ë§ˆí¬ë‹¤ìš´ ì—†ì´ ìˆœìˆ˜ JSONë§Œ ì¶œë ¥: {"updatedAt":"ì˜¤ëŠ˜ë‚ ì§œ","summary":"í•œì¤„ìš”ì•½","supports":[{"title":"ì‚¬ì—…ëª…","amount":"ê¸ˆì•¡","target":"ëŒ€ìƒ","deadline":"ê¸°í•œ","how":"ë°©ë²•","link":"URL","tag":"ì§ë¶ˆê¸ˆ"}],"tips":["íŒ1","íŒ2","íŒ3"]} ì‹¤ì œ ì‚¬ì—… 6ê°œ ì´ìƒ`;
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const prompt = `2026³â ³ó¾÷Á÷ºÒ±İ ¹× ±Í³ó±ÍÃÌ Áö¿ø±İ Á¤º¸¸¦ JSONÀ¸·Î »ı¼ºÇØÁà. ¸¶Å©´Ù¿î ¾øÀÌ ¼ø¼ö JSON¸¸ Ãâ·Â: {"updatedAt":"¿À´Ã³¯Â¥","summary":"ÇÑÁÙ¿ä¾à","supports":[{"title":"»ç¾÷¸í","amount":"±İ¾×","target":"´ë»ó","deadline":"±âÇÑ","how":"¹æ¹ı","link":"URL","tag":"Á÷ºÒ±İ"}],"tips":["ÆÁ1","ÆÁ2","ÆÁ3"]} ½ÇÁ¦ »ç¾÷ 6°³ ÀÌ»ó`;
   const result = await model.generateContent(prompt);
   const text = result.response.text().replace(/```json|```/g,"").trim();
   fs.writeFileSync(path.join(process.cwd(),"public/data/farm-support.json"),text,"utf-8");
-  console.log("farm-support.json ì™„ë£Œ");
+  console.log("farm-support.json ¿Ï·á");
 }
 main().catch(console.error);
