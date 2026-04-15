@@ -66,8 +66,9 @@ export function SupportCard({ href, icon, tag, tagColor, title, amount }: {
   );
 }
 
-export function BlogCard({ href, category, date, title, summary, tagColor }: {
-  href: string; category?: string; date: string; title: string; summary?: string; tagColor: string;
+// 블로그 & 행사 통합 카드
+export function ContentCard({ href, category, date, title, summary, tagColor, meta }: {
+  href: string; category?: string; date: string; title: string; summary?: string; tagColor: string; meta?: string;
 }) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
@@ -86,10 +87,20 @@ export function BlogCard({ href, category, date, title, summary, tagColor }: {
         {summary && (
           <div style={{ fontSize: "0.74rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.5, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>{summary}</div>
         )}
-        <div style={{ fontSize: "0.72rem", color: "#22d3ee", fontWeight: 700, marginTop: "auto" }}>읽기 →</div>
+        {meta && (
+          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)", marginTop: "2px" }}>📍 {meta}</div>
+        )}
+        <div style={{ fontSize: "0.72rem", color: "#22d3ee", fontWeight: 700, marginTop: "auto" }}>자세히 →</div>
       </div>
     </Link>
   );
+}
+
+// 기존 BlogCard는 ContentCard로 대체되었지만 호환성 유지
+export function BlogCard({ href, category, date, title, summary, tagColor }: {
+  href: string; category?: string; date: string; title: string; summary?: string; tagColor: string;
+}) {
+  return <ContentCard href={href} category={category} date={date} title={title} summary={summary} tagColor={tagColor} />;
 }
 
 export function NavLinks() {
