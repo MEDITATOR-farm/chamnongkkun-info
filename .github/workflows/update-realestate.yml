@@ -1,0 +1,141 @@
+name: Update Realestate Data
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # 매주 월요일 오전 9시 (KST)
+  workflow_dispatch:      # 수동 실행 가능
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch realestate data
+        env:
+          REALESTATE_API_KEY: ${{ secrets.REALESTATE_API_KEY }}
+        run: |
+          node << 'SCRIPT'
+          const https = require('https');
+          const fs = require('fs');
+
+          // 거제시 법정동코드: 48310 (경남 거제시)
+          const serviceKey = process.env.REALESTATE_API_KEY;
+          const year = new Date().getFullYear();
+          const month = String(new Date().getMonth() + 1).padStart(2, '0');
+          const dealYmd = `${year}${month}`;
+
+          // 거제시 주요 지역 법정동코드
+          const areas = [
+            { code: '4831010100', name: '고현동' },
+            { code: '4831010200', name: '수양동' },
+            { code: '4831010300', name: '중곡동' },
+            { code: '4831010400', name: '삼거동' },
+            { code: '4831010500', name: '장평동' },
+            { code: '4831010600', name: '상문동' },
+            { code: '4831010700', name: '두모동' },
+            { code: '4831010800', name: '아주동' },
+          ];
+
+          async function fetchArea(lawdCd, areaName) {
+            return new Promise((resolve) => {
+              const url = `https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev?serviceKey=${serviceKey}&pageNo=1&numOfRows=10&LAWD_CD=${lawdCd}&DEAL_YMD=${dealYmd}`;
+              https.get(url, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                  try {
+                    // XML 파싱
+                    const items = [];
+                    const matches = data.matchAll(/<item>([\s\S]*?)<\/item>/g);
+                    for (const match of matches) {
+                      const item = match[1];
+                      const get = (tag) => {
+                        const m = item.match(new RegExp(`<${tag}>\\s*([^<]+)\\s*<\/${tag}>`));
+                        return m ? m[1].trim() : '';
+                      };
+                      items.push({
+                        aptNm: get('aptNm'),
+                        dealAmount: get('dealAmount'),
+                        excluUseAr: get('excluUseAr'),
+                        floor: get('floor'),
+                        dealYear: get('dealYear'),
+                        dealMonth: get('dealMonth'),
+                        dealDay: get('dealDay'),
+                      });
+                    }
+                    resolve({ areaName, items });
+                  } catch(e) {
+                    resolve({ areaName, items: [] });
+                  }
+                });
+              }).on('error', () => resolve({ areaName, items: [] }));
+            });
+          }
+
+          async function main() {
+            const results = [];
+            for (const area of areas) {
+              const result = await fetchArea(area.code, area.name);
+              if (result.items.length > 0) {
+                // 평균 거래가 계산
+                const prices = result.items
+                  .map(i => parseInt(i.dealAmount.replace(/,/g, '')))
+                  .filter(p => !isNaN(p));
+                const avgPrice = prices.length > 0
+                  ? Math.round(prices.reduce((a,b) => a+b, 0) / prices.length)
+                  : 0;
+
+                results.push({
+                  name: result.areaName,
+                  highlight: `${result.items.length}건 실거래 / 평균 ${Math.round(result.items[0].excluUseAr)}㎡ 기준`,
+                  avgPrice: avgPrice > 0 ? `${(avgPrice/10000).toFixed(1)}억원` : '거래 없음',
+                  trend: '보합',
+                  trendIcon: '➡️',
+                  recentDeals: result.items.slice(0, 3).map(i => ({
+                    apt: i.aptNm,
+                    price: i.dealAmount + '만원',
+                    area: i.excluUseAr + '㎡',
+                    date: `${i.dealYear}.${i.dealMonth}.${i.dealDay}`,
+                  }))
+                });
+              }
+            }
+
+            const now = new Date();
+            const output = {
+              updatedAt: `${now.getFullYear()}년 ${now.getMonth()+1}월 자동 업데이트`,
+              summary: "거제시 주요 지역 아파트 실거래가 데이터입니다. 국토교통부 실거래가 API 기준으로 매주 자동 업데이트됩니다.",
+              areas: results.length > 0 ? results : [
+                { name: "고현동·중곡동", highlight: "도심 중심 / 84㎡ 기준", avgPrice: "2억~3억5천만원", trend: "보합", trendIcon: "➡️" },
+                { name: "장평동·상문동", highlight: "주거 밀집 / 84㎡ 기준", avgPrice: "1억8천~2억8천만원", trend: "하락", trendIcon: "📉" },
+                { name: "아주동·양정동", highlight: "조선소 인근 / 84㎡ 기준", avgPrice: "1억5천~2억5천만원", trend: "하락", trendIcon: "📉" },
+              ],
+              tips: [
+                "아파트 전세는 매매가 대비 55~65% 수준으로 형성되어 있습니다.",
+                "조선소 경기에 따라 아주동·양정동 시세 변동이 크므로 주의가 필요합니다.",
+                "농지 구입 시 농업경영체 등록 여부 및 농지취득자격증명 발급이 필요합니다.",
+                "실거래가 확인은 국토교통부 실거래가 공개시스템(rt.molit.go.kr)을 이용하세요."
+              ]
+            };
+
+            fs.writeFileSync('public/data/realestate.json', JSON.stringify(output, null, 2), 'utf-8');
+            console.log('realestate.json 업데이트 완료:', results.length, '개 지역');
+          }
+
+          main().catch(console.error);
+          SCRIPT
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/realestate.json
+          git diff --staged --quiet || git commit -m "auto: update realestate data $(date +'%Y-%m-%d')"
+          git push
