@@ -1,119 +1,286 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ════════════════════════════════════════
+   DARK THEME — 전체 강제 오버라이드
+   배경: 딥 네이비 (#060f1e ~ #0a1e3a)
+   모든 텍스트가 반드시 보여야 함
+════════════════════════════════════════ */
+
+/* 커서 */
+body { cursor: none; }
+@media (pointer: coarse) { body { cursor: auto; } }
+
+/* ── 핵심: 모든 텍스트 기본값 ── */
+*, *::before, *::after {
+  -webkit-font-smoothing: antialiased;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* p, span, div, li 등 기본 텍스트 */
+p, li, td, th, label, dd, dt, figcaption {
+  color: rgba(255, 255, 255, 0.82);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 제목 */
+h1, h2, h3, h4, h5, h6 {
+  color: rgba(255, 255, 255, 0.96) !important;
+}
+
+/* ── Tailwind 텍스트 색상 전체 오버라이드 ── */
+[class*="text-slate-"],
+[class*="text-gray-"],
+[class*="text-zinc-"],
+[class*="text-neutral-"],
+[class*="text-stone-"] {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.text-slate-900, .text-gray-900, .text-zinc-900,
+.text-slate-800, .text-gray-800, .text-zinc-800 {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.text-slate-700, .text-gray-700, .text-zinc-700 {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.text-slate-600, .text-gray-600, .text-zinc-600 {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.text-slate-500, .text-gray-500, .text-zinc-500 {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.text-slate-400, .text-gray-400, .text-zinc-400 {
+  color: rgba(255, 255, 255, 0.42) !important;
+}
+
+.text-slate-300, .text-gray-300, .text-zinc-300 {
+  color: rgba(255, 255, 255, 0.32) !important;
+}
+
+/* ── 컬러 텍스트 — 어두운 배경에서 밝게 ── */
+.text-blue-500, .text-blue-600, .text-blue-700   { color: #60a5fa !important; }
+.text-cyan-500, .text-cyan-600, .text-cyan-700   { color: #22d3ee !important; }
+.text-teal-500, .text-teal-600, .text-teal-700   { color: #2dd4bf !important; }
+.text-green-500, .text-green-600, .text-green-700 { color: #4ade80 !important; }
+.text-emerald-500,.text-emerald-600,.text-emerald-700 { color: #34d399 !important; }
+.text-lime-500, .text-lime-600, .text-lime-700   { color: #a3e635 !important; }
+.text-yellow-500,.text-yellow-600,.text-yellow-700{ color: #facc15 !important; }
+.text-amber-500, .text-amber-600, .text-amber-700 { color: #fbbf24 !important; }
+.text-orange-500,.text-orange-600,.text-orange-700{ color: #fb923c !important; }
+.text-red-500,   .text-red-600,   .text-red-700  { color: #f87171 !important; }
+.text-pink-500,  .text-pink-600,  .text-pink-700  { color: #f472b6 !important; }
+.text-purple-500,.text-purple-600,.text-purple-700{ color: #c084fc !important; }
+.text-violet-500,.text-violet-600,.text-violet-700{ color: #a78bfa !important; }
+.text-indigo-500,.text-indigo-600,.text-indigo-700{ color: #818cf8 !important; }
+
+/* hover 텍스트 */
+.hover\:text-cyan-600:hover  { color: #22d3ee !important; }
+.hover\:text-teal-600:hover  { color: #2dd4bf !important; }
+.hover\:text-blue-600:hover  { color: #60a5fa !important; }
+.hover\:text-white:hover     { color: white !important; }
+
+/* ── 배경 → 글래스로 ── */
+.bg-white {
+  background: rgba(255, 255, 255, 0.07) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.bg-gray-50, .bg-slate-50, .bg-zinc-50,
+.bg-gray-100, .bg-slate-100, .bg-zinc-100 {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.bg-gray-200, .bg-slate-200, .bg-zinc-200 {
+  background: rgba(255, 255, 255, 0.09) !important;
+}
+
+/* 컬러 배경 → 반투명으로 */
+.bg-blue-50   { background: rgba(96,165,250,0.12) !important; }
+.bg-cyan-50   { background: rgba(34,211,238,0.1) !important; }
+.bg-teal-50   { background: rgba(45,212,191,0.1) !important; }
+.bg-green-50  { background: rgba(74,222,128,0.1) !important; }
+.bg-emerald-50{ background: rgba(52,211,153,0.1) !important; }
+.bg-amber-50  { background: rgba(251,191,36,0.1) !important; }
+.bg-orange-50 { background: rgba(251,146,60,0.1) !important; }
+.bg-red-50    { background: rgba(248,113,113,0.1) !important; }
+.bg-pink-50   { background: rgba(244,114,182,0.1) !important; }
+.bg-purple-50 { background: rgba(192,132,252,0.1) !important; }
+.bg-violet-50 { background: rgba(167,139,250,0.1) !important; }
+.bg-indigo-50 { background: rgba(129,140,248,0.1) !important; }
+.bg-lime-50   { background: rgba(163,230,53,0.1) !important; }
+
+/* 컬러 뱃지 배경 (100 단계) */
+.bg-blue-100   { background: rgba(96,165,250,0.18) !important; }
+.bg-cyan-100   { background: rgba(34,211,238,0.16) !important; }
+.bg-green-100  { background: rgba(74,222,128,0.16) !important; }
+.bg-emerald-100{ background: rgba(52,211,153,0.16) !important; }
+.bg-amber-100  { background: rgba(251,191,36,0.16) !important; }
+.bg-orange-100 { background: rgba(251,146,60,0.16) !important; }
+.bg-red-100    { background: rgba(248,113,113,0.16) !important; }
+.bg-pink-100   { background: rgba(244,114,182,0.16) !important; }
+.bg-purple-100 { background: rgba(192,132,252,0.16) !important; }
+
+/* ── 테두리 ── */
+.border-slate-100, .border-gray-100, .border-zinc-100 {
+  border-color: rgba(255,255,255,0.07) !important;
+}
+.border-slate-200, .border-gray-200, .border-zinc-200 {
+  border-color: rgba(255,255,255,0.12) !important;
+}
+.border-slate-300, .border-gray-300, .border-zinc-300 {
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+.divide-slate-100 > :not(:first-child),
+.divide-gray-100 > :not(:first-child),
+.divide-slate-200 > :not(:first-child),
+.divide-gray-200 > :not(:first-child) {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* ── hover 배경 ── */
+.hover\:bg-gray-50:hover,
+.hover\:bg-slate-50:hover  { background: rgba(255,255,255,0.09) !important; }
+.hover\:bg-gray-100:hover,
+.hover\:bg-slate-100:hover { background: rgba(255,255,255,0.12) !important; }
+
+/* ── 그림자 제거 (어두운 배경에서 불필요) ── */
+.shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+  box-shadow: none !important;
+}
+
+/* ── 링크 ── */
+a { color: rgba(255,255,255,0.8); }
+a:hover { color: white; }
+
+/* ── 입력창 ── */
+input, textarea, select {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: white !important;
+}
+input::placeholder, textarea::placeholder {
+  color: rgba(255,255,255,0.35) !important;
+}
+
+/* ── 스크롤바 ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.14);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.24); }
+
+/* ── 선택 텍스트 ── */
+::selection {
+  background: rgba(34,211,238,0.28);
+  color: white;
+}
+
+/* ══════════════════════════════════════
+   모바일 반응형
+══════════════════════════════════════ */
+
+/* 모바일 전용 */
+@media (max-width: 640px) {
+  /* 히어로 제목 */
+  h1 { font-size: 1.7rem !important; }
+
+  /* 카드 그리드 1열 */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 패딩 줄이기 */
+  main { padding-left: 1rem !important; padding-right: 1rem !important; }
+
+  /* 네비 링크 줄이기 */
+  nav { padding: 0 1rem !important; }
+}
+
+/* 태블릿 */
+@media (min-width: 641px) and (max-width: 900px) {
+  .grid-cols-3, [style*="minmax(210px"] {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 
-@layer utilities {
-  .glass {
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  }
-  .glass-dark {
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
-  }
-  .glass-card {
-    background-color: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.03);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .glass-card:hover {
-    background-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 10px 40px 0 rgba(0, 150, 200, 0.08);
-    border-color: rgba(255, 255, 255, 0.4);
-  }
-  .text-shadow-premium {
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  .bg-aura {
-    background: radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 60%),
-                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 80%);
-  }
-  .wide-card-reveal {
-     animation: slide-in-wide 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-     opacity: 0;
-  }
-  .list-item-slim {
-    @apply flex items-center justify-between py-3 px-5 rounded-xl transition-all duration-300 border-b border-slate-100/50;
-    background-color: transparent;
-  }
-  .list-item-slim:hover {
-    @apply border-cyan-200/30;
-    background-color: rgba(34, 211, 238, 0.02);
-  }
-  .accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out, opacity 0.3s ease-in;
-    opacity: 0;
-  }
-  .accordion-content.open {
-    max-height: 500px;
-    opacity: 1;
-    @apply py-4 px-6 mt-2;
-  }
+/* ══════════════════════════════════════
+   특정 컴포넌트 픽스
+══════════════════════════════════════ */
+
+/* 아코디언 */
+[class*="accordion"] button,
+[class*="accordion"] div,
+button[class*="accordion"] {
+  color: rgba(255,255,255,0.88) !important;
+  background: transparent !important;
 }
 
-@keyframes slide-in-wide {
-  from { transform: translateX(20px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+/* glass 카드 안 기본 텍스트 */
+[style*="backdrop-filter"] p,
+[style*="backdrop-filter"] span,
+[style*="backdrop-filter"] div {
+  color: rgba(255,255,255,0.82);
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+[style*="backdrop-filter"] h1,
+[style*="backdrop-filter"] h2,
+[style*="backdrop-filter"] h3 {
+  color: rgba(255,255,255,0.96) !important;
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.5; filter: blur(40px); }
-  50% { opacity: 0.8; filter: blur(60px); }
+/* 뱃지/태그 텍스트 */
+.rounded-full span,
+.rounded-full {
+  color: inherit;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+/* 구분선 */
+hr, [class*="divid"] {
+  border-color: rgba(255,255,255,0.08) !important;
 }
 
-.animate-glow {
-  animation: pulse-glow 8s ease-in-out infinite;
+/* 날씨 위젯 */
+[class*="Weather"] *,
+[class*="weather"] * {
+  color: rgba(255,255,255,0.85) !important;
 }
 
-body {
-  background-color: #f7faff;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(206, 238, 255, 0.4) 0%, transparent 70%),
-    radial-gradient(circle at 100% 100%, rgba(228, 240, 255, 0.4) 0%, transparent 70%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
-  color: var(--foreground);
-  font-family: 'Outfit', var(--font-geist-sans), sans-serif;
-  min-height: 100vh;
+/* 도서 랭킹 */
+[class*="Book"] *,
+[class*="book"] * {
+  color: rgba(255,255,255,0.85) !important;
 }
 
-body::selection {
-  background-color: #a5f3fc; /* bg-cyan-200 */
+/* 뉴스 컴포넌트 */
+[class*="News"] *,
+[class*="news"] * {
+  color: rgba(255,255,255,0.85) !important;
 }
 
+/* AI 랭킹 */
+[class*="AIRank"] *,
+[class*="Ranking"] * {
+  color: rgba(255,255,255,0.85) !important;
+}
+
+/* 사자성어/명심보감 */
+[class*="Idiom"] *,
+[class*="Wisdom"] *,
+[class*="idiom"] *,
+[class*="wisdom"] * {
+  color: rgba(255,255,255,0.85) !important;
+}
+
+/* 시 컴포넌트 */
+[class*="Poem"] *,
+[class*="poem"] * {
+  color: rgba(255,255,255,0.85) !important;
+}
