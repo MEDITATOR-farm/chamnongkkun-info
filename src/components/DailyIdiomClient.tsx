@@ -20,20 +20,18 @@ export default function DailyIdiomClient({ idioms }: { idioms: any[] }) {
 
   return (
     <div className="group p-4 sm:p-5 flex items-center relative overflow-hidden transition-all bg-transparent border-b border-white/10" translate="no">
-      <div className="absolute top-0 left-0 w-0.5 h-full bg-cyan-400 opacity-40" />
-      
+      <div className="absolute top-0 left-0 w-0.5 h-full bg-cyan-400 opacity-50" />
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 relative z-10 w-full">
-        <div className="flex-shrink-0 border border-white/20 text-white/50 text-[9px] font-black px-2 py-0.5 rounded tracking-widest flex items-center gap-1.5 w-fit">
+        <div className="flex-shrink-0 border border-white/25 text-white/60 text-[9px] font-black px-2 py-0.5 rounded tracking-widest flex items-center gap-1.5 w-fit">
           💡 오늘의 사자성어
         </div>
-        
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 flex-grow min-w-0">
           <div className="flex items-center gap-2 whitespace-nowrap">
             <span className="text-xl sm:text-2xl font-black text-white font-serif tracking-tighter">{todaysIdiom.hanja}</span>
-            <span className="text-[11px] sm:text-xs font-bold text-cyan-400/80 font-serif bg-cyan-400/10 px-1.5 py-0.5 rounded tracking-widest leading-none">({todaysIdiom.chars})</span>
+            <span className="text-[11px] sm:text-xs font-bold text-cyan-300 font-serif bg-cyan-400/15 px-1.5 py-0.5 rounded tracking-widest leading-none">({todaysIdiom.chars})</span>
           </div>
-          <div className="hidden sm:block w-px h-3 bg-white/15" />
-          <span className="text-sm sm:text-base font-semibold text-white/60 italic truncate max-w-full">
+          <div className="hidden sm:block w-px h-3 bg-white/20" />
+          <span className="text-sm sm:text-base font-semibold text-white/75 italic truncate max-w-full">
             "{todaysIdiom.meaning}"
           </span>
         </div>

@@ -21,16 +21,15 @@ export default function DailyWisdomClient({ wisdoms }: { wisdoms: any[] }) {
   return (
     <div className="p-4 sm:p-5 flex items-center relative overflow-hidden group transition-all mt-1 bg-transparent border-b border-white/10" translate="no">
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 relative z-10 w-full">
-        <div className="flex-shrink-0 border border-amber-400/50 text-amber-400 text-[9px] font-bold px-2 py-0.5 rounded tracking-widest whitespace-nowrap w-fit">
+        <div className="flex-shrink-0 border border-amber-400/60 text-amber-300 text-[9px] font-bold px-2 py-0.5 rounded tracking-widest whitespace-nowrap w-fit">
           📜 오늘의 명심보감
         </div>
-        
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 flex-grow min-w-0">
           <div className="flex flex-col sm:flex-row items-baseline gap-x-2 gap-y-0.5">
             <span className="text-base sm:text-lg font-bold text-amber-200 font-serif leading-tight">{todaysWisdom.chars}</span>
-            <span className="text-[10px] sm:text-xs font-medium text-amber-300/50 font-serif tracking-[0.05em] flex-shrink-0">({todaysWisdom.reading})</span>
+            <span className="text-[10px] sm:text-xs font-medium text-amber-300/60 font-serif tracking-[0.05em] flex-shrink-0">({todaysWisdom.reading})</span>
           </div>
-          <span className="text-xs sm:text-sm font-medium text-white/60 mt-0.5 sm:mt-0 max-w-full">
+          <span className="text-xs sm:text-sm font-medium text-white/75 mt-0.5 sm:mt-0 max-w-full">
             — {todaysWisdom.meaning}
           </span>
         </div>
