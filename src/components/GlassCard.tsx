@@ -83,7 +83,7 @@ export function SupportCard({ href, icon, tag, tagColor, title, amount }: {
   );
 }
 
-// 블로그 & 행사 통합 카드 (썸네일 지원)
+// 블로그 & 행사 통합 카드 (가로형 레이아웃 + 좌측 썸네일)
 export function ContentCard({ href, category, date, title, summary, tagColor, meta, thumbnail }: {
   href: string; category?: string; date: string; title: string; summary?: string;
   tagColor: string; meta?: string; thumbnail?: string;
@@ -94,43 +94,31 @@ export function ContentCard({ href, category, date, title, summary, tagColor, me
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <div data-hover="true"
-        style={{ ...G, overflow: "hidden", display: "flex", flexDirection: "column", height: "100%", transition: "background 0.2s, transform 0.2s" }}
+        style={{ ...G, overflow: "hidden", display: "flex", flexDirection: "row", height: "100%", transition: "background 0.2s, transform 0.2s" }}
         onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.11)"; el.style.transform = "translateY(-3px)"; }}
         onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.06)"; el.style.transform = "translateY(0)"; }}
       >
-        {/* 썸네일 영역 */}
-        <div style={{ width: "100%", height: "56px", flexShrink: 0, position: "relative", overflow: "hidden" }}>
+        {/* 썸네일 - 좌측 */}
+        <div style={{ width: "72px", flexShrink: 0, overflow: "hidden" }}>
           {thumbnail ? (
-            <img
-              src={thumbnail}
-              alt={title}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
+            <img src={thumbnail} alt={title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
-            <div style={{
-              width: "100%", height: "100%",
-              background: gradient,
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <span style={{ fontSize: "1.6rem", opacity: 0.85 }}>{icon}</span>
+            <div style={{ width: "100%", height: "100%", background: gradient, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: "1.6rem" }}>{icon}</span>
             </div>
           )}
-          {/* 날짜 오버레이 */}
-          <div style={{
-            position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)",
-            fontSize: "0.6rem", color: "rgba(255,255,255,0.75)",
-            background: "rgba(0,0,0,0.35)", padding: "2px 6px", borderRadius: "8px",
-            backdropFilter: "blur(4px)",
-          }}>{date}</div>
         </div>
 
-        {/* 텍스트 영역 */}
-        <div style={{ padding: "0.85rem 1rem", display: "flex", flexDirection: "column", gap: "5px", flex: 1 }}>
-          {category && (
-            <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: "20px", color: tagColor, background: "rgba(255,255,255,0.08)", width: "fit-content" }}>
-              {category}
-            </span>
-          )}
+        {/* 텍스트 - 우측 */}
+        <div style={{ padding: "0.85rem 1rem", display: "flex", flexDirection: "column", gap: "5px", flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "4px" }}>
+            {category && (
+              <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: "20px", color: tagColor, background: "rgba(255,255,255,0.08)", flexShrink: 0 }}>
+                {category}
+              </span>
+            )}
+            <span style={{ fontSize: "0.62rem", color: "rgba(255,255,255,0.3)", marginLeft: "auto", whiteSpace: "nowrap" }}>{date}</span>
+          </div>
           <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "white", lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>
             {title}
           </div>
