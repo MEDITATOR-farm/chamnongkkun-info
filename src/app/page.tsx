@@ -104,7 +104,7 @@ export default function Home() {
         </div>
         <NavLinks />
       </nav>
-
+n
       {/* ── 히어로 ── */}
       <header style={{ position: "relative", zIndex: 1, minHeight: "440px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/images/daebyeongdaedo_lined.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.22 }} />
@@ -136,7 +136,10 @@ export default function Home() {
 <section>
   <SectionTitle icon="🌸" text="거제시 이달의 행사" href="/events" badge="이달" />
   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
-    {data.events.slice(0, 6).map((event: any) => (
+    {data.events
+  .filter((event: any) => new Date(event.endDate) >= new Date())
+  .slice(0, 6)
+  .map((event: any) => (
       <ContentCard
         key={event.id}
         href={`/events/${event.id}`}
