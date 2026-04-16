@@ -98,7 +98,7 @@ export default function DailyWisdomClient({ wisdoms }: { wisdoms: any[] }) {
       ctx.fillStyle = "rgba(255,255,255,0.2)";
       ctx.font = "11px sans-serif";
       ctx.textAlign = "right";
-      ctx.fillText("chamnongkkun.com", 776, 318);
+      ctx.fillText("chamnongkkun.com  by 瞑想家", 776, 318);
 
       // 다운로드
       canvas.toBlob((blob) => {
