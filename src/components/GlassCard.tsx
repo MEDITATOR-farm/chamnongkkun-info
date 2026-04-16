@@ -99,7 +99,7 @@ export function ContentCard({ href, category, date, title, summary, tagColor, me
         onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.06)"; el.style.transform = "translateY(0)"; }}
       >
         {/* 썸네일 - 좌측 */}
-        <div style={{ width: "72px", flexShrink: 0, overflow: "hidden" }}>
+        <div style={{ width: "52px", flexShrink: 0, overflow: "hidden" }}>
           {thumbnail ? (
             <img src={thumbnail} alt={title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
