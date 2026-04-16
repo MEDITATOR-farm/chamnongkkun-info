@@ -16,7 +16,7 @@ import { getSortedPostsData } from "@/lib/posts";
 import ScrollToTop from "@/components/ScrollToTop";
 import AccordionSection from "@/components/AccordionSection";
 import HighRevenueSection from "@/components/HighRevenueSection";
-import { SupportCard, BlogCard, NavLinks, HeroButton, GlassCard } from "@/components/GlassCard";
+import { SupportCard, BlogCard, NavLinks, HeroButton, GlassCard, ContentCard } from "@/components/GlassCard";
 
 interface InfoItem {
   id: number; name: string; category: string;
