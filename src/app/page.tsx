@@ -107,7 +107,7 @@ export default function Home() {
 n
       {/* ── 히어로 ── */}
       <header style={{ position: "relative", zIndex: 1, minHeight: "440px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/images/daebyeongdaedo_lined.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.22 }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/images/daebyeongdaedo_lined.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.35 }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,15,30,0.35), rgba(6,15,30,0.65))" }} />
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "2rem 1.5rem", maxWidth: "680px" }}>
           <div style={{
