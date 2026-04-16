@@ -81,15 +81,15 @@ export default function Home() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0a1a3a 0%, #0f2d5a 35%, #103d55 65%, #0a2820 100%)",
+      background: "linear-gradient(135deg, #0d2247 0%, #1a3f7a 35%, #165070 65%, #0d3528 100%)",
       color: "white", overflowX: "hidden",
     }}>
 
       {/* 배경 오브 */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
-        <div style={{ position: "absolute", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(14,165,233,0.15), transparent 70%)", top: -150, left: -150, filter: "blur(60px)" }} />
-        <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(6,182,212,0.1), transparent 70%)", bottom: "10%", right: -100, filter: "blur(60px)" }} />
-        <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%)", top: "40%", left: "50%", filter: "blur(50px)" }} />
+        <div style={{ position: "absolute", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(14,165,233,0.25), transparent 70%)", top: -150, left: -150, filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(6,182,212,0.18), transparent 70%)", bottom: "10%", right: -100, filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(16,185,129,0.14), transparent 70%)", top: "40%", left: "50%", filter: "blur(50px)" }} />
       </div>
 
       {/* ── 네비게이션 ── */}
@@ -108,7 +108,7 @@ export default function Home() {
       {/* ── 히어로 ── */}
       <header style={{ position: "relative", zIndex: 1, minHeight: "440px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/images/daebyeongdaedo_lined.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.35 }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,15,30,0.35), rgba(6,15,30,0.65))" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,15,30,0.2), rgba(6,15,30,0.45))" }} />
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "2rem 1.5rem", maxWidth: "680px" }}>
           <div style={{
             display: "inline-block", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em",
