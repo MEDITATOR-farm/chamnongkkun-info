@@ -10,6 +10,23 @@ const G: React.CSSProperties = {
   borderRadius: "20px",
 };
 
+// 카테고리별 썸네일 플레이스홀더 그라디언트
+const CATEGORY_GRADIENTS: Record<string, string> = {
+  정보: "linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)",
+  행사: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
+  농업: "linear-gradient(135deg, #34d399 0%, #059669 100%)",
+  복지: "linear-gradient(135deg, #fdba74 0%, #f97316 100%)",
+  지원금: "linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)",
+  귀농: "linear-gradient(135deg, #86efac 0%, #16a34a 100%)",
+  부동산: "linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)",
+  기본: "linear-gradient(135deg, #334155 0%, #1e293b 100%)",
+};
+
+const CATEGORY_ICONS: Record<string, string> = {
+  정보: "📋", 행사: "🌸", 농업: "🌱", 복지: "🤝",
+  지원금: "💰", 귀농: "🏡", 부동산: "🏢", 기본: "📝",
+};
+
 export function GlassCard({ children, style, className }: { children: ReactNode; style?: React.CSSProperties; className?: string }) {
   return (
     <div style={{ ...G, ...style }} className={className}
@@ -25,7 +42,7 @@ export function GlassCard({ children, style, className }: { children: ReactNode;
 export function GlassLinkCard({ href, children, style }: { href: string; children: ReactNode; style?: React.CSSProperties }) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
-      <div style={{ ...G, cursor: "none", transition: "background 0.2s, transform 0.2s", ...style }}
+      <div style={{ ...G, transition: "background 0.2s, transform 0.2s", ...style }}
         data-hover="true"
         onMouseEnter={e => {
           const el = e.currentTarget as HTMLDivElement;
@@ -50,7 +67,7 @@ export function SupportCard({ href, icon, tag, tagColor, title, amount }: {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <div data-hover="true"
-        style={{ ...G, padding: "14px 16px", cursor: "none", display: "flex", alignItems: "center", gap: "12px", transition: "background 0.2s, transform 0.2s" }}
+        style={{ ...G, padding: "14px 16px", display: "flex", alignItems: "center", gap: "12px", transition: "background 0.2s, transform 0.2s" }}
         onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.11)"; el.style.transform = "translateY(-2px)"; }}
         onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.06)"; el.style.transform = "translateY(0)"; }}
       >
@@ -66,31 +83,67 @@ export function SupportCard({ href, icon, tag, tagColor, title, amount }: {
   );
 }
 
-// 블로그 & 행사 통합 카드
-export function ContentCard({ href, category, date, title, summary, tagColor, meta }: {
-  href: string; category?: string; date: string; title: string; summary?: string; tagColor: string; meta?: string;
+// 블로그 & 행사 통합 카드 (썸네일 지원)
+export function ContentCard({ href, category, date, title, summary, tagColor, meta, thumbnail }: {
+  href: string; category?: string; date: string; title: string; summary?: string;
+  tagColor: string; meta?: string; thumbnail?: string;
 }) {
+  const gradient = CATEGORY_GRADIENTS[category || "기본"] || CATEGORY_GRADIENTS["기본"];
+  const icon = CATEGORY_ICONS[category || "기본"] || CATEGORY_ICONS["기본"];
+
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <div data-hover="true"
-        style={{ ...G, padding: "1rem 1.1rem", cursor: "none", display: "flex", flexDirection: "column", gap: "6px", height: "100%", transition: "background 0.2s, transform 0.2s" }}
+        style={{ ...G, overflow: "hidden", display: "flex", flexDirection: "column", height: "100%", transition: "background 0.2s, transform 0.2s" }}
         onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.11)"; el.style.transform = "translateY(-3px)"; }}
         onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.06)"; el.style.transform = "translateY(0)"; }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          {category && (
-            <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: "20px", color: tagColor, background: "rgba(255,255,255,0.08)" }}>{category}</span>
+        {/* 썸네일 영역 */}
+        <div style={{ width: "100%", height: "110px", flexShrink: 0, position: "relative", overflow: "hidden" }}>
+          {thumbnail ? (
+            <img
+              src={thumbnail}
+              alt={title}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <div style={{
+              width: "100%", height: "100%",
+              background: gradient,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{ fontSize: "2.2rem", opacity: 0.85 }}>{icon}</span>
+            </div>
           )}
-          <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.3)", marginLeft: "auto" }}>{date}</span>
+          {/* 날짜 오버레이 */}
+          <div style={{
+            position: "absolute", bottom: "6px", right: "8px",
+            fontSize: "0.6rem", color: "rgba(255,255,255,0.75)",
+            background: "rgba(0,0,0,0.35)", padding: "2px 6px", borderRadius: "8px",
+            backdropFilter: "blur(4px)",
+          }}>{date}</div>
         </div>
-        <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "white", lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>{title}</div>
-        {summary && (
-          <div style={{ fontSize: "0.74rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.5, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>{summary}</div>
-        )}
-        {meta && (
-          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)", marginTop: "2px" }}>📍 {meta}</div>
-        )}
-        <div style={{ fontSize: "0.72rem", color: "#22d3ee", fontWeight: 700, marginTop: "auto" }}>자세히 →</div>
+
+        {/* 텍스트 영역 */}
+        <div style={{ padding: "0.85rem 1rem", display: "flex", flexDirection: "column", gap: "5px", flex: 1 }}>
+          {category && (
+            <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: "20px", color: tagColor, background: "rgba(255,255,255,0.08)", width: "fit-content" }}>
+              {category}
+            </span>
+          )}
+          <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "white", lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>
+            {title}
+          </div>
+          {summary && (
+            <div style={{ fontSize: "0.74rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.5, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any }}>
+              {summary}
+            </div>
+          )}
+          {meta && (
+            <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)", marginTop: "2px" }}>📍 {meta}</div>
+          )}
+          <div style={{ fontSize: "0.72rem", color: "#22d3ee", fontWeight: 700, marginTop: "auto" }}>자세히 →</div>
+        </div>
       </div>
     </Link>
   );
@@ -108,13 +161,13 @@ export function NavLinks() {
     <div style={{ display: "flex", gap: "1.8rem", alignItems: "center" }}>
       {([["홈", "/"], ["블로그", "/blog"], ["지원금", "/support/youth"], ["소개", "/about"]] as [string, string][]).map(([t, h]) => (
         <Link key={h} href={h}
-          style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.82rem", fontWeight: 600, textDecoration: "none", cursor: "none", transition: "color 0.2s" }}
+          style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.82rem", fontWeight: 600, textDecoration: "none", transition: "color 0.2s" }}
           onMouseEnter={e => (e.currentTarget.style.color = "white")}
           onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
         >{t}</Link>
       ))}
       <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer"
-        style={{ color: "#22d3ee", fontSize: "0.82rem", fontWeight: 700, textDecoration: "none", cursor: "none" }}>🛒 스토어</a>
+        style={{ color: "#22d3ee", fontSize: "0.82rem", fontWeight: 700, textDecoration: "none" }}>🛒 스토어</a>
     </div>
   );
 }
@@ -123,7 +176,7 @@ export function HeroButton() {
   return (
     <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer" data-hover="true"
       style={{
-        display: "inline-flex", alignItems: "center", gap: "8px", cursor: "none",
+        display: "inline-flex", alignItems: "center", gap: "8px",
         background: "linear-gradient(135deg, #f59e0b, #ef4444)",
         color: "white", fontWeight: 700, fontSize: "0.9rem",
         padding: "12px 28px", borderRadius: "40px", textDecoration: "none",

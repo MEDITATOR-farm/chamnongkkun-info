@@ -13,6 +13,7 @@ export interface PostData {
   tags: string[];
   content: string;
   source_link?: string;
+  thumbnail?: string;
 }
 
 export function getSortedPostsData(): PostData[] {
@@ -45,6 +46,7 @@ export function getSortedPostsData(): PostData[] {
         tags: data.tags || [],
         content,
         source_link: data.source_link || '',
+        thumbnail: data.thumbnail || '',
       };
     });
 
@@ -75,5 +77,6 @@ export function getPostData(slug: string): PostData | null {
     tags: data.tags || [],
     content,
     source_link: data.source_link || '',
+    thumbnail: data.thumbnail || '',
   };
 }
