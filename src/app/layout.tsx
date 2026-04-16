@@ -20,8 +20,16 @@ export const metadata: Metadata = {
     url: "https://www.chamnongkkun.com",
     siteName: "우리 동네 소식통",
     locale: "ko_KR",
-    type: "website",
-  },
+         type: "website",
+      images: [
+        {
+          url: "https://www.chamnongkkun.com/images/daebyeongdaedo_lined.png",
+          width: 1200,
+          height: 630,
+          alt: "Chamnongkkun 거제소식",
+        },
+      ],
+    },
   verification: { google: "f106dc695fea681f" },
 };
 
