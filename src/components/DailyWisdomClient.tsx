@@ -95,8 +95,8 @@ export default function DailyWisdomClient({ wisdoms }: { wisdoms: any[] }) {
       if (mLine) ctx.fillText(mLine.trim(), 24, y);
 
       // 출처
-      ctx.fillStyle = "rgba(255,255,255,0.2)";
-      ctx.font = "11px sans-serif";
+      ctx.fillStyle = "rgba(253, 211, 77, 0.6)";
+      ctx.font = "bold 14px sans-serif";
       ctx.textAlign = "right";
       ctx.fillText("chamnongkkun.com  by 瞑想家", 776, 318);
 
