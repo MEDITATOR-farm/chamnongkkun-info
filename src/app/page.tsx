@@ -122,6 +122,19 @@ export default function Home() {
           </p>
           <HeroButton />
         </div>
+
+        {/* 날씨 위젯 - 우측 상단 */}
+        <div style={{
+          position: "absolute",
+          top: "1.2rem",
+          right: "1.5rem",
+          zIndex: 3,
+          minWidth: "200px",
+          maxWidth: "240px",
+        }}>
+          <WeatherWidget />
+        </div>
+
       </header>
 
       {/* ── 메인 ── */}
@@ -130,34 +143,28 @@ export default function Home() {
         {/* ① 알면 돈이 되는 정보 */}
         <HighRevenueSection />
         <Divider />
-                {/* ⑦ 날씨 */}
-        <section>
-          <SectionTitle icon="🌤️" text="거제 날씨" />
-          <div style={{ ...G, overflow: "hidden" }}><WeatherWidget /></div>
-        </section>
-        <Divider />
 
         {/* ② 거제시 이달의 행사 */}
-<section>
-  <SectionTitle icon="🌸" text="거제시 이달의 행사" href="/events" badge="이달" />
-  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
-    {data.events
-  .filter((event: any) => new Date(event.endDate) >= new Date())
-  .slice(0, 6)
-  .map((event: any) => (
-      <ContentCard
-        key={event.id}
-        href={`/events/${event.id}`}
-        category={event.category}
-        date={`${event.startDate} ~ ${event.endDate}`}
-        title={event.name}
-        summary={event.summary}
-        tagColor={tagColors[event.category] || "rgba(255,255,255,0.5)"}
-        meta={event.location}
-      />
-    ))}
-  </div>
-</section>
+        <section>
+          <SectionTitle icon="🌸" text="거제시 이달의 행사" href="/events" badge="이달" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
+            {data.events
+              .filter((event: any) => new Date(event.endDate) >= new Date())
+              .slice(0, 6)
+              .map((event: any) => (
+                <ContentCard
+                  key={event.id}
+                  href={`/events/${event.id}`}
+                  category={event.category}
+                  date={`${event.startDate} ~ ${event.endDate}`}
+                  title={event.name}
+                  summary={event.summary}
+                  tagColor={tagColors[event.category] || "rgba(255,255,255,0.5)"}
+                  meta={event.location}
+                />
+              ))}
+          </div>
+        </section>
         <Divider />
 
         {/* ③ 내가 자주 찾는 거제 숨은 맛집 */}
@@ -201,7 +208,7 @@ export default function Home() {
         )}
         <Divider />
 
-                {/* ⑥ 오늘의 인사이트 */}
+        {/* ⑥ 오늘의 인사이트 */}
         <section>
           <SectionTitle icon="✨" text="오늘의 인사이트" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "12px" }}>
@@ -214,9 +221,7 @@ export default function Home() {
         </section>
         <Divider />
 
-        
-
-        {/* ⑧ 농장 최근 현황 (갤러리) */}
+        {/* ⑦ 농장 최근 현황 (갤러리) */}
         {diaries.length > 0 && diaries.filter((d: any) => d.date === diaries[0].date).some((d: any) => d.image || d.video) && (
           <section>
             <SectionTitle icon="🎬" text="농장 최근 현황" />
@@ -225,7 +230,7 @@ export default function Home() {
         )}
         <Divider />
 
-        {/* ⑨ 거꾸로 세계지도 */}
+        {/* ⑧ 거꾸로 세계지도 */}
         <section>
           <SectionTitle icon="🌍" text="해양수산부 거꾸로 세계지도" />
           <GlassCard style={{ padding: "1.2rem", display: "flex", gap: "1.2rem", alignItems: "center", flexWrap: "wrap" }}>
@@ -237,11 +242,11 @@ export default function Home() {
               </p>
               <div style={{ display: "flex", gap: "1.5rem" }}>
                 <a href="/assets/upside-down-world-map-v1.jpg" download
-                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none",  }}>
+                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none" }}>
                   v1 내려받기 ↓
                 </a>
                 <a href="/assets/upside-down-world-map-v2.jpg" download
-                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none",  }}>
+                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none" }}>
                   v2 내려받기 ↓
                 </a>
               </div>
@@ -269,10 +274,10 @@ export default function Home() {
             </div>
             <div style={{ display: "flex", gap: "1.8rem", flexWrap: "wrap" }}>
               {([["소개", "/about"], ["업데이트", "/update-events"]] as [string, string][]).map(([t, h]) => (
-                <a key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none",  }}>{t}</a>
+                <a key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none" }}>{t}</a>
               ))}
               <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer"
-                style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none",  }}>스토어</a>
+                style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none" }}>스토어</a>
             </div>
           </div>
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "1.5rem", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
