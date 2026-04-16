@@ -104,7 +104,7 @@ export default function Home() {
         </div>
         <NavLinks />
       </nav>
-n
+
       {/* ── 히어로 ── */}
       <header style={{ position: "relative", zIndex: 1, minHeight: "440px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/images/daebyeongdaedo_lined.png')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.35 }} />
@@ -252,11 +252,11 @@ n
               </p>
               <div style={{ display: "flex", gap: "1.5rem" }}>
                 <a href="/assets/upside-down-world-map-v1.jpg" download
-                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>
+                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none",  }}>
                   v1 내려받기 ↓
                 </a>
                 <a href="/assets/upside-down-world-map-v2.jpg" download
-                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none", cursor: "none" }}>
+                  style={{ fontSize: "0.82rem", fontWeight: 700, color: "#22d3ee", textDecoration: "none",  }}>
                   v2 내려받기 ↓
                 </a>
               </div>
@@ -284,10 +284,10 @@ n
             </div>
             <div style={{ display: "flex", gap: "1.8rem", flexWrap: "wrap" }}>
               {([["소개", "/about"], ["업데이트", "/update-events"]] as [string, string][]).map(([t, h]) => (
-                <a key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>{t}</a>
+                <a key={h} href={h} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none",  }}>{t}</a>
               ))}
               <a href="https://smartstore.naver.com/chamnongkkun" target="_blank" rel="noopener noreferrer"
-                style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none", cursor: "none" }}>스토어</a>
+                style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", fontWeight: 600, textDecoration: "none",  }}>스토어</a>
             </div>
           </div>
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "1.5rem", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
