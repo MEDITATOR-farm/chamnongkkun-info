@@ -1,4 +1,4 @@
-import { SupportCard, BlogCard, NavLinks, HeroButton, GlassCard, ContentCard } from "@/components/GlassCard";
+import { NavLinks, HeroButton, GlassCard, ContentCard } from "@/components/GlassCard";
 import fs from "fs";
 import path from "path";
 import AIRanking from "@/components/AIRanking";
@@ -14,7 +14,6 @@ import WeatherWidget from "@/components/WeatherWidget";
 import BookRankingClient from "@/components/BookRankingClient";
 import { getSortedPostsData } from "@/lib/posts";
 import ScrollToTop from "@/components/ScrollToTop";
-import AccordionSection from "@/components/AccordionSection";
 import HighRevenueSection from "@/components/HighRevenueSection";
 
 interface InfoItem {
@@ -131,6 +130,12 @@ export default function Home() {
         {/* ① 알면 돈이 되는 정보 */}
         <HighRevenueSection />
         <Divider />
+                {/* ⑦ 날씨 */}
+        <section>
+          <SectionTitle icon="🌤️" text="거제 날씨" />
+          <div style={{ ...G, overflow: "hidden" }}><WeatherWidget /></div>
+        </section>
+        <Divider />
 
         {/* ② 거제시 이달의 행사 */}
 <section>
@@ -209,12 +214,7 @@ export default function Home() {
         </section>
         <Divider />
 
-                {/* ⑦ 날씨 */}
-        <section>
-          <SectionTitle icon="🌤️" text="거제 날씨" />
-          <div style={{ ...G, overflow: "hidden" }}><WeatherWidget /></div>
-        </section>
-        <Divider />
+        
 
         {/* ⑧ 농장 최근 현황 (갤러리) */}
         {diaries.length > 0 && diaries.filter((d: any) => d.date === diaries[0].date).some((d: any) => d.image || d.video) && (
