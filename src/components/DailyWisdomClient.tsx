@@ -100,9 +100,24 @@ export default function DailyWisdomClient({ wisdoms }: { wisdoms: any[] }) {
       ctx.textAlign = "right";
       ctx.fillText("chamnongkkun.com  by 瞑想家", 776, 318);
 
-      // 다운로드
-      canvas.toBlob((blob) => {
+            // 다운로드
+      canvas.toBlob(async (blob) => {
         if (!blob) return;
+
+        // 모바일: Web Share API 사용
+        if (navigator.share && navigator.canShare) {
+          const file = new File([blob], "명심보감.png", { type: "image/png" });
+          if (navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({ files: [file], title: "오늘의 명심보감" });
+              setSaved(true);
+              setTimeout(() => setSaved(false), 4000);
+              return;
+            } catch (e) { /* 공유 취소 시 무시 */ }
+          }
+        }
+
+        // PC: 기존 다운로드
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
