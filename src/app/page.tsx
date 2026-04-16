@@ -196,38 +196,23 @@ export default function Home() {
         )}
         <Divider />
 
-        {/* ⑥ 오늘의 인사이트 */}
+                {/* ⑥ 오늘의 인사이트 */}
         <section>
           <SectionTitle icon="✨" text="오늘의 인사이트" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "12px" }}>
             <div style={{ ...G, overflow: "hidden" }}><DailyPoemClient poems={poems} /></div>
             <div style={{ ...G, overflow: "hidden" }}><AIRanking /></div>
           </div>
+          <div style={{ marginTop: "12px", ...G, overflow: "hidden" }}>
+            <BookRankingClient data={books} />
+          </div>
         </section>
         <Divider />
 
-        {/* ⑦ 최근 농부일기 + 날씨/도서 */}
+                {/* ⑦ 날씨 */}
         <section>
-          <SectionTitle icon="🌱" text="최근 농부일기" href="/diaries" />
-          <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
-            <div style={{ flex: "1 1 58%", minWidth: "280px" }}>
-              <div style={{ ...G, padding: "1.2rem" }}>
-                {diaries.length > 0 ? (
-                  <AccordionSection type="diary"
-                    items={diaries.filter((d: any) => d.date === diaries[0].date).slice(0, 5).map((d: any) => ({
-                      id: d.id, title: d.title, date: d.date, content: d.content,
-                      image: d.image, video: d.video, link: `/diaries/${d.id}`,
-                    }))} />
-                ) : (
-                  <p style={{ color: "rgba(255,255,255,0.3)", textAlign: "center", padding: "2rem 0", fontSize: "0.85rem" }}>새로운 일기를 기다리고 있습니다.</p>
-                )}
-              </div>
-            </div>
-            <div style={{ flex: "1 1 28%", minWidth: "210px", display: "flex", flexDirection: "column", gap: "12px" }}>
-              <div style={{ ...G, overflow: "hidden" }}><WeatherWidget /></div>
-              <div style={{ ...G, overflow: "hidden" }}><BookRankingClient data={books} /></div>
-            </div>
-          </div>
+          <SectionTitle icon="🌤️" text="거제 날씨" />
+          <div style={{ ...G, overflow: "hidden" }}><WeatherWidget /></div>
         </section>
         <Divider />
 
