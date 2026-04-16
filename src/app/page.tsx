@@ -81,8 +81,8 @@ export default function Home() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #060f1e 0%, #0a1e3a 35%, #0b2d3e 65%, #081a14 100%)",
-      color: "white", cursor: "none", overflowX: "hidden",
+      background: "linear-gradient(135deg, #0a1a3a 0%, #0f2d5a 35%, #103d55 65%, #0a2820 100%)",
+      color: "white", overflowX: "hidden",
     }}>
 
       {/* 배경 오브 */}
