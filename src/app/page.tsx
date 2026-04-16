@@ -211,12 +211,12 @@ export default function Home() {
         {/* ⑥ 오늘의 인사이트 */}
         <section>
           <SectionTitle icon="✨" text="오늘의 인사이트" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "12px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "12px", alignItems: "start" }}>
             <div style={{ ...G, overflow: "hidden" }}><DailyPoemClient poems={poems} /></div>
-            <div style={{ ...G, overflow: "hidden" }}><AIRanking /></div>
-          </div>
-          <div style={{ marginTop: "12px", ...G, overflow: "hidden" }}>
-            <BookRankingClient data={books} />
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ ...G, overflow: "hidden" }}><AIRanking /></div>
+              <div style={{ ...G, overflow: "hidden" }}><BookRankingClient data={books} /></div>
+            </div>
           </div>
         </section>
         <Divider />
