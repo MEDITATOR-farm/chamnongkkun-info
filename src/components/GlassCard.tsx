@@ -99,7 +99,7 @@ export function ContentCard({ href, category, date, title, summary, tagColor, me
         onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.06)"; el.style.transform = "translateY(0)"; }}
       >
         {/* 썸네일 영역 */}
-        <div style={{ width: "100%", height: "110px", flexShrink: 0, position: "relative", overflow: "hidden" }}>
+        <div style={{ width: "100%", height: "72px", flexShrink: 0, position: "relative", overflow: "hidden" }}>
           {thumbnail ? (
             <img
               src={thumbnail}
@@ -112,7 +112,7 @@ export function ContentCard({ href, category, date, title, summary, tagColor, me
               background: gradient,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <span style={{ fontSize: "2.2rem", opacity: 0.85 }}>{icon}</span>
+              <span style={{ fontSize: "1.6rem", opacity: 0.85 }}>{icon}</span>
             </div>
           )}
           {/* 날짜 오버레이 */}
