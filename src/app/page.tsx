@@ -16,7 +16,6 @@ import { getSortedPostsData } from "@/lib/posts";
 import ScrollToTop from "@/components/ScrollToTop";
 import AccordionSection from "@/components/AccordionSection";
 import HighRevenueSection from "@/components/HighRevenueSection";
-import { SupportCard, BlogCard, NavLinks, HeroButton, GlassCard, ContentCard } from "@/components/GlassCard";
 
 interface InfoItem {
   id: number; name: string; category: string;
@@ -168,7 +167,7 @@ export default function Home() {
           <SectionTitle icon="📝" text="최신 거제시 블로그" href="/blog" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" }}>
             {blogPosts.map((post: any) => (
-              <BlogCard
+              <ContentCard
                 key={post.slug}
                 href={`/blog/${post.slug}`}
                 category={post.category}
