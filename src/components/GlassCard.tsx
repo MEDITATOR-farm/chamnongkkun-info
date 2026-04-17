@@ -27,6 +27,22 @@ const CATEGORY_ICONS: Record<string, string> = {
   지원금: "💰", 귀농: "🏡", 부동산: "🏢", 기본: "📝",
 };
 
+// D-day 계산 함수
+function getDday(endDate?: string): { label: string; color: string; bg: string } | null {
+  if (!endDate) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const end = new Date(endDate);
+  end.setHours(0, 0, 0, 0);
+  const diff = Math.round((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diff < 0) return null; // 이미 지난 행사
+  if (diff === 0) return { label: "D-DAY", color: "#fff", bg: "#ef4444" };
+  if (diff <= 3) return { label: `D-${diff}`, color: "#fff", bg: "#f97316" };
+  if (diff <= 7) return { label: `D-${diff}`, color: "#fff", bg: "#eab308" };
+  return { label: `D-${diff}`, color: "#fff", bg: "rgba(255,255,255,0.15)" };
+}
+
 export function GlassCard({ children, style, className }: { children: ReactNode; style?: React.CSSProperties; className?: string }) {
   return (
     <div style={{ ...G, ...style }} className={className}
@@ -83,13 +99,14 @@ export function SupportCard({ href, icon, tag, tagColor, title, amount }: {
   );
 }
 
-// 블로그 & 행사 통합 카드 (가로형 레이아웃 + 좌측 썸네일)
-export function ContentCard({ href, category, date, title, summary, tagColor, meta, thumbnail }: {
+// 블로그 & 행사 통합 카드 (가로형 레이아웃 + 좌측 썸네일 + D-day 뱃지)
+export function ContentCard({ href, category, date, title, summary, tagColor, meta, thumbnail, endDate }: {
   href: string; category?: string; date: string; title: string; summary?: string;
-  tagColor: string; meta?: string; thumbnail?: string;
+  tagColor: string; meta?: string; thumbnail?: string; endDate?: string;
 }) {
   const gradient = CATEGORY_GRADIENTS[category || "기본"] || CATEGORY_GRADIENTS["기본"];
   const icon = CATEGORY_ICONS[category || "기본"] || CATEGORY_ICONS["기본"];
+  const dday = getDday(endDate);
 
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
@@ -99,12 +116,24 @@ export function ContentCard({ href, category, date, title, summary, tagColor, me
         onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.background = "rgba(255,255,255,0.06)"; el.style.transform = "translateY(0)"; }}
       >
         {/* 썸네일 - 좌측 */}
-        <div style={{ width: "52px", flexShrink: 0, overflow: "hidden" }}>
+        <div style={{ width: "52px", flexShrink: 0, overflow: "hidden", position: "relative" }}>
           {thumbnail ? (
             <img src={thumbnail} alt={title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             <div style={{ width: "100%", height: "100%", background: gradient, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: "1.6rem" }}>{icon}</span>
+              <span style={{ fontSize: "1.4rem" }}>{icon}</span>
+            </div>
+          )}
+          {/* D-day 뱃지 */}
+          {dday && (
+            <div style={{
+              position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)",
+              background: dday.bg, color: dday.color,
+              fontSize: "0.55rem", fontWeight: 800,
+              padding: "2px 5px", borderRadius: "6px",
+              whiteSpace: "nowrap", letterSpacing: "0.03em",
+            }}>
+              {dday.label}
             </div>
           )}
         </div>

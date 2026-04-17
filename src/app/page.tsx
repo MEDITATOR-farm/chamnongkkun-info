@@ -166,6 +166,7 @@ export default function Home() {
                   summary={event.summary}
                   tagColor={tagColors[event.category] || "rgba(255,255,255,0.5)"}
                   meta={event.location}
+                  endDate={event.endDate}
                 />
               ))}
           </div>
