@@ -132,7 +132,7 @@ export default function RestaurantMap() {
 
   if (!restaurants.length || !L) {
     return (
-      <div className="h-[500px] w-full bg-slate-100 animate-pulse rounded-[3rem] flex items-center justify-center text-slate-400 font-bold">
+      <div className="h-[450px] md:h-[600px] lg:h-[900px] w-full bg-slate-100 animate-pulse rounded-[3rem] flex items-center justify-center text-slate-400 font-bold">
         거제 맛집 지도를 불러오는 중... 🗺️
       </div>
     );
@@ -177,7 +177,7 @@ export default function RestaurantMap() {
       </div>
 
       {/* 지도 */}
-      <div className="h-[900px]">
+      <div className="h-[450px] md:h-[600px] lg:h-[900px]">
         <MapContainer
           center={center}
           zoom={11}
