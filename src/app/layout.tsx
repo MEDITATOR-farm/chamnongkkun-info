@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nanum_Myeongjo } from "next/font/google";
 import "./globals.css";
 import CursorEffect from "@/components/CursorEffect";
+import MobileNav from "@/components/MobileNav";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -20,16 +21,16 @@ export const metadata: Metadata = {
     url: "https://www.chamnongkkun.com",
     siteName: "우리 동네 소식통",
     locale: "ko_KR",
-         type: "website",
-      images: [
-        {
-          url: "https://www.chamnongkkun.com/images/daebyeongdaedo_lined.png",
-          width: 1200,
-          height: 630,
-          alt: "Chamnongkkun 거제소식",
-        },
-      ],
-    },
+    type: "website",
+    images: [
+      {
+        url: "https://www.chamnongkkun.com/images/daebyeongdaedo_lined.png",
+        width: 1200,
+        height: 630,
+        alt: "Chamnongkkun 거제소식",
+      },
+    ],
+  },
   verification: { google: "f106dc695fea681f" },
 };
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable}`}>
         <CursorEffect />
         {children}
+        <MobileNav />
       </body>
     </html>
   );
