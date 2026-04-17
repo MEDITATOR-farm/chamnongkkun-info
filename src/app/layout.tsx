@@ -31,7 +31,12 @@ export const metadata: Metadata = {
       },
     ],
   },
-  verification: { google: "f106dc695fea681f" },
+  verification: { 
+    google: "f106dc695fea681f",
+    other: {
+      "naver-site-verification": "479afcc045529b9dd97cc736d086c8a383a15a19",
+    }
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
