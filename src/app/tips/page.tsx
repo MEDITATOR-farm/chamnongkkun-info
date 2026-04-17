@@ -67,7 +67,7 @@ export default function TipsHubPage() {
           <Link href="/" style={{ textDecoration: "none", color: "#666", fontWeight: "bold", fontSize: "0.9rem" }}>
             ← 홈으로 돌아가기
           </Link>
-          <h1 style={{ fontSize: "2.5rem", fontWeight: "900", color: "#1a1a1a", marginTop: "1rem", letterSpacing: "-1px" }}>
+          <h1 style={{ fontSize: "clamp(1.75rem, 6vw, 2.5rem)", fontWeight: "900", color: "#1a1a1a", marginTop: "1rem", letterSpacing: "-1px" }}>
             💡 알면 돈이 되는 <span style={{ color: "#1a73e8" }}>정보 센터</span>
           </h1>
           <p style={{ fontSize: "1.1rem", color: "#666", marginTop: "10px" }}>

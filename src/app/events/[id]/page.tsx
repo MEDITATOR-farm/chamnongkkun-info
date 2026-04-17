@@ -72,7 +72,7 @@ export default async function EventDetail({ params }: { params: Promise<{ id: st
               </span>
               <span className="text-xs font-bold text-slate-400">📅 {event.startDate} ~ {event.endDate}</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-8">
+            <h1 className="text-[clamp(1.5rem,6vw,2.25rem)] md:text-5xl font-black text-slate-900 leading-tight mb-8">
               {event.name}
             </h1>
             <div className="flex flex-wrap gap-3">

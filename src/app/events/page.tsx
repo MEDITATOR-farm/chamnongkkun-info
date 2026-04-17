@@ -34,7 +34,7 @@ export default function EventsPage() {
         </Link>
         
         <div className="mb-16">
-          <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tighter">
+          <h1 className="text-[clamp(1.8rem,5vw,2.25rem)] md:text-5xl font-black text-slate-800 mb-4 tracking-tighter">
             이달의 <span className="text-cyan-500">행사 & 축제</span> 🌸
           </h1>
           <p className="text-slate-500 font-medium">거제의 생생한 축제와 문화 행사 소식을 전해드립니다.</p>

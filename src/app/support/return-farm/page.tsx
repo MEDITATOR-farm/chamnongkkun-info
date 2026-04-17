@@ -51,7 +51,7 @@ export default function ReturnFarmPage() {
           <Link href="/" style={{ textDecoration: "none", color: "#795548", fontWeight: "bold", fontSize: "0.9rem" }}>
             ← 홈으로 돌아가기
           </Link>
-          <h1 style={{ fontSize: "2rem", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
+          <h1 style={{ fontSize: "clamp(1.5rem, 5vw, 2rem)", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
             🌿 귀농귀촌 지원금 총정리
           </h1>
           <p style={{ color: "#666" }}>거제로 귀농귀촌을 준비 중이라면 꼭 확인하세요.</p>

@@ -94,7 +94,7 @@ export default function Home() {
       {/* ── 네비게이션 ── */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 50, height: "56px",
-        padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 clamp(1rem, 3vw, 2rem)", display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(6,15,30,0.75)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
       }}>

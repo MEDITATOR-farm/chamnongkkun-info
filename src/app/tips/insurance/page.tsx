@@ -59,7 +59,7 @@ export default function InsurancePage() {
           <Link href="/" style={{ textDecoration: "none", color: "#0277bd", fontWeight: "bold", fontSize: "0.9rem" }}>
             홈으로 돌아가기
           </Link>
-          <h1 style={{ fontSize: "2rem", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
+          <h1 style={{ fontSize: "clamp(1.5rem, 5vw, 2rem)", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
             건강보험료 절감 방법
           </h1>
           <p style={{ color: "#666" }}>거제 농촌 주민이 활용할 수 있는 건강보험료 절감 제도를 안내합니다.</p>

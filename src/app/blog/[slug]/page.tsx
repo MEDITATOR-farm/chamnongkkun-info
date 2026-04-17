@@ -127,7 +127,7 @@ export default async function PostPage({ params }: Props) {
             </span>
             <time className="text-sm text-neutral-400">최종 업데이트: {postData.date}</time>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-neutral-900 leading-tight mb-6">
+          <h1 className="text-[clamp(1.5rem,6vw,2.25rem)] md:text-5xl font-extrabold text-neutral-900 leading-tight mb-6">
             {postData.title}
           </h1>
           <p className="text-xl text-neutral-500 italic border-l-4 border-cyan-200 pl-4">

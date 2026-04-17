@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import fs from "fs"; import path from "path";
 const tagColors: any = { 직불금:"bg-green-100 text-green-700", 귀농:"bg-lime-100 text-lime-700", 귀촌:"bg-teal-100 text-teal-700", 시설:"bg-orange-100 text-orange-700", 교육:"bg-yellow-100 text-yellow-700" };
 export default function Page() {
@@ -13,7 +13,7 @@ export default function Page() {
     ← 홈으로 돌아가기
   </Link>
 </div>
-        <div className="flex items-center gap-3 mb-2"><span className="text-3xl">🌾</span><h1 className="text-2xl font-black text-slate-800">농업직불금 · 귀농 지원금</h1></div>
+        <div className="flex items-center gap-3 mb-2"><span className="text-3xl">🌾</span><h1 className="text-[clamp(1.25rem,4vw,1.5rem)] md:text-2xl font-black text-slate-800">농업직불금 · 귀농 지원금</h1></div>
         <p className="text-sm text-slate-400 mb-2">업데이트: {data.updatedAt}</p>
         <p className="text-base text-slate-600 mb-8 font-medium">{data.summary}</p>
         <div className="grid grid-cols-1 gap-4 mb-10">

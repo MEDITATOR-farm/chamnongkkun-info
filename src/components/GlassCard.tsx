@@ -175,7 +175,7 @@ export function BlogCard({ href, category, date, title, summary, tagColor }: {
 
 export function NavLinks() {
   return (
-    <div style={{ display: "flex", gap: "1.8rem", alignItems: "center" }}>
+    <div style={{ display: "flex", gap: "clamp(0.6rem, 2vw, 1.8rem)", alignItems: "center", whiteSpace: "nowrap" }}>
       {([["홈", "/"], ["블로그", "/blog"], ["지원금", "/support/youth"], ["소개", "/about"]] as [string, string][]).map(([t, h]) => (
         <Link key={h} href={h}
           style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.82rem", fontWeight: 600, textDecoration: "none", transition: "color 0.2s" }}

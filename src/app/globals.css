@@ -111,6 +111,8 @@ body {
   color: var(--foreground);
   font-family: 'Outfit', var(--font-geist-sans), sans-serif;
   min-height: 100vh;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 body::selection {

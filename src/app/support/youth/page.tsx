@@ -22,7 +22,7 @@ export default function YouthSupportPage() {
           <Link href="/" style={{ textDecoration: "none", color: "#e37400", fontWeight: "bold", fontSize: "0.9rem" }}>
             ← 홈으로 돌아가기
           </Link>
-          <h1 style={{ fontSize: "2rem", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
+          <h1 style={{ fontSize: "clamp(1.5rem, 5vw, 2rem)", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
             💰 거제 청년 지원금 총정리
           </h1>
           <p style={{ color: "#666" }}>거제 청년이라면 꼭 챙겨야 할 정부 및 지자체 혜택을 모았습니다.</p>

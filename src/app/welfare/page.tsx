@@ -37,7 +37,7 @@ export default function WelfarePage() {
           <Link href="/" style={{ textDecoration: "none", color: "#2e7d32", fontWeight: "bold", fontSize: "0.9rem" }}>
             ← 홈으로 돌아가기
           </Link>
-          <h1 style={{ fontSize: "2rem", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
+          <h1 style={{ fontSize: "clamp(1.5rem, 5vw, 2rem)", fontWeight: "800", color: "#1a1a1a", marginTop: "1rem" }}>
             📋 거제시 맞춤형 복지 서비스
           </h1>
           <p style={{ color: "#666" }}>거제시민의 행복한 삶을 위해 제공되는 연령별, 대상별 복지 혜택입니다.</p>
