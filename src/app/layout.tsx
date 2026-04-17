@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Nanum_Myeongjo } from "next/font/google";
 import "./globals.css";
 import CursorEffect from "@/components/CursorEffect";
 import MobileNav from "@/components/MobileNav";
+import RecentViewsDrawer from "@/components/RecentViewsDrawer";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -12,7 +13,12 @@ const nanumMyeongjo = Nanum_Myeongjo({
   variable: "--font-nanum-myeongjo",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#06b6d4",
+};
+
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: "Chamnongkkun 과 함께 하는 거제소식 | 행사·혜택·지원금 안내",
   description: "거제시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
   openGraph: {
@@ -52,7 +58,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable}`}>
         <CursorEffect />
         {children}
+        <RecentViewsDrawer />
         <MobileNav />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js');
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

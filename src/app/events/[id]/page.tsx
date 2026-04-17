@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import RecentViewTracker from "@/components/RecentViewTracker";
+import ShareButton from "@/components/ShareButton";
 
 interface InfoItem {
   id: number;
@@ -100,25 +102,40 @@ export default async function EventDetail({ params }: { params: Promise<{ id: st
              </div>
 
              {/* 하단 버튼 */}
-             <div className="mt-16 pt-12 border-t border-slate-100 flex flex-col sm:flex-row gap-4">
+             <div className="mt-16 pt-12 border-t border-slate-100 flex flex-col sm:flex-row gap-4 w-full">
                 <a 
                   href={event.link} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className={`${styles.accent} text-white px-8 py-4 rounded-2xl font-black text-center transition-transform hover:scale-105 shadow-lg shadow-blue-200`}
+                  className={`${styles.accent} text-white px-8 py-4 rounded-2xl font-black text-center transition-transform hover:scale-105 shadow-lg shadow-blue-200 flex-1`}
                 >
                   원본 사이트에서 보기 →
                 </a>
                 <Link 
                   href="/" 
-                  className="bg-slate-100 text-slate-600 px-8 py-4 rounded-2xl font-black text-center transition-transform hover:scale-105"
+                  className="bg-slate-100 text-slate-600 px-8 py-4 rounded-2xl font-black text-center transition-transform hover:scale-105 flex-1"
                 >
                   다른 소식 더보기
                 </Link>
              </div>
+
+             <ShareButton 
+               title={event.name} 
+               text={event.summary} 
+               url={`/events/${event.id}`} 
+             />
           </div>
         </article>
       </main>
+
+      <RecentViewTracker 
+        item={{
+          id: event.id.toString(),
+          title: event.name,
+          url: `/events/${event.id}`,
+          category: event.category
+        }} 
+      />
 
       {/* 푸터 영역 장식 */}
       <div className="mt-20 text-center text-slate-300 font-bold text-[10px] tracking-widest uppercase">

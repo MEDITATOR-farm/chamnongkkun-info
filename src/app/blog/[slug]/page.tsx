@@ -6,6 +6,8 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import AdBanner from '@/components/AdBanner';
 import CoupangBanner from '@/components/CoupangBanner';
+import RecentViewTracker from '@/components/RecentViewTracker';
+import ShareButton from '@/components/ShareButton';
 
 const BASE_URL = 'https://www.chamnongkkun.com';
 
@@ -141,8 +143,16 @@ export default async function PostPage({ params }: Props) {
           </ReactMarkdown>
         </div>
 
-        <AdBanner />
-        <CoupangBanner />
+        <ShareButton 
+          title={postData.title}
+          text={postData.summary}
+          url={`/blog/${slug}`}
+        />
+
+        <div className="mt-8">
+          <AdBanner />
+          <CoupangBanner />
+        </div>
 
         <footer className="space-y-8 pt-8 border-t border-neutral-100">
           <div className="italic text-neutral-400">
@@ -178,6 +188,15 @@ export default async function PostPage({ params }: Props) {
           </div>
         </footer>
       </article>
+
+      <RecentViewTracker 
+        item={{
+          id: slug,
+          title: postData.title,
+          url: `/blog/${slug}`,
+          category: postData.category || '블로그'
+        }}
+      />
     </>
   );
 }

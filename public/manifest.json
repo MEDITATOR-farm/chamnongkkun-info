@@ -1,0 +1,21 @@
+{
+  "name": "Chamnongkkun Info",
+  "short_name": "참농꾼",
+  "description": "거제시 주민을 위한 세련된 생활 정보 플랫폼",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#06b6d4",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
