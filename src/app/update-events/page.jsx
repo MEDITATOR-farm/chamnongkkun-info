@@ -105,7 +105,7 @@ export default function UpdateEventsPage() {
         <p style={subtitleStyle}>거제시청 홈페이지의 새로운 소식을 편리하게 등록해 보세요.</p>
       </header>
 
-      <div style={layoutStyle}>
+      <div className="flex flex-col lg:grid lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-12 items-start w-full">
         {/* 가이드 & 입력 폼 */}
         <div style={mainContentStyle}>
           
@@ -166,7 +166,7 @@ export default function UpdateEventsPage() {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 15 }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div style={inputGroup}>
                   <label style={labelStyle}>시작일</label>
                   <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={inputStyle} />
@@ -177,7 +177,7 @@ export default function UpdateEventsPage() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 15 }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div style={inputGroup}>
                   <label style={labelStyle}>장소</label>
                   <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} style={inputStyle} />
@@ -209,7 +209,7 @@ export default function UpdateEventsPage() {
 
               {error && <p style={errorStyle}>{error}</p>}
 
-              <div style={{ display: "flex", gap: 10 }}>
+              <div className="flex flex-col sm:flex-row gap-3">
                 <button onClick={() => setStep(1)} style={cancelButtonStyle}>← 다시 입력</button>
                 <button onClick={handleSave} disabled={loading} style={saveButtonStyle}>
                   {loading ? "저장 중..." : "✅ 이 정보로 업데이트!"}
