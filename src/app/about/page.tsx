@@ -16,9 +16,9 @@ export default function AboutPage() {
 
       <main className="max-w-5xl mx-auto px-6 py-24">
         <section className="mb-24 text-center md:text-left">
-          <h1 className="text-5xl md:text-7xl font-black text-slate-800 mb-10 leading-tight tracking-tighter">
-            지역 주민을 위한<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">스마트한 생활 정보</span> 🐬
+          <h1 className="text-[clamp(2rem,7vw,4.5rem)] md:text-7xl font-black text-slate-800 mb-6 md:mb-10 leading-tight tracking-tighter">
+            지역 주민을 위한 <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600"> 스마트한 생활 정보</span> 🐬
           </h1>
           <p className="text-xl md:text-2xl text-slate-500 leading-relaxed max-w-3xl font-medium opacity-80">
             '참농꾼(Chamnongkkun)'은 거제시의 소중한 정보를 한눈에 확인할 수 있는 프리미엄 생활 정보 플랫폼입니다. 
