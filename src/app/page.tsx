@@ -45,7 +45,7 @@ function SectionTitle({ icon, text, href, badge }: { icon: string; text: string;
       <span style={{ fontSize: "1.1rem" }}>{icon}</span>
       <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "white", margin: 0 }}>{text}</h2>
       {badge && (
-        <span style={{ fontSize: "0.62rem", background: "#ef4444", color: "white", padding: "2px 7px", borderRadius: "20px", fontWeight: 700 }}>{badge}</span>
+        <span style={{ fontSize: "0.55rem", background: "#ef4444", color: "white", padding: "2px 6px", borderRadius: "20px", fontWeight: 700, flexShrink: 0, whiteSpace: "nowrap" }}>{badge}</span>
       )}
       {href && (
         <a href={href} style={{ marginLeft: "auto", fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>

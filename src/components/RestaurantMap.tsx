@@ -132,7 +132,7 @@ export default function RestaurantMap() {
 
   if (!restaurants.length || !L) {
     return (
-      <div className="h-[450px] md:h-[600px] lg:h-[900px] w-full bg-slate-100 animate-pulse rounded-[3rem] flex items-center justify-center text-slate-400 font-bold">
+      <div className="h-[400px] md:h-[600px] lg:h-[800px] w-full bg-slate-100 animate-pulse rounded-[3rem] flex items-center justify-center text-slate-400 font-bold">
         거제 맛집 지도를 불러오는 중... 🗺️
       </div>
     );
@@ -149,12 +149,13 @@ export default function RestaurantMap() {
     <div className="relative w-full rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
 
       {/* 카테고리 필터 버튼 */}
-      <div className="flex flex-wrap gap-2 px-5 py-4 bg-white/95 backdrop-blur border-b border-slate-100">
+      <div className="flex overflow-x-auto gap-2 px-4 py-3 bg-white/95 backdrop-blur border-b border-slate-100" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+        <style dangerouslySetInnerHTML={{ __html: `div::-webkit-scrollbar { display: none; }` }} />
         {CATEGORIES.map(cat => (
           <button
             key={cat.key}
             onClick={() => setActiveCategory(cat.key)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border
+            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border
               ${activeCategory === cat.key
                 ? "bg-slate-800 text-white border-slate-800 shadow-md"
                 : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
@@ -171,13 +172,13 @@ export default function RestaurantMap() {
         ))}
 
         {/* 현재 필터 결과 수 */}
-        <span className="ml-auto text-[11px] text-slate-400 self-center">
+        <span className="ml-auto text-[11px] text-slate-400 self-center flex-shrink-0 pl-2">
           {activeCategory === "전체" ? `전체 ${restaurants.length}곳` : `${filtered.length}곳`}
         </span>
       </div>
 
       {/* 지도 */}
-      <div className="h-[450px] md:h-[600px] lg:h-[900px]">
+      <div className="h-[400px] md:h-[600px] lg:h-[800px]">
         <MapContainer
           center={center}
           zoom={11}
