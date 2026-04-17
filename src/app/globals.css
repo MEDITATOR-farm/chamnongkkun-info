@@ -115,6 +115,12 @@ body {
   overflow-wrap: break-word;
 }
 
+/* Reset aggressive mobile browser default link styles */
+a {
+  text-decoration: none !important;
+  color: inherit;
+}
+
 body::selection {
   background-color: #a5f3fc; /* bg-cyan-200 */
 }
