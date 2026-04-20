@@ -110,6 +110,10 @@ ${originalPost}
           })
         });
 
+        if (!updateResponse.ok) {
+          throw new Error(`Gemini API 호출 실패 (글 업데이트): ${updateResponse.status}`);
+        }
+
         const updateJson = await updateResponse.json();
         const updatedContent = updateJson.candidates[0].content.parts[0].text;
         
