@@ -1,74 +1,53 @@
-const fs = require('fs').promises;
+ï»¿const XLSX = require('xlsx');
+const fs = require('fs');
 const path = require('path');
 
-async function generateDailyIdiom() {
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  const DATA_FILE_PATH = path.join(__dirname, '../public/data/idioms.json');
+function generateDailyIdiom() {
+  const excelFilePath = path.join(__dirname, '../ì‚¬ìžì„±ì–´.xlsx');
+  const DATA_FILE_PATH = path.join(__dirname, '../public/data/idiom.json');
 
-  if (!GEMINI_API_KEY) {
-    console.error('GEMINI_API_KEYê°€ ?†ìŠµ?ˆë‹¤.');
+  if (!fs.existsSync(excelFilePath)) {
+    console.error('ì˜¤ë¥˜: ì‚¬ìžì„±ì–´.xlsx íŒŒì¼ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.');
     return;
   }
 
-  // ê¸°ì¡´ ?¬ìž?±ì–´ ?½ê¸° (ì¤‘ë³µ ë°©ì???
-  let currentIdiom = "";
-  try {
-    const existingData = JSON.parse(await fs.readFile(DATA_FILE_PATH, 'utf-8'));
-    if (existingData && existingData.length > 0) {
-      currentIdiom = existingData[0].hanja;
-    }
-  } catch (e) {
-    // ?Œì¼???†ê±°???½ê¸° ?¤íŒ¨ ??ë¬´ì‹œ
+  const workbook = XLSX.readFile(excelFilePath);
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+  const idioms = [];
+  rows.forEach((row, index) => {
+    if (index === 0 || !row || row.length < 4) return;
+    
+    let chars = String(row[2] || '').trim();
+    let hanja = String(row[3] || '').trim();
+    let meaning = String(row[4] || '').trim();
+    let detail = String(row[5] || '').trim();
+    let example = String(row[6] || '').trim();
+
+    if (!chars || chars === 'ì‚¬ìžì„±ì–´') return;
+    const fullMeaning = detail ? meaning + ' (' + detail + ')' : meaning;
+
+    idioms.push({
+      hanja: hanja,
+      chars: chars,
+      meaning: fullMeaning,
+      example: example
+    });
+  });
+
+  if (idioms.length === 0) {
+    console.log('ì¶”ì¶œëœ ì‚¬ìžì„±ì–´ ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤.');
+    return;
   }
 
-  const maxRetries = 3;
-  let retryCount = 0;
+  const randomIndex = Math.floor(Math.random() * idioms.length);
+  const selectedIdiom = idioms[randomIndex];
 
-  while (retryCount < maxRetries) {
-    try {
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-      
-      const prompt = `?¬ëžŒ?¤ì—ê²?ê¸ì •?ì¸ ?¬ë§?´ë‚˜ ?µì°°??ì¤????ˆëŠ” ë©‹ì§„ ?¬ìž?±ì–´ 1ê°œë? ì¶”ì²œ?´ì¤˜.
-?„ìž¬ ?œì‹œ ì¤‘ì¸ ?¬ìž?±ì–´??"${currentIdiom}"?´ì•¼. **?´ê²ƒê³¼ëŠ” ë¬´ì¡°ê±??¤ë¥¸ ?ˆë¡œ???¬ìž?±ì–´**ë¡?ê³¨ë¼ì¤˜ì•¼ ??
-?•ì‹?€ ë°˜ë“œ???„ëž˜?€ ê°™ì´ JSON ë°°ì—´ ?•íƒœë¡?ë§Œë“¤?´ì•¼ ??
-[
-  { "hanja": "?¬ìž?±ì–´ ?œê? ??, "chars": "?œìž ?œê¸°", "meaning": "?½ê²Œ ?€?´í•œ ì¹œì ˆ???¤ëª…" }
-]
-?¤ë¥¸ ë§ì? ?ˆë? ?§ë¶™?´ì? ë§ê³  ?¤ì§ ??JSON ì½”ë“œë§?ì¶œë ¥?´ì¤˜. ?´ì œ????ê²¹ì¹˜???ˆë¡­ê³?ì¢‹ì? ê±¸ë¡œ ê³¨ë¼ì¤?`;
+  console.log('[ì‚¬ìžì„±ì–´ ì—…ë°ì´íŠ¸ ì™„ë£Œ] ' + selectedIdiom.chars + ' (' + selectedIdiom.hanja + ')');
 
-      const geminiResponse = await fetch(geminiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      });
-
-      if (!geminiResponse.ok) {
-        throw new Error(`Gemini API ?¸ì¶œ ?¤íŒ¨: ${geminiResponse.status}`);
-      }
-
-      const geminiJson = await geminiResponse.json();
-      let resultText = geminiJson.candidates[0].content.parts[0].text;
-      
-      resultText = resultText.replace(/```json|```/g, '').trim();
-      const processedIdiom = JSON.parse(resultText);
-
-      await fs.writeFile(DATA_FILE_PATH, JSON.stringify(processedIdiom, null, 2), 'utf-8');
-      console.log(`?¤ëŠ˜???¬ìž?±ì–´ ?…ë°?´íŠ¸ ?±ê³µ: ${processedIdiom[0].hanja}`);
-      return; // ?±ê³µ ??ì¢…ë£Œ
-
-    } catch (error) {
-      retryCount++;
-      console.error(`?¬ìž?±ì–´ ?…ë°?´íŠ¸ ?œë„ ${retryCount}/${maxRetries} ?¤íŒ¨:`, error.message);
-      if (retryCount < maxRetries) {
-        console.log('3ì´????¤ì‹œ ?œë„?©ë‹ˆ??..');
-        await new Promise(resolve => setTimeout(resolve, 3000));
-      } else {
-        console.error('ìµœë? ?¬ì‹œ???Ÿìˆ˜ë¥?ì´ˆê³¼?ˆìŠµ?ˆë‹¤.');
-      }
-    }
-  }
+  const processedIdiom = [selectedIdiom];
+  fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(processedIdiom, null, 2), 'utf-8');
 }
 
 generateDailyIdiom();
