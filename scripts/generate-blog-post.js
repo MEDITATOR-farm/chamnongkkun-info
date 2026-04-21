@@ -119,14 +119,36 @@ ${originalPost}
         
         let finalContent = updatedContent.trim();
         // 앞뒤에 ```markdown 태그가 붙어있는 경우 제거
-        if (finalContent.startsWith('\`\`\`markdown')) {
-          finalContent = finalContent.replace(/^\`\`\`markdown\n/, '').replace(/\n\`\`\`$/, '');
-        } else if (finalContent.startsWith('\`\`\`')) {
-          finalContent = finalContent.replace(/^\`\`\`\n/, '').replace(/\n\`\`\`$/, '');
+        if (finalContent.startsWith('```markdown')) {
+          finalContent = finalContent.replace(/^```markdown\n/, '').replace(/\n```$/, '');
+        } else if (finalContent.startsWith('```')) {
+          finalContent = finalContent.replace(/^```\n/, '').replace(/\n```$/, '');
         }
 
-        await fs.writeFile(targetFilePath, finalContent, 'utf-8');
-        console.log(`업데이트 완료: ${checkResult} (날짜가 ${today}로 갱신되었습니다)`);
+        // 새 파일명 생성: 기존 파일의 날짜 부분을 오늘 날짜로 변경
+        let newFilename = checkResult;
+        const dateRegex = /^\d{4}-\d{2}-\d{2}-/;
+        if (dateRegex.test(checkResult)) {
+          newFilename = checkResult.replace(dateRegex, `${today}-`);
+        } else {
+          newFilename = `${today}-${checkResult}`;
+        }
+        
+        const newFilePath = path.join(POSTS_DIR, newFilename);
+        
+        await fs.writeFile(newFilePath, finalContent, 'utf-8');
+        
+        // 기존 파일과 새 파일 이름이 다를 경우 기존 파일 삭제하여 중복 방지
+        if (newFilePath !== targetFilePath) {
+          try {
+            await fs.unlink(targetFilePath);
+            console.log(`기존 파일 삭제 완료: ${checkResult}`);
+          } catch (e) {
+            console.error(`기존 파일 삭제 중 오류:`, e);
+          }
+        }
+        
+        console.log(`업데이트 완료: ${newFilename} (새로운 글 제목 및 날짜로 갱신되었습니다)`);
         return;
       }
     }

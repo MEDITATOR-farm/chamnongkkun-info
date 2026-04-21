@@ -71,8 +71,9 @@ ${text.substring(0, 10000)}`;
     const fileContent = await fs.readFile(DATA_FILE_PATH, 'utf-8');
     const db = JSON.parse(fileContent);
     
+    let duplicateIndex = -1;
     // 중복 체크: 제목 유사도 + 날짜 기준으로 판단
-    const isDuplicate = db.events.some(e => {
+    const isDuplicate = db.events.some((e, idx) => {
       // 같은 날짜면서 제목이 80% 이상 유사한 경우 중복으로 판단
       if (e.startDate === newEvent.startDate && e.endDate === newEvent.endDate) {
         // 공통 키워드 추출해서 비교
@@ -82,6 +83,7 @@ ${text.substring(0, 10000)}`;
         const longer = existingWords.length >= newWords.length ? existingWords : newWords;
         // 짧은 문자열이 긴 문자열에 포함되면 중복
         if (longer.includes(shorter.substring(0, Math.floor(shorter.length * 0.7)))) {
+          duplicateIndex = idx;
           return true;
         }
       }
@@ -89,8 +91,8 @@ ${text.substring(0, 10000)}`;
     });
 
     if (isDuplicate) {
-      console.log(`이미 존재하는 유사 행사입니다: ${newEvent.name}`);
-      return;
+      console.log(`기존 중복 행사 발견됨. 기존 데이터를 삭제하고 최신 정보로 업데이트합니다: ${newEvent.name}`);
+      db.events.splice(duplicateIndex, 1);
     }
 
     // 만료된 행사 제거 (endDate가 오늘보다 이전인 것)
