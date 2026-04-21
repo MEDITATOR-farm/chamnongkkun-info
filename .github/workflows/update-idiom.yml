@@ -1,4 +1,4 @@
-﻿name: Update Daily Idiom
+name: Update Daily Idiom
 
 on:
   schedule:
@@ -21,7 +21,9 @@ jobs:
         run: npm install
 
       - name: Run idiom update
-        run: npm run update-idiom
+        run: |
+          touch .env.local
+          npm run update-idiom
 
       - name: Commit and push
         run: |

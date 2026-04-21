@@ -29,6 +29,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # =======================================================
+      # [추가된 부분] 스크립트 실행 전 .env.local 파일을 물리적으로 생성
+      # =======================================================
+      - name: Create .env.local file
+        run: |
+          touch .env.local
+          echo "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" >> .env.local
+          echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}" >> .env.local
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env.local
+          echo "GOOGLE_VISION_API_KEY=${{ secrets.GOOGLE_VISION_API_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_ADSENSE_ID=${{ secrets.NEXT_PUBLIC_ADSENSE_ID }}" >> .env.local
+          echo "PUBLIC_DATA_API_KEY=${{ secrets.PUBLIC_DATA_API_KEY }}" >> .env.local
+          echo "REALESTATE_API_KEY=${{ secrets.REALESTATE_API_KEY }}" >> .env.local
+
       - name: Run automation scripts
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
