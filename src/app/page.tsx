@@ -4,6 +4,7 @@ import path from "path";
 import AIRanking from "@/components/AIRanking";
 import AdBanner from "@/components/AdBanner";
 import MapLoader from "@/components/MapLoader";
+import SpotMapLoader from "@/components/SpotMapLoader";
 import CoupangBanner from "@/components/CoupangBanner";
 import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
@@ -178,6 +179,16 @@ export default function Home() {
           <SectionTitle icon="🍽️" text="내가 자주 찾는 거제 숨은 맛집" badge="현지인 픽" />
           <div style={{ ...G, overflow: "hidden" }}>
             <MapLoader />
+          </div>
+          <div style={{ marginTop: "12px" }}><AdBanner /></div>
+        </section>
+        <Divider />
+
+        {/* ③-2 거제도 숨은 명소 */}
+        <section>
+          <SectionTitle icon="🏞️" text="거제도 숨은 명소" badge="테마 여행" />
+          <div style={{ ...G, overflow: "hidden" }}>
+            <SpotMapLoader />
           </div>
           <div style={{ marginTop: "12px" }}><AdBanner /></div>
         </section>
