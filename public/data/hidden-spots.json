@@ -2,12 +2,66 @@
   "spots": [
     {
       "rank": 1,
-      "name": "명소 업데이트 예정",
-      "category": "자연",
-      "summary": "숨은 명소 데이터가 곧 업데이트 됩니다.",
-      "lat": 34.80075,
-      "lng": 128.602619,
-      "link": "#"
+      "name": "구조라 샛바람소릿길",
+      "category": "자연/풍경",
+      "summary": "구조라 샛바람 소릿길따라 구조라성을 둘러보는 그 경치가 멋스럽다.",
+      "lat": 34.804703,
+      "lng": 128.693697,
+      "link": "https://search.naver.com/search.naver?query=거제+구조라+샛바람소릿길"
+    },
+    {
+      "rank": 2,
+      "name": "서이말등대",
+      "category": "자연/풍경",
+      "summary": "해돋이 명소. 넓은 헬기주차장이 있으며 호젓하게 즐길 수 있는 탁트인 바다를 즐길 수 있는 곳",
+      "lat": 34.787756,
+      "lng": 128.738147,
+      "link": "https://search.naver.com/search.naver?query=거제+서이말등대"
+    },
+    {
+      "rank": 3,
+      "name": "양지암등대",
+      "category": "자연/풍경",
+      "summary": "갈수있는 곳까지 끝까지 가면 군부대 철문까지 갈 수 있다. 거기서 부터 걸어가면 멋진 등대를 볼 수 있다. 후회 하지 않을 등대와 풍경이 경이롭다.",
+      "lat": 34.895183,
+      "lng": 128.751617,
+      "link": "https://search.naver.com/search.naver?query=거제+양지암등대"
+    },
+    {
+      "rank": 4,
+      "name": "천주교 순교자 요셉 성지",
+      "category": "역사/문화",
+      "summary": "성지 둘레길을 따라 힐링하다 보면 지세포 포구를 한 눈에 볼 수 있는 멋진 전망대가 나온다. 좌측으론 영은사가 있다. 함께 둘러보면 맘과 몸이 힐링이 된다.",
+      "lat": 34.823903,
+      "lng": 128.695878,
+      "link": "https://search.naver.com/search.naver?query=거제+천주교+순교자+요셉+성지"
+    },
+    {
+      "rank": 5,
+      "name": "둔덕기성(폐왕성)",
+      "category": "역사/문화",
+      "summary": "올라서면 거제시 서쪽으로 탁트인 뷰가 멋지다. 호젓한 분위기와 고려왕이 살았던 유적지라서 숙연한 분위기가 감돈다.",
+      "lat": 34.867939,
+      "lng": 128.498403,
+      "link": "https://search.naver.com/search.naver?query=거제+둔덕기성"
+    },
+    {
+      "rank": 6,
+      "name": "문동폭포",
+      "category": "자연/풍경",
+      "summary": "비가 온 후에 맑은 공기와 함께 산책하기 좋은 코스이다. 아래 주차장에서 서서히 올라가다 보면 기분이 좋아진다. 폭포 상부까지 올라갈 수 있다.",
+      "lat": 34.860475,
+      "lng": 128.664481,
+      "link": "https://search.naver.com/search.naver?query=거제+문동폭포"
+    },
+    {
+      "rank": 7,
+      "name": "망월대",
+      "category": "자연/풍경",
+      "summary": "외포초등학교 옆 주차하고 데크길로 올라서면 맑은 날은 대마도가 훤히 보인다. 짧은 코스로 산에 오르고 싶다면 추천하고 싶다.",
+      "lat": 34.945819,
+      "lng": 128.723431,
+      "link": "https://search.naver.com/search.naver?query=거제+망월대"
     }
   ]
 }
