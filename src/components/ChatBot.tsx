@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 interface ChatDataItem {
   question: string;
@@ -23,6 +24,10 @@ const ChatBot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const pathname = usePathname();
+
+  // 관리자 페이지에서는 챗봇을 숨깁니다.
+  if (pathname.startsWith("/admin")) return null;
 
   // 추천 질문 예시 (프롬프트 칩)
   const starterPrompts = [
@@ -143,7 +148,7 @@ const ChatBot: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-[110]">
       {/* 챗봇 버튼 */}
       <button
         onClick={() => setIsOpen(!isOpen)}

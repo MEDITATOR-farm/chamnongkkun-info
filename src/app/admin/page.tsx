@@ -160,7 +160,7 @@ const AdminPage: React.FC = () => {
       </main>
 
       {/* 입력창 영역 */}
-      <footer className="bg-white border-t border-gray-200 p-4 shadow-inner">
+      <footer className="bg-white border-t border-gray-200 p-4 pb-[env(safe-area-inset-bottom,1rem)] shadow-inner relative z-10">
         <form onSubmit={handleSendReply} className="max-w-4xl w-full mx-auto flex gap-3">
           <input
             type="text"

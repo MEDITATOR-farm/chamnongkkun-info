@@ -13,6 +13,9 @@ const NAV_ITEMS = [
 
 export default function MobileNav() {
   const pathname = usePathname();
+  
+  // 관리자 페이지에서는 메뉴를 숨깁니다.
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <nav style={{
