@@ -24,6 +24,7 @@ const ChatBot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTimestampRef = useRef<number>(Date.now());
   const pathname = usePathname();
 
   // 관리자 페이지에서는 챗봇을 숨깁니다.
@@ -56,18 +57,18 @@ const ChatBot: React.FC = () => {
           const response = await fetch("/api/chat-poll");
           const data = await response.json();
           if (data.messages && data.messages.length > 0) {
-            // 마지막으로 받은 메시지와 비교하거나, 새 메시지만 필터링하는 로직이 필요할 수 있으나
-            // 여기서는 단순하게 새 admin 메시지가 있으면 추가합니다.
-            const newAdminMessages = data.messages.filter((m: any) => m.sender === "admin");
+            const newAdminMessages = data.messages.filter((m: any) => 
+              m.sender === "admin" && m.timestamp > lastTimestampRef.current
+            );
+            
             if (newAdminMessages.length > 0) {
-              setMessages(prev => {
-                const lastMsg = prev[prev.length - 1];
-                const newMsgText = newAdminMessages[newAdminMessages.length - 1].text;
-                if (lastMsg.text !== newMsgText) {
-                  return [...prev, { type: "admin", text: newMsgText }];
-                }
-                return prev;
-              });
+              // 중복 방지를 위해 최신 타임스탬프 업데이트
+              lastTimestampRef.current = newAdminMessages[newAdminMessages.length - 1].timestamp;
+              
+              setMessages(prev => [
+                ...prev,
+                ...newAdminMessages.map((m: any) => ({ type: "admin", text: m.text }))
+              ]);
             }
           }
         } catch (error) {
@@ -99,6 +100,7 @@ const ChatBot: React.FC = () => {
 
   const switchToHuman = () => {
     setMode("human");
+    lastTimestampRef.current = Date.now(); // 상담 시작 시점 이후의 메시지만 수신하도록 설정
     setMessages((prev) => [
       ...prev,
       { type: "bot", text: "상담원 연결을 시도합니다. 잠시만 기다려 주세요... (상담원 모드)" }
