@@ -46,6 +46,8 @@ export const metadata: Metadata = {
   },
 };
 
+import ChatBot from "@/components/ChatBot";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
@@ -62,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <RecentViewsDrawer />
         <MobileNav />
+        <ChatBot />
         <Script id="sw-register" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
