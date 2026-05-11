@@ -6,7 +6,7 @@ async function backfillEventDetails() {
   const DATA_FILE_PATH = path.join(__dirname, '../public/data/chamnongkkun-info.json');
 
   if (!GEMINI_API_KEY) {
-    console.error('GEMINI_API_KEY ?�경 변?��? ?�정?��? ?�았?�니??');
+    console.error('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
     return;
   }
 
@@ -15,29 +15,29 @@ async function backfillEventDetails() {
     const db = JSON.parse(fileContent);
     let updatedCount = 0;
 
-    console.log('�???�� ??', db.events.length, '. ?�세 ?�용 ?�성 �?..');
+    console.log('총 항목 수:', db.events.length, '. 상세 내용 생성 중...');
 
-    // 모든 ?�벤??처리
+    // 모든 이벤트 처리
     const allItems = [...db.events];
 
     for (const item of allItems) {
-      if (item.detailContent) continue; // ?��? ?�다�?건너?�
+      if (item.detailContent) continue; // 이미 있다면 건너뜀
 
-      console.log(`[${item.name}] ?�세 글 ?�성 �?..`);
+      console.log(`[${item.name}] 상세 글 생성 중...`);
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
       
-      const prompt = `?�신?� '참농�??�식?? 블로그의 ?�석 ?��??�니?? 
-?�래 공공 ?�보�?바탕?�로 주�??�에�??�감??가�??�세??'블로�??��??????�세 ?�명???�성??주세??
+      const prompt = `당신은 '참농꾼 소식통' 블로그의 수석 작가입니다. 
+아래 공공 정보를 바탕으로 주민들에게 정감이 가고 상세한 '블로그 스타일'의 상세 설명을 작성해 주세요.
 
-?�보: ${JSON.stringify(item, null, 2)}
+정보: ${JSON.stringify(item, null, 2)}
 
-?�식 지�?
-1. 마크?�운(Markdown) ?�식???�용?�세??
-2. ?�목?� ?�외?�고 본문(?�용)�??�성?�세??
-3. ?�제�?###), 글머리 기호(-), 굵게(**) ?�을 ?�용??가?�성???�이?�요.
-4. 추천 ?�유 3가지, 즐기???? 주의?�항 ?�는 ?�청 방법 ?�을 ?�함??800???�외�??�성�??�성??주세??
-5. 말투??"~?�요", "~?�니???� 같이 친근?�고 ?�감 ?�는 블로�??�으�??�세??`;
+형식 지침:
+1. 마크다운(Markdown) 형식을 사용하세요.
+2. 제목은 제외하고 본문(내용)만 작성하세요.
+3. 소제목(###), 글머리 기호(-), 굵게(**) 등을 활용해 가독성을 높이세요.
+4. 추천 이유 3가지, 즐기는 팁, 주의사항 또는 신청 방법 등을 포함해 800자 내외로 정성껏 작성해 주세요.
+5. 말투는 "~해요", "~입니다"와 같이 친근하고 정감 있는 블로그 톤으로 하세요.`;
 
       const response = await fetch(geminiUrl, {
         method: 'POST',
@@ -48,7 +48,7 @@ async function backfillEventDetails() {
       });
 
       if (!response.ok) {
-        console.error(`Gemini ?�출 ?�패 (${item.name}):`, response.status);
+        console.error(`Gemini 호출 실패 (${item.name}):`, response.status);
         continue;
       }
 
@@ -58,18 +58,19 @@ async function backfillEventDetails() {
       item.detailContent = resultText;
       updatedCount++;
       
-      // API ?�당???�한???�하�??�해 10�??��?      await new Promise(resolve => setTimeout(resolve, 10000));
+      // API 할당량 제한을 피하기 위해 10초 대기
+      await new Promise(resolve => setTimeout(resolve, 10000));
     }
 
     if (updatedCount > 0) {
       await fs.writeFile(DATA_FILE_PATH, JSON.stringify(db, null, 2), 'utf-8');
-      console.log(`?�� ${updatedCount}개의 ??��???�세 ?�용??추�??�었?�니??`);
+      console.log(`🎉 ${updatedCount}개의 항목에 상세 내용이 추가되었습니다!`);
     } else {
-      console.log('?��? 모든 ??��???�데?�트?�어 ?�습?�다.');
+      console.log('이미 모든 항목이 업데이트되어 있습니다.');
     }
 
   } catch (error) {
-    console.error('백필 �??�류 발생:', error);
+    console.error('백필 중 오류 발생:', error);
   }
 }
 

@@ -41,7 +41,7 @@ async function generateBlogPost() {
       }
     }
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
     
     // AI에게 중복 여부 확인
     const checkPrompt = `내가 새로 작성할 블로그 글의 정보는 다음과 같아.

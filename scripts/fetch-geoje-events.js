@@ -23,7 +23,7 @@ async function fetchGeojeEvents() {
 
     const text = await response.text();
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
     const today = new Date().toISOString().split('T')[0];
     
     const prompt = `아래는 거제시청에서 가져온 공연/행사 데이터(Raw text)입니다. 
