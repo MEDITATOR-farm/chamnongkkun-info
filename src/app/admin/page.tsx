@@ -130,8 +130,8 @@ const AdminPage: React.FC = () => {
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
         <form onSubmit={handleLogin} className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800">관리자 로그인</h1>
-            <p className="text-gray-500 text-sm mt-2">상담 관리를 위해 비밀번호를 입력하세요.</p>
+            <h1 className="text-2xl font-bold text-gray-800">통합 관리자 로그인</h1>
+            <p className="text-gray-500 text-sm mt-2">파일 업로드 및 상담 관리를 위해 비밀번호를 입력하세요.</p>
           </div>
           <input
             type="password"
