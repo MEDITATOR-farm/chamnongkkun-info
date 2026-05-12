@@ -61,7 +61,7 @@ const AdminPage: React.FC = () => {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
       if (res.ok) {
         const d = await res.json();
-        const items = JSON.parse(decodeURIComponent(escape(atob(d.content))));
+        const items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
         if (type === 'poems') setPoemList(items);
         else setDiaryList(items);
       }
@@ -76,7 +76,7 @@ const AdminPage: React.FC = () => {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
       if (!res.ok) throw new Error('파일을 찾을 수 없습니다.');
       const d = await res.json();
-      const items = JSON.parse(decodeURIComponent(escape(atob(d.content))));
+      const items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
       const filtered = items.filter((v: any) => v.id !== id);
       await commitToGithub(`data/${type}.json`, JSON.stringify(filtered, null, 2), `관리자: ${type} 항목 삭제 (ID:${id})`, false);
       if (type === 'poems') setPoemList(filtered);
@@ -165,7 +165,7 @@ const AdminPage: React.FC = () => {
       let poems = [];
       if (res.ok) {
         const fileData = await res.json();
-        poems = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+        poems = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,'')))));
       }
       const newPoem = {
         id: Date.now(),
@@ -205,7 +205,7 @@ const AdminPage: React.FC = () => {
       let diaries = [];
       if (res.ok) {
         const fileData = await res.json();
-        diaries = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+        diaries = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,'')))));
       }
       const newEntry = {
         id: Date.now(),
