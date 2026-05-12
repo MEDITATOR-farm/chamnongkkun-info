@@ -55,8 +55,11 @@ const AdminPage: React.FC = () => {
   const [diaryList, setDiaryList] = useState<any[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
+  const [listLoading, setListLoading] = useState(false);
+
   const loadList = async (type: 'poems' | 'diaries') => {
-    if (!ghToken) return alert('토큰을 먼저 설정해주세요.');
+    if (!ghToken) return;
+    setListLoading(true);
     try {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
       if (res.ok) {
@@ -65,7 +68,8 @@ const AdminPage: React.FC = () => {
         if (type === 'poems') setPoemList(items);
         else setDiaryList(items);
       }
-    } catch (e: any) { alert('불러오기 실패: ' + e.message); }
+    } catch (e: any) { console.error('불러오기 실패:', e.message); }
+    finally { setListLoading(false); }
   };
 
   useEffect(() => {
@@ -393,17 +397,17 @@ const AdminPage: React.FC = () => {
               <h3 className="text-xl font-black text-gray-800">📜 등록된 시 ({poemList.length}편)</h3>
               <button onClick={() => loadList('poems')} className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-black hover:bg-orange-100 transition-all">🔄 새로고침</button>
             </div>
-            {poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">등록된 시가 없습니다</p> : (
+            {listLoading ? <p className="text-orange-500 text-sm text-center py-8 animate-pulse">불러오는 중...</p> : poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">토큰 설정 후 새로고침 해주세요</p> : (
               <div className="space-y-4">
                 {poemList.map((p: any) => (
-                  <div key={p.id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
-                    <div className="flex items-start justify-between gap-4">
+                  <div key={p.id} className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="flex items-start gap-4">
+                      {p.imageUrl && !p.imageUrl.startsWith('data:') && <img src={p.imageUrl} alt="" className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-gray-200" />}
                       <div className="flex-1 min-w-0">
                         <p className="font-black text-base text-gray-800">{p.title || '(제목없음)'}</p>
                         <p className="text-xs text-gray-400 mt-1">{p.author} · {p.date}</p>
-                        <p className="text-sm text-gray-600 mt-3 whitespace-pre-line leading-relaxed bg-white p-3 rounded-xl border border-gray-50">{(p.content || '').slice(0, 100)}{(p.content || '').length > 100 ? '...' : ''}</p>
                       </div>
-                      <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all flex-shrink-0 shadow-lg shadow-red-100">
+                      <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all flex-shrink-0">
                         {isDeleting === `poems-${p.id}` ? '삭제중...' : '🗑 삭제'}
                       </button>
                     </div>
@@ -447,7 +451,7 @@ const AdminPage: React.FC = () => {
                 <h3 className="text-xl font-black text-gray-800">📔 등록된 일기 ({diaryList.length}건)</h3>
                 <button onClick={() => loadList('diaries')} className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-black hover:bg-green-100 transition-all">🔄 새로고침</button>
               </div>
-              {diaryList.length === 0 ? <p className="text-gray-300 text-sm text-center py-6">등록된 일기가 없습니다</p> : (
+              {listLoading ? <p className="text-green-500 text-sm text-center py-6 animate-pulse">불러오는 중...</p> : diaryList.length === 0 ? <p className="text-gray-300 text-sm text-center py-6">토큰 설정 후 새로고침 해주세요</p> : (
                 <div className="space-y-4">
                   {diaryList.map((d: any) => (
                     <div key={d.id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
