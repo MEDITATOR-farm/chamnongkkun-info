@@ -86,18 +86,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 스토어 CTA */}
-        <section className="mt-32 text-center reveal-up reveal-delay-3">
-          <p className="text-foreground/40 text-sm font-bold uppercase tracking-widest mb-8">참농꾼의 정직한 농산물</p>
-          <a
-            href="https://smartstore.naver.com/chamnongkkun"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-secondary text-white font-black py-5 px-12 rounded-full text-lg shadow-2xl shadow-secondary/20 hover:scale-105 active:scale-95 transition-all"
-          >
-            🛍️ 참농꾼 스토어 바로가기
-          </a>
-        </section>
       </main>
 
       {/* 푸터 */}

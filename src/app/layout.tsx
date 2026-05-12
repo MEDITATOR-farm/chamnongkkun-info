@@ -21,13 +21,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   manifest: "/manifest.json",
-  title: "참농꾼 | 자연의 삶을 기록하고 거제를 가이드합니다",
-  description: "농부의 진솔한 일기와 사장님이 직접 선별한 거제 맛집·명소 가이드를 만나보세요.",
+  title: "참농꾼 | 자급자족을 꿈꾸는 게으른 농부의 삶의 이야기",
+  description: "거제도 참농꾼의 정직한 농부일기와 직접 발로 뛴 거제 맛집·명소 가이드를 만나보세요.",
   openGraph: {
-    title: "참농꾼 | 자연의 삶을 기록하고 거제를 가이드합니다",
-    description: "농부의 진솔한 일기와 사장님이 직접 선별한 거제 맛집·명소 가이드를 만나보세요.",
+    title: "참농꾼 | 자급자족을 꿈꾸는 게으른 농부의 삶의 이야기",
+    description: "거제도 참농꾼의 정직한 농부일기와 직접 발로 뛴 거제 맛집·명소 가이드를 만나보세요.",
     url: "https://www.chamnongkkun.com",
-    siteName: "우리 동네 소식통",
+    siteName: "참농꾼",
     locale: "ko_KR",
     type: "website",
     images: [
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
         url: "https://www.chamnongkkun.com/images/daebyeongdaedo_lined.png",
         width: 1200,
         height: 630,
-        alt: "Chamnongkkun 거제소식",
+        alt: "참농꾼 - 거제도 게으른 농부의 기록",
       },
     ],
   },
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   },
 };
 
-import ChatBot from "@/components/ChatBot";
+// import ChatBot from "@/components/ChatBot"; // 나중에 활성화 예정
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

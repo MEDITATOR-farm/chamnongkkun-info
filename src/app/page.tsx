@@ -1,4 +1,4 @@
-import { NavLinks, HeroButton, GlassCard, SectionHeader } from "@/components/GlassCard";
+import { NavLinks, GlassCard, SectionHeader } from "@/components/GlassCard";
 import fs from "fs";
 import path from "path";
 import MapLoader from "@/components/MapLoader";
@@ -7,7 +7,7 @@ import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
 import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyPoemClient from "@/components/DailyPoemClient";
-import WeatherWidget, { WeatherWidgetCompact } from "@/components/WeatherWidget";
+import { WeatherWidgetCompact } from "@/components/WeatherWidget";
 import ScrollToTop from "@/components/ScrollToTop";
 
 function readJson(filePath: string, fallback: any = []) {
@@ -15,13 +15,8 @@ function readJson(filePath: string, fallback: any = []) {
   try { return JSON.parse(fs.readFileSync(filePath, "utf-8")); } catch { return fallback; }
 }
 
-const getData = () => {
-  const filePath = path.join(process.cwd(), "public/data/chamnongkkun-info.json");
-  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
-};
 
 export default function Home() {
-  const data = getData();
   let diaries = readJson(path.join(process.cwd(), "public/data/diaries.json"));
   diaries = diaries.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
   
