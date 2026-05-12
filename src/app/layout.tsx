@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <RecentViewsDrawer />
         <MobileNav />
-        <ChatBot />
+        {/* <ChatBot /> ← 나중에 활성화 예정 */}
         <Script id="sw-register" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
