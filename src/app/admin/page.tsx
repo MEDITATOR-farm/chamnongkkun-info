@@ -91,7 +91,11 @@ const AdminPage: React.FC = () => {
     // 1. 기존 파일의 SHA 값 확인 (덮어쓰기를 위해 필요)
     let sha = undefined;
     const getRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`, {
-      headers: { Authorization: `Bearer ${ghToken}` },
+      headers: { 
+        Authorization: `Bearer ${ghToken}`,
+        Accept: "application/vnd.github.v3+json"
+      },
+      cache: "no-store", // 캐시 방지: 항상 최신 SHA를 가져옴
     });
     if (getRes.ok) {
       const data = await getRes.json();
@@ -151,9 +155,16 @@ const AdminPage: React.FC = () => {
     try {
       const filePath = "public/data/poems.json";
       let poems = [];
+      
+      // 최신 데이터 가져오기 (캐시 방지)
       const getRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}?ref=${GITHUB_BRANCH}`, {
-        headers: { Authorization: `Bearer ${ghToken}` },
+        headers: { 
+          Authorization: `Bearer ${ghToken}`,
+          Accept: "application/vnd.github.v3+json"
+        },
+        cache: "no-store",
       });
+
       if (getRes.ok) {
         const data = await getRes.json();
         const content = decodeURIComponent(escape(atob(data.content)));
@@ -219,9 +230,16 @@ const AdminPage: React.FC = () => {
 
       const dataPath = "public/data/diaries.json";
       let diaries = [];
+      
+      // 최신 데이터 가져오기 (캐시 방지)
       const getRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${dataPath}?ref=${GITHUB_BRANCH}`, {
-        headers: { Authorization: `Bearer ${ghToken}` },
+        headers: { 
+          Authorization: `Bearer ${ghToken}`,
+          Accept: "application/vnd.github.v3+json"
+        },
+        cache: "no-store",
       });
+
       if (getRes.ok) {
         const data = await getRes.json();
         const content = decodeURIComponent(escape(atob(data.content)));
