@@ -19,6 +19,21 @@ export function NavLinks() {
     { name: "오늘의시", href: "/#wisdom" },
     { name: "소개", href: "/about" },
   ];
+
+  return (
+    <div className="hidden md:flex gap-8 items-center">
+      {links.map((link) => (
+        <Link
+          key={link.name}
+          href={link.href}
+          className="text-sm font-semibold text-foreground/60 hover:text-primary transition-colors relative group"
+        >
+          {link.name}
+          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+        </Link>
+      ))}
+    </div>
+  );
 }
 
 // HeroButton ← 나중에 스토어 활성화 예정
