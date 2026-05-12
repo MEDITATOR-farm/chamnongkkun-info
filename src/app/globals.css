@@ -2,85 +2,55 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fdfdfc; /* 따스한 종이 느낌의 화이트 */
+  --foreground: #1a2a24; /* 깊은 숲색에 가까운 차콜 */
+  --primary: #2d5a4c;    /* 세이지/포레스트 그린 */
+  --secondary: #d4a373;  /* 차분한 모래색/흙색 */
+  --accent: #a3b18a;     /* 이끼 낀 듯한 연그린 */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-outfit), var(--font-geist-sans);
+  --font-serif: var(--font-nanum-myeongjo), serif;
 }
 
 @layer utilities {
-  .glass {
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  }
-  .glass-dark {
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
-  }
-  .glass-card {
-    background-color: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.03);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .glass-card:hover {
+  /* 맑고 투명한 네이처 글래스 효과 */
+  .glass-nature {
     background-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 10px 40px 0 rgba(0, 150, 200, 0.08);
-    border-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(45, 90, 76, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
   }
-  .text-shadow-premium {
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+  .glass-nature-dark {
+    background-color: rgba(26, 42, 36, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
   }
-  .bg-aura {
-    background: radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 60%),
-                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 80%);
-  }
-  .wide-card-reveal {
-     animation: slide-in-wide 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-     opacity: 0;
-  }
-  .list-item-slim {
-    @apply flex items-center justify-between py-3 px-5 rounded-xl transition-all duration-300 border-b border-slate-100/50;
-    background-color: transparent;
-  }
-  .list-item-slim:hover {
-    @apply border-cyan-200/30;
-    background-color: rgba(34, 211, 238, 0.02);
-  }
-  .accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out, opacity 0.3s ease-in;
+
+  /* 세련된 등장 애니메이션 */
+  .reveal-up {
+    animation: reveal-up 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     opacity: 0;
   }
-  .accordion-content.open {
-    max-height: 500px;
-    opacity: 1;
-    @apply py-4 px-6 mt-2;
-  }
+
+  .reveal-delay-1 { animation-delay: 0.2s; }
+  .reveal-delay-2 { animation-delay: 0.4s; }
+  .reveal-delay-3 { animation-delay: 0.6s; }
 }
 
-@keyframes slide-in-wide {
-  from { transform: translateX(20px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+@keyframes reveal-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes float {
@@ -89,39 +59,32 @@
   100% { transform: translateY(0px); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.5; filter: blur(40px); }
-  50% { opacity: 0.8; filter: blur(60px); }
-}
-
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
 
-.animate-glow {
-  animation: pulse-glow 8s ease-in-out infinite;
-}
-
 body {
-  background-color: #f7faff;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(206, 238, 255, 0.4) 0%, transparent 70%),
-    radial-gradient(circle at 100% 100%, rgba(228, 240, 255, 0.4) 0%, transparent 70%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Outfit', var(--font-geist-sans), sans-serif;
+  font-family: var(--font-sans);
   min-height: 100vh;
   word-break: keep-all;
   overflow-wrap: break-word;
+  line-height: 1.6;
 }
 
-/* Reset aggressive mobile browser default link styles */
+h1, h2, h3, .font-serif {
+  font-family: var(--font-serif);
+}
+
 a {
   text-decoration: none !important;
   color: inherit;
+  transition: all 0.3s ease;
 }
 
 body::selection {
-  background-color: #a5f3fc; /* bg-cyan-200 */
+  background-color: var(--accent);
+  color: white;
 }
 

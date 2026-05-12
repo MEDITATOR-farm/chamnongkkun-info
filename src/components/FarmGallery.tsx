@@ -4,156 +4,141 @@ import { useState } from "react";
 import Link from "next/link";
 
 export default function FarmGallery({ diaries }: { diaries: any[] }) {
-  // 모달에 띄울 사진이나 비디오 데이터를 보관하는 공간입니다.
-  // 모달에 띄울 사진이나 비디오 데이터를 보관하는 공간입니다.
   const [selectedDiary, setSelectedDiary] = useState<any>(null);
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
 
   if (!diaries || diaries.length === 0) return null;
 
   return (
-    <section className="mb-20 relative z-10">
-      <div className="flex items-center gap-3 mb-8">
-        <span className="text-xl">🎬</span>
-        <h2 className="text-lg font-bold text-slate-800">농장 최근 현장</h2>
-      </div>
+    <div className="relative">
+      {/* 중앙 수직선 */}
+      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-primary/20 -translate-x-1/2"></div>
       
-      {/* 갤러리 그리드 부분 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="space-y-24">
         {diaries.map((diary: any, index: number) => (
-          <div 
-            key={index} 
-            className="rounded-2xl overflow-hidden border border-slate-100 shadow-md bg-black/5 aspect-video relative group cursor-pointer"
-            onClick={() => {
-              setSelectedDiary(diary);
-              setCurrentImgIdx(0);
-            }}
-          >
-            {diary.video ? (
-              // 동영상일 때는 썸네일(사진)을 깔고 재생 버튼 모양을 예쁘게 올립니다.
-              diary.image ? (
-                <img 
-                  src={diary.image} 
-                  alt="Farm Recent View" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                />
-              ) : null
-            ) : (
-              // 사진일 때는 그대로 보여줍니다.
-              <img 
-                src={diary.image} 
-                alt="Farm Recent View" 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-              />
-            )}
+          <div key={index} className={`relative flex flex-col md:flex-row items-center gap-12 ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
             
-            {/* 영상 재생 중임을 알리는 플레이버튼 아이콘 (영상인 경우만) */}
-            {diary.video && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
-                <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center pl-1 backdrop-blur-md shadow-lg">
-                  <span className="text-teal-600 text-xl">▶</span>
+            {/* 중앙 포인트 (동그라미) */}
+            <div className="absolute left-4 md:left-1/2 top-0 w-8 h-8 rounded-full bg-background border-4 border-primary -translate-x-1/2 z-10 hidden md:block"></div>
+            
+            {/* 콘텐츠 박스 */}
+            <div className={`w-full md:w-[calc(50%-48px)] reveal-up ${index % 2 === 1 ? 'md:text-right' : 'md:text-left'} ml-12 md:ml-0`}>
+              <div className="mb-4">
+                <span className="text-secondary font-black tracking-widest text-xs">{diary.date}</span>
+                <h3 className="text-2xl font-serif font-bold text-foreground mt-1">{diary.title}</h3>
+              </div>
+              
+              <div 
+                className="group relative rounded-[24px] overflow-hidden shadow-xl shadow-primary/5 cursor-pointer border border-primary/5 bg-white"
+                onClick={() => {
+                  setSelectedDiary(diary);
+                  setCurrentImgIdx(0);
+                }}
+              >
+                {diary.image ? (
+                  <img 
+                    src={diary.image} 
+                    alt={diary.title} 
+                    className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105" 
+                  />
+                ) : (
+                  <div className="w-full aspect-[4/3] bg-primary/5 flex items-center justify-center text-4xl">🌱</div>
+                )}
+                
+                {diary.video && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-colors">
+                    <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center pl-1 backdrop-blur-md shadow-2xl">
+                      <span className="text-primary text-2xl">▶</span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-white text-sm font-bold">자세히 보기 →</p>
                 </div>
               </div>
-            )}
 
-            {/* 다중 이미지 뱃지 (사진이 여러 장인 경우만) */}
-            {!diary.video && diary.images && diary.images.length > 1 && (
-              <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1 border border-white/20">
-                <span>📂</span>
-                {diary.images.length}
-              </div>
-            )}
-
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-              <p className="text-white text-sm font-bold line-clamp-1 drop-shadow-md">{diary.title}</p>
+              <p className="mt-6 text-foreground/60 leading-relaxed line-clamp-3 font-medium">
+                {diary.content}
+              </p>
             </div>
+            
+            {/* 반대편 비어있는 공간용 (모바일에서는 숨김) */}
+            <div className="hidden md:block w-[calc(50%-48px)]"></div>
           </div>
         ))}
       </div>
-      <div className="mt-4 text-right">
-        <Link href="/admin#diary" className="text-[12px] font-bold text-teal-500 hover:text-teal-700 transition-colors">
-          + 현장 소식 올리기
+
+      <div className="mt-20 text-center">
+        <Link 
+          href="/admin#diary" 
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-background border-2 border-primary/20 text-primary font-bold hover:bg-primary hover:text-white transition-all shadow-lg shadow-primary/5"
+        >
+          + 현장 소식 더 기록하기
         </Link>
       </div>
 
-      {/* ==============================================
-          여기가 사진을 눌렀을 때 나타나는 팝업(모달) 창입니다! 
-          ============================================== */}
+      {/* 모달 (기존 로직 유지하되 스타일 고도화) */}
       {selectedDiary && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
-          onClick={() => setSelectedDiary(null)} /* 검은 배경 누르면 닫힘 */
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 backdrop-blur-md p-4 animate-in fade-in duration-300"
+          onClick={() => setSelectedDiary(null)}
         >
           <div 
             className="relative w-full max-w-5xl max-h-[90vh] flex flex-col items-center"
-            onClick={(e) => e.stopPropagation()} /* 사진 자체를 누르면 안 닫힘 */
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* 창 닫기 버튼 */}
             <button 
-              className="absolute -top-14 right-2 text-white/70 hover:text-white text-5xl z-[110] transition-colors"
+              className="absolute -top-16 right-0 text-white/50 hover:text-white text-4xl z-[110] transition-colors"
               onClick={() => setSelectedDiary(null)}
-              title="닫기"
             >
-              &times;
+              ✕
             </button>
             
-            <div className="w-full overflow-hidden rounded-xl shadow-2xl bg-black flex items-center justify-center relative" style={{ maxHeight: '80vh', aspectRatio: selectedDiary.video ? 'auto' : '4/3' }}>
+            <div className="w-full overflow-hidden rounded-3xl shadow-2xl bg-black flex items-center justify-center relative border border-white/10" style={{ maxHeight: '75vh', aspectRatio: selectedDiary.video ? 'auto' : '16/10' }}>
               {selectedDiary.video ? (
-                <video 
-                  src={selectedDiary.video} 
-                  controls 
-                  autoPlay 
-                  className="max-w-full max-h-[80vh] object-contain" 
-                />
+                <video src={selectedDiary.video} controls autoPlay className="max-w-full max-h-[75vh] object-contain" />
               ) : (
                 <>
-                  {/* 이미지 슬라이드 부분 */}
-                  <div className="flex h-full w-full transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentImgIdx * 100}%)` }}>
+                  <div className="flex h-full w-full transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${currentImgIdx * 100}%)` }}>
                     {(selectedDiary.images && selectedDiary.images.length > 0 
                       ? selectedDiary.images 
                       : (selectedDiary.image ? [selectedDiary.image] : [])
                     ).filter(Boolean).map((img: string, idx: number) => (
                       <div key={idx} className="min-w-full h-full flex items-center justify-center">
-                        <img 
-                          src={img} 
-                          alt={`${selectedDiary.title} - ${idx + 1}`} 
-                          className="max-w-full max-h-[80vh] object-contain" 
-                        />
+                        <img src={img} alt={selectedDiary.title} className="max-w-full max-h-[75vh] object-contain" />
                       </div>
                     ))}
                   </div>
 
-                  {/* 좌우 네비게이션 버튼 (2장 이상일 때만) */}
                   {selectedDiary.images && selectedDiary.images.length > 1 && (
                     <>
                       <button 
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-2xl flex items-center justify-center backdrop-blur-md transition-all"
+                        className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-3xl flex items-center justify-center backdrop-blur-md transition-all"
                         onClick={() => setCurrentImgIdx(prev => (prev > 0 ? prev - 1 : selectedDiary.images.length - 1))}
                       >
                         ‹
                       </button>
                       <button 
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-2xl flex items-center justify-center backdrop-blur-md transition-all"
+                        className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-3xl flex items-center justify-center backdrop-blur-md transition-all"
                         onClick={() => setCurrentImgIdx(prev => (prev < selectedDiary.images.length - 1 ? prev + 1 : 0))}
                       >
                         ›
                       </button>
-                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded-full backdrop-blur-md font-bold">
-                        {currentImgIdx + 1} / {selectedDiary.images.length}
-                      </div>
                     </>
                   )}
                 </>
               )}
             </div>
             
-            {/* 사진 하단 제목 영역 */}
-            <p className="text-white/90 text-lg mt-5 font-bold text-center tracking-wide">
-              {selectedDiary.title}
-            </p>
+            <div className="mt-8 text-center max-w-2xl px-4">
+              <span className="text-secondary font-black tracking-widest text-xs uppercase">{selectedDiary.date}</span>
+              <h4 className="text-white text-2xl font-serif font-bold mt-2 mb-4">{selectedDiary.title}</h4>
+              <p className="text-white/60 text-sm leading-relaxed">{selectedDiary.content}</p>
+            </div>
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }

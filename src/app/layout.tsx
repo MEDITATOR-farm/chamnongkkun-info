@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Nanum_Myeongjo } from "next/font/google";
+import { Geist, Geist_Mono, Nanum_Myeongjo, Outfit } from "next/font/google";
 import "./globals.css";
 import CursorEffect from "@/components/CursorEffect";
 import MobileNav from "@/components/MobileNav";
@@ -8,6 +8,7 @@ import Script from "next/script";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
 const nanumMyeongjo = Nanum_Myeongjo({
   weight: ["400", "700", "800"],
   subsets: ["latin"],
@@ -15,16 +16,16 @@ const nanumMyeongjo = Nanum_Myeongjo({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#06b6d4",
+  themeColor: "#0d3528",
 };
 
 export const metadata: Metadata = {
   manifest: "/manifest.json",
-  title: "Chamnongkkun 과 함께 하는 거제소식 | 행사·혜택·지원금 안내",
-  description: "거제시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
+  title: "참농꾼 | 자연의 삶을 기록하고 거제를 가이드합니다",
+  description: "농부의 진솔한 일기와 사장님이 직접 선별한 거제 맛집·명소 가이드를 만나보세요.",
   openGraph: {
-    title: "Chamnongkkun 과 함께 하는 거제소식 | 행사·혜택·지원금 안내",
-    description: "거제시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
+    title: "참농꾼 | 자연의 삶을 기록하고 거제를 가이드합니다",
+    description: "농부의 진솔한 일기와 사장님이 직접 선별한 거제 맛집·명소 가이드를 만나보세요.",
     url: "https://www.chamnongkkun.com",
     siteName: "우리 동네 소식통",
     locale: "ko_KR",
@@ -59,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable} ${outfit.variable} antialiased font-sans`}>
         <CursorEffect />
         {children}
         <RecentViewsDrawer />
