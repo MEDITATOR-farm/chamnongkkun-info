@@ -71,7 +71,7 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
         ))}
       </div>
       <div className="mt-4 text-right">
-        <Link href="/admin?tab=diary" className="text-[12px] font-bold text-teal-500 hover:text-teal-700 transition-colors">
+        <Link href="/admin#diary" className="text-[12px] font-bold text-teal-500 hover:text-teal-700 transition-colors">
           + 현장 소식 올리기
         </Link>
       </div>

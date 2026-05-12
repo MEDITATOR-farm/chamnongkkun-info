@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import React, { useState, useEffect, useRef } from "react";
 
 interface Message {
   sender: "user" | "admin";
@@ -14,21 +13,26 @@ const GITHUB_OWNER = 'MEDITATOR-farm';
 const GITHUB_REPO = 'chamnongkkun-info';
 const GITHUB_BRANCH = 'main';
 
-const AdminContent: React.FC = () => {
-  const searchParams = useSearchParams();
+const AdminPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   
   // 탭 상태: poem, diary, file, chat
   const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file" | "chat">("poem");
 
-  // 주소창의 tab 파라미터 처리
+  // 주소창의 해시(#) 파라미터 처리
   useEffect(() => {
-    const tab = searchParams.get("tab");
-    if (tab && ["poem", "diary", "file", "chat"].includes(tab)) {
-      setActiveTab(tab as any);
-    }
-  }, [searchParams]);
+    const handleHash = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (hash && ["poem", "diary", "file", "chat"].includes(hash)) {
+        setActiveTab(hash as any);
+      }
+    };
+
+    handleHash(); // 초기 접속 시 실행
+    window.addEventListener("hashchange", handleHash);
+    return () => window.removeEventListener("hashchange", handleHash);
+  }, []);
 
   // --- 토큰 관리 및 설정 관련 상태 ---
   const [ghToken, setGhToken] = useState("");
@@ -501,12 +505,6 @@ const AdminContent: React.FC = () => {
   );
 };
 
-export default function AdminPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">관리자 페이지 로딩 중...</div>}>
-      <AdminContent />
-    </Suspense>
-  );
-}
+export default AdminPage;
 
 
