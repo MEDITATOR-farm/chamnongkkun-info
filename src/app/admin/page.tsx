@@ -70,9 +70,19 @@ const AdminPage: React.FC = () => {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
       if (res.ok) {
         const d = await res.json();
-        const items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
-        if (type === 'poems') setPoemList(items);
-        else setDiaryList(items);
+        let items;
+        if (d.content) {
+          // 1MB 이하: base64 디코딩
+          items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+        } else if (d.download_url) {
+          // 1MB 초과: download_url로 직접 로딩
+          const raw = await fetch(d.download_url);
+          items = await raw.json();
+        }
+        if (items) {
+          if (type === 'poems') setPoemList(items);
+          else setDiaryList(items);
+        }
       }
     } catch (e: any) { console.error('불러오기 실패:', e.message); }
     finally { setListLoading(false); }

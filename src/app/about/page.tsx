@@ -21,17 +21,28 @@ export default function AboutPage() {
 
         {/* 히어로 */}
         <section className="mb-32 reveal-up">
-          <span className="inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-black tracking-widest mb-8 uppercase">
-            Our Story · 참농꾼의 이야기
-          </span>
-          <h1 className="text-5xl md:text-7xl font-serif font-black mb-10 leading-[1.1] tracking-tight">
-            자연과 함께 숨 쉬고<br />
-            <span className="text-primary">정직하게 기록합니다.</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-foreground/50 leading-relaxed max-w-3xl font-medium">
-            참농꾼은 거제도의 농부가 직접 쓰는 삶의 기록이자,
-            이 섬을 사랑하는 이들을 위한 진짜 거제 가이드입니다.
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            <div className="flex-1">
+              <span className="inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-black tracking-widest mb-8 uppercase">
+                Our Story · 게으른 농부의 이야기
+              </span>
+              <h1 className="text-5xl md:text-6xl font-serif font-black mb-10 leading-[1.1] tracking-tight">
+                거제도 한쪽에서<br />
+                <span className="text-primary">그냥 살고 있습니다.</span>
+              </h1>
+              <p className="text-xl text-foreground/50 leading-relaxed max-w-xl font-medium">
+                땅 파고, 씨 뿌리고, 가끔 바다 보고.<br />
+                별거 없는 하루를 기록하는 게으른 농부입니다.
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <img
+                src="/images/farmer-character.png"
+                alt="게으른 농부 캐릭터"
+                className="w-64 md:w-80 drop-shadow-2xl"
+              />
+            </div>
+          </div>
         </section>
 
         {/* 철학 카드 3개 */}
