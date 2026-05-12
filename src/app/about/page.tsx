@@ -2,83 +2,109 @@ import Link from "next/link";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#f8fbff] font-sans text-gray-800 selection:bg-cyan-200">
-      <header className="bg-white/30 backdrop-blur-md border-b border-white/50 px-6 py-6 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black text-slate-800 tracking-tighter hover:text-cyan-600 transition-colors">Chamnongkkun Info</Link>
-          <nav className="flex gap-8 font-black text-xs tracking-widest uppercase text-slate-400">
-            <Link href="/" className="hover:text-cyan-600 transition-colors">홈</Link>
-            <Link href="/blog" className="hover:text-cyan-600 transition-colors">블로그</Link>
-            <Link href="/about" className="text-cyan-600">소개</Link>
-          </nav>
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      {/* 네비게이션 (메인 페이지와 동일 스타일) */}
+      <nav className="fixed top-0 inset-x-0 z-50 h-20 px-6 md:px-12 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b border-primary/5">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black">C</div>
+          <span className="text-xl font-serif font-black tracking-tighter">참농꾼</span>
+        </Link>
+        <div className="flex gap-8 items-center">
+          <Link href="/" className="text-sm font-semibold text-foreground/60 hover:text-primary transition-colors">홈</Link>
+          <Link href="/#map" className="text-sm font-semibold text-foreground/60 hover:text-primary transition-colors">거제지도</Link>
+          <Link href="/#wisdom" className="text-sm font-semibold text-foreground/60 hover:text-primary transition-colors">오늘의시</Link>
+          <Link href="/about" className="text-sm font-semibold text-primary transition-colors">소개</Link>
         </div>
-      </header>
+      </nav>
 
-      <main className="max-w-5xl mx-auto px-6 py-24">
-        <section className="mb-24 text-center md:text-left">
-          <h1 className="text-[clamp(2rem,7vw,4.5rem)] md:text-7xl font-black text-slate-800 mb-6 md:mb-10 leading-tight tracking-tighter">
-            지역 주민을 위한 <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600"> 스마트한 생활 정보</span> 🐬
+      <main className="max-w-5xl mx-auto px-6 pt-40 pb-40">
+
+        {/* 히어로 */}
+        <section className="mb-32 reveal-up">
+          <span className="inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-black tracking-widest mb-8 uppercase">
+            Our Story · 참농꾼의 이야기
+          </span>
+          <h1 className="text-5xl md:text-7xl font-serif font-black mb-10 leading-[1.1] tracking-tight">
+            자연과 함께 숨 쉬고<br />
+            <span className="text-primary">정직하게 기록합니다.</span>
           </h1>
-          <p className="text-xl md:text-2xl text-slate-500 leading-relaxed max-w-3xl font-medium opacity-80">
-            '참농꾼(Chamnongkkun)'은 거제시의 소중한 정보를 한눈에 확인할 수 있는 프리미엄 생활 정보 플랫폼입니다. 
-            바쁜 일상 속에서 놓치기 쉬운 혜택과 행사 소식을 가장 세련된 방식으로 전해드립니다.
+          <p className="text-xl md:text-2xl text-foreground/50 leading-relaxed max-w-3xl font-medium">
+            참농꾼은 거제도의 농부가 직접 쓰는 삶의 기록이자,
+            이 섬을 사랑하는 이들을 위한 진짜 거제 가이드입니다.
           </p>
         </section>
 
-        <div className="grid gap-10 md:grid-cols-2 mb-24">
-          <div className="glass-card p-12 rounded-[40px] hover:-translate-y-2 transition-all">
-            <div className="w-16 h-16 bg-cyan-100/50 rounded-[24px] flex items-center justify-center mb-8 shadow-inner">
-              <span className="text-3xl">🏛️</span>
+        {/* 철학 카드 3개 */}
+        <section className="grid gap-8 md:grid-cols-3 mb-32 reveal-up reveal-delay-1">
+          {[
+            {
+              icon: "🌱",
+              title: "진정성의 기록",
+              desc: "매일의 농장 생활을 있는 그대로 기록합니다. 거짓 없는 땀방울이 쌓여 신뢰가 됩니다."
+            },
+            {
+              icon: "📍",
+              title: "직접 발굴한 정보",
+              desc: "광고 없이, 직접 가보고 먹어보고 경험한 거제의 맛집과 명소만을 소개합니다."
+            },
+            {
+              icon: "⏳",
+              title: "시간이 쌓이는 가치",
+              desc: "기록이 누적될수록 더 깊어지는 신뢰. 이 페이지는 사장님의 살아있는 역사입니다."
+            }
+          ].map(({ icon, title, desc }) => (
+            <div key={title} className="glass-nature rounded-[32px] p-10 hover:-translate-y-2 transition-all duration-500">
+              <div className="w-14 h-14 bg-primary/5 rounded-[16px] flex items-center justify-center mb-8">
+                <span className="text-3xl">{icon}</span>
+              </div>
+              <h3 className="text-xl font-serif font-bold text-foreground mb-4">{title}</h3>
+              <p className="text-foreground/50 leading-relaxed">{desc}</p>
             </div>
-            <h3 className="text-2xl font-black text-slate-800 mb-6 tracking-tight">검증된 공공데이터</h3>
-            <p className="text-slate-500 leading-relaxed font-medium opacity-80">
-              대한민국 공공데이터포털(data.go.kr)과 지자체 공식 자료를 바탕으로 수집됩니다. 
-              부정확한 소문 대신 신뢰할 수 있는 정보를 제공하여 현명한 일상을 돕습니다.
-            </p>
-          </div>
+          ))}
+        </section>
 
-          <div className="glass-card p-12 rounded-[40px] hover:-translate-y-2 transition-all">
-            <div className="w-16 h-16 bg-amber-100/50 rounded-[24px] flex items-center justify-center mb-8 shadow-inner">
-              <span className="text-3xl">🤖</span>
-            </div>
-            <h3 className="text-2xl font-black text-slate-800 mb-6 tracking-tight">AI 큐레이션</h3>
-            <p className="text-slate-500 leading-relaxed font-medium opacity-80">
-              복잡한 정책 정보를 Gemini AI 기술을 활용하여 읽기 쉬운 형태로 가공합니다. 
-              지역 주민의 눈높이에서 가장 핵심적인 내용을 친근하고 명확하게 전달합니다.
-            </p>
-          </div>
-        </div>
-
-        <section className="bg-slate-900 rounded-[56px] p-12 md:p-20 text-white relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/20 rounded-full blur-[100px] pointer-events-none" />
+        {/* 약속 섹션 */}
+        <section className="bg-primary rounded-[56px] p-12 md:p-20 text-white relative overflow-hidden shadow-2xl shadow-primary/10 reveal-up reveal-delay-2">
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10">
-            <h3 className="text-3xl md:text-4xl font-black mb-10 tracking-tight">우리의 약속 🤝</h3>
-            <ul className="space-y-8 font-bold text-lg md:text-xl">
-              <li className="flex gap-5 items-start">
-                <span className="flex-shrink-0 w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm font-black">1</span>
-                <span className="opacity-90">지역 경제와 공동체의 상생을 최우선 가치로 둡니다.</span>
-              </li>
-              <li className="flex gap-5 items-start">
-                <span className="flex-shrink-0 w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm font-black">2</span>
-                <span className="opacity-90">누구도 소외되지 않는 정보 격차 해소를 위해 노력합니다.</span>
-              </li>
-              <li className="flex gap-5 items-start">
-                <span className="flex-shrink-0 w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm font-black">3</span>
-                <span className="opacity-90">매일 업데이트되는 최신 정보로 지역의 활기를 더합니다.</span>
-              </li>
+            <span className="text-secondary font-black tracking-[0.3em] text-xs uppercase mb-4 block">Our Promise</span>
+            <h3 className="text-3xl md:text-4xl font-serif font-black mb-12 tracking-tight">참농꾼의 약속 🤝</h3>
+            <ul className="space-y-10">
+              {[
+                "매일 직접 기록하는 정직한 농부의 일상을 공유합니다.",
+                "직접 경험하지 않은 정보는 절대 소개하지 않습니다.",
+                "방문하는 모든 분들이 거제를 더 깊이 사랑할 수 있도록 안내합니다."
+              ].map((text, i) => (
+                <li key={i} className="flex gap-6 items-start">
+                  <span className="flex-shrink-0 w-10 h-10 bg-white/10 border border-white/20 text-white rounded-full flex items-center justify-center text-sm font-black">
+                    {i + 1}
+                  </span>
+                  <span className="text-white/80 font-medium text-lg md:text-xl leading-relaxed pt-1">{text}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </section>
+
+        {/* 스토어 CTA */}
+        <section className="mt-32 text-center reveal-up reveal-delay-3">
+          <p className="text-foreground/40 text-sm font-bold uppercase tracking-widest mb-8">참농꾼의 정직한 농산물</p>
+          <a
+            href="https://smartstore.naver.com/chamnongkkun"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-secondary text-white font-black py-5 px-12 rounded-full text-lg shadow-2xl shadow-secondary/20 hover:scale-105 active:scale-95 transition-all"
+          >
+            🛍️ 참농꾼 스토어 바로가기
+          </a>
+        </section>
       </main>
 
-      <footer className="py-24 text-center border-t border-slate-100">
-         <p className="text-slate-400 text-xs font-black tracking-widest uppercase mb-4 opacity-60">© 2025 Chamnongkkun Info. All rights reserved.</p>
-         <div className="flex justify-center gap-8 font-bold text-xs text-slate-300">
-           <Link href="/" className="hover:text-cyan-600 transition-colors">HOME</Link>
-           <Link href="/blog" className="hover:text-cyan-600 transition-colors">BLOG</Link>
-           <Link href="/about" className="text-cyan-600">ABOUT</Link>
-         </div>
+      {/* 푸터 */}
+      <footer className="bg-primary/5 border-t border-primary/5 py-16 text-center">
+        <p className="text-foreground/20 text-xs font-black tracking-widest uppercase">
+          © 2026 Chamnongkkun · 거제도 참농꾼의 기록
+        </p>
       </footer>
     </div>
   );
