@@ -7,7 +7,7 @@ import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
 import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyPoemClient from "@/components/DailyPoemClient";
-import WeatherWidget from "@/components/WeatherWidget";
+import WeatherWidget, { WeatherWidgetCompact } from "@/components/WeatherWidget";
 import ScrollToTop from "@/components/ScrollToTop";
 
 function readJson(filePath: string, fallback: any = []) {
@@ -38,7 +38,10 @@ export default function Home() {
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black">C</div>
           <span className="text-xl font-serif font-black tracking-tighter">참농꾼</span>
         </div>
-        <NavLinks />
+        <div className="flex items-center gap-4">
+          <NavLinks />
+          <WeatherWidgetCompact />
+        </div>
       </nav>
 
       {/* ── 히어로 ── */}

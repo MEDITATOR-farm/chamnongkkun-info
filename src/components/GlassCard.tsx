@@ -19,43 +19,11 @@ export function NavLinks() {
     { name: "오늘의시", href: "/#wisdom" },
     { name: "소개", href: "/about" },
   ];
-
-  return (
-    <div className="flex gap-8 items-center">
-      {links.map((link) => (
-        <Link 
-          key={link.name} 
-          href={link.href}
-          className="text-sm font-semibold text-foreground/60 hover:text-primary transition-colors relative group"
-        >
-          {link.name}
-          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
-        </Link>
-      ))}
-      <a 
-        href="https://smartstore.naver.com/chamnongkkun" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="text-sm font-bold text-secondary hover:text-secondary/80 transition-colors"
-      >
-        🛒 스토어
-      </a>
-    </div>
-  );
 }
 
-// 히어로 버튼
+// HeroButton ← 나중에 스토어 활성화 예정
 export function HeroButton() {
-  return (
-    <a 
-      href="https://smartstore.naver.com/chamnongkkun" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 bg-primary text-white font-bold py-4 px-10 rounded-full shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
-    >
-      🛍️ 참농꾼 스토어 바로가기
-    </a>
-  );
+  return null;
 }
 
 // 콘텐츠 제목 (섹션 헤더)
