@@ -54,6 +54,12 @@ const AdminPage: React.FC = () => {
   const [poemList, setPoemList] = useState<any[]>([]);
   const [diaryList, setDiaryList] = useState<any[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [editItem, setEditItem] = useState<any>(null);
+  const [editType, setEditType] = useState<'poems'|'diaries'|null>(null);
+  const [editForm, setEditForm] = useState({title:'',content:'',author:''});
+  const [editImage, setEditImage] = useState<File|null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const editImageRef = useRef<HTMLInputElement>(null);
 
   const [listLoading, setListLoading] = useState(false);
 
@@ -94,6 +100,44 @@ const AdminPage: React.FC = () => {
       alert('✅ 삭제되었습니다.');
     } catch (e: any) { alert('❌ 삭제 실패: ' + e.message); }
     finally { setIsDeleting(null); }
+  };
+
+  const openEdit = (type: 'poems'|'diaries', item: any) => {
+    setEditType(type);
+    setEditItem(item);
+    setEditForm({ title: item.title||'', content: item.content||'', author: item.author||'' });
+    setEditImage(null);
+  };
+
+  const handleEdit = async () => {
+    if (!editItem || !editType || !ghToken) return;
+    setIsEditing(true);
+    try {
+      let newImagePath = editItem.image || editItem.imageUrl || '';
+      if (editImage) {
+        const imgPath = `uploads/${editType}_edit_${Date.now()}_${editImage.name}`;
+        await commitToGithub(imgPath, await fileToBase64(editImage), `관리자: 수정 이미지 업로드`);
+        newImagePath = `/${imgPath}`;
+      }
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${editType}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
+      if (!res.ok) throw new Error('파일을 찾을 수 없습니다.');
+      const d = await res.json();
+      const items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+      const now = new Date().toLocaleString('ko-KR');
+      const updated = items.map((v:any) => {
+        if (v.id !== editItem.id) return v;
+        const history = v.editHistory || [];
+        history.push({ date: now, note: '관리자 수정' });
+        if (editType === 'poems') return { ...v, title: editForm.title, content: editForm.content, author: editForm.author, imageUrl: newImagePath, editHistory: history };
+        return { ...v, title: editForm.title, content: editForm.content, image: newImagePath, editHistory: history };
+      });
+      await commitToGithub(`data/${editType}.json`, JSON.stringify(updated, null, 2), `관리자: ${editType} 항목 수정 (ID:${editItem.id})`, false);
+      if (editType === 'poems') setPoemList(updated);
+      else setDiaryList(updated);
+      alert('✅ 수정 완료!');
+      setEditItem(null); setEditType(null);
+    } catch (e:any) { alert('❌ 수정 실패: ' + e.message); }
+    finally { setIsEditing(false); }
   };
 
   const POEM_PRESETS = [
@@ -406,10 +450,14 @@ const AdminPage: React.FC = () => {
                       <div className="flex-1 min-w-0">
                         <p className="font-black text-base text-gray-800">{p.title || '(제목없음)'}</p>
                         <p className="text-xs text-gray-400 mt-1">{p.author} · {p.date}</p>
+                        {p.editHistory && <p className="text-[10px] text-blue-400 mt-0.5">✏️ 마지막 수정: {p.editHistory[p.editHistory.length-1]?.date}</p>}
                       </div>
-                      <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all flex-shrink-0">
-                        {isDeleting === `poems-${p.id}` ? '삭제중...' : '🗑 삭제'}
-                      </button>
+                      <div className="flex flex-col gap-2 flex-shrink-0">
+                        <button onClick={() => openEdit('poems', p)} className="px-4 py-2 bg-blue-500 text-white rounded-xl text-xs font-black hover:bg-blue-600 transition-all">✏️ 수정</button>
+                        <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all">
+                          {isDeleting === `poems-${p.id}` ? '삭제중...' : '🗑 삭제'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -456,15 +504,19 @@ const AdminPage: React.FC = () => {
                   {diaryList.map((d: any) => (
                     <div key={d.id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
                       <div className="flex items-start gap-4">
-                        {d.image && <img src={d.image} alt="" className="w-20 h-20 rounded-xl object-cover flex-shrink-0 border border-gray-200" />}
+                        {d.image ? <img src={d.image} alt="" className="w-20 h-20 rounded-xl object-cover flex-shrink-0 border border-gray-200" /> : <div className="w-20 h-20 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 text-2xl flex-shrink-0">📷</div>}
                         <div className="flex-1 min-w-0">
                           <p className="font-black text-base text-gray-800">{d.title}</p>
                           <p className="text-xs text-gray-400 mt-1">{d.date}</p>
                           {d.content && <p className="text-sm text-gray-600 mt-2 line-clamp-2">{d.content.slice(0,80)}{d.content.length > 80 ? '...' : ''}</p>}
+                          {d.editHistory && <p className="text-[10px] text-blue-400 mt-1">✏️ 마지막 수정: {d.editHistory[d.editHistory.length-1]?.date}</p>}
                         </div>
-                        <button onClick={() => handleDelete('diaries', d.id)} disabled={isDeleting === `diaries-${d.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all flex-shrink-0 shadow-lg shadow-red-100">
-                          {isDeleting === `diaries-${d.id}` ? '삭제중...' : '🗑 삭제'}
-                        </button>
+                        <div className="flex flex-col gap-2 flex-shrink-0">
+                          <button onClick={() => openEdit('diaries', d)} className="px-4 py-2 bg-blue-500 text-white rounded-xl text-xs font-black hover:bg-blue-600 transition-all">✏️ 수정</button>
+                          <button onClick={() => handleDelete('diaries', d.id)} disabled={isDeleting === `diaries-${d.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all">
+                            {isDeleting === `diaries-${d.id}` ? '삭제중...' : '🗑 삭제'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -492,6 +544,52 @@ const AdminPage: React.FC = () => {
         )}
 
       </main>
+
+      {/* 수정 모달 */}
+      {editItem && editType && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50" onClick={() => {setEditItem(null);setEditType(null);}}>
+          <div className="bg-white rounded-[32px] p-8 w-full max-w-lg space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-black text-gray-800">✏️ {editType === 'poems' ? '시' : '일기'} 수정</h3>
+              <button onClick={() => {setEditItem(null);setEditType(null);}} className="text-gray-300 hover:text-gray-600 text-2xl">✕</button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목</label>
+                <input type="text" value={editForm.title} onChange={e=>setEditForm({...editForm,title:e.target.value})} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">내용</label>
+                <textarea value={editForm.content} onChange={e=>setEditForm({...editForm,content:e.target.value})} rows={5} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500 leading-relaxed" />
+              </div>
+              {editType === 'poems' && (
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">작가</label>
+                  <input type="text" value={editForm.author} onChange={e=>setEditForm({...editForm,author:e.target.value})} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" />
+                </div>
+              )}
+              <div>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">📷 사진 변경 (선택)</label>
+                <input type="file" ref={editImageRef} accept="image/*" onChange={e=>setEditImage(e.target.files?e.target.files[0]:null)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-blue-50 file:text-blue-600" />
+                {(editItem.image || editItem.imageUrl) && !editImage && (
+                  <p className="text-[10px] text-gray-400 mt-2">현재 이미지가 있습니다. 새 사진을 선택하면 교체됩니다.</p>
+                )}
+              </div>
+              {editItem.editHistory && editItem.editHistory.length > 0 && (
+                <div className="bg-gray-50 p-3 rounded-xl">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">수정 이력</p>
+                  {editItem.editHistory.map((h:any,i:number) => (
+                    <p key={i} className="text-[10px] text-gray-500">{h.date} - {h.note}</p>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button onClick={handleEdit} disabled={isEditing} className="w-full bg-blue-600 text-white font-black py-4 rounded-xl hover:bg-blue-700 transition-all text-lg">
+              {isEditing ? '저장 중...' : '💾 수정 저장'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
