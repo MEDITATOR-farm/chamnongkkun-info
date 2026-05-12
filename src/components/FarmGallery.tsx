@@ -114,70 +114,87 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
         </Link>
       </div>
 
-      {/* 모달 (기존 로직 유지하되 스타일 고도화) */}
+      {/* 모달 - 모바일 최적화 (사진이 화면 꽉 참, 하단 정보 영역) */}
       {selectedDiary && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 backdrop-blur-md p-4 animate-in fade-in duration-300"
+          className="fixed inset-0 z-[100] bg-black flex flex-col"
           onClick={() => setSelectedDiary(null)}
         >
+          {/* 닫기 버튼 - 우상단 고정 */}
+          <button 
+            className="absolute top-4 right-4 z-[120] w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center text-lg transition-all"
+            onClick={() => setSelectedDiary(null)}
+          >
+            ✕
+          </button>
+
+          {/* 사진/영상 영역 - 모바일 화면 꽉 채우기 */}
           <div 
-            className="relative w-full max-w-4xl flex flex-col items-center"
+            className="flex-1 relative overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <button 
-              className="absolute -top-14 right-0 text-white/50 hover:text-white text-3xl z-[110] transition-colors"
-              onClick={() => setSelectedDiary(null)}
-            >
-              ✕
-            </button>
-            
-            {/* 사진 크기에 맞게 자동 조절 */}
-            <div className="w-full overflow-hidden rounded-3xl shadow-2xl bg-black/20 relative border border-white/10">
-              {selectedDiary.video ? (
-                <video src={selectedDiary.video} controls autoPlay className="w-full max-h-[80vh] object-contain" />
-              ) : (
-                <div className="relative overflow-hidden">
-                  <div 
-                    className="flex transition-transform duration-700 ease-in-out" 
-                    style={{ transform: `translateX(-${currentImgIdx * 100}%)` }}
-                  >
-                    {(selectedDiary.images && selectedDiary.images.length > 0 
-                      ? selectedDiary.images 
-                      : (selectedDiary.image ? [selectedDiary.image] : [])
-                    ).filter(Boolean).map((img: string, idx: number) => (
-                      <div key={idx} className="min-w-full flex items-center justify-center bg-black/10">
-                        {/* 사진 원본 비율 그대로, 최대 80vh 제한 */}
-                        <img src={img} alt={selectedDiary.title} className="w-full max-h-[80vh] object-contain" />
-                      </div>
-                    ))}
-                  </div>
-
-                  {selectedDiary.images && selectedDiary.images.length > 1 && (
-                    <>
-                      <button 
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 text-white text-2xl flex items-center justify-center backdrop-blur-md transition-all"
-                        onClick={() => setCurrentImgIdx(prev => (prev > 0 ? prev - 1 : selectedDiary.images.length - 1))}
-                      >
-                        ‹
-                      </button>
-                      <button 
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 text-white text-2xl flex items-center justify-center backdrop-blur-md transition-all"
-                        onClick={() => setCurrentImgIdx(prev => (prev < selectedDiary.images.length - 1 ? prev + 1 : 0))}
-                      >
-                        ›
-                      </button>
-                    </>
-                  )}
+            {selectedDiary.video ? (
+              <video 
+                src={selectedDiary.video} 
+                controls 
+                autoPlay 
+                playsInline
+                className="w-full h-full object-contain bg-black" 
+              />
+            ) : (
+              <div className="relative w-full h-full">
+                {/* 슬라이드 이미지 */}
+                <div 
+                  className="flex h-full transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${currentImgIdx * 100}%)` }}
+                >
+                  {(selectedDiary.images && selectedDiary.images.length > 0 
+                    ? selectedDiary.images 
+                    : (selectedDiary.image ? [selectedDiary.image] : [])
+                  ).filter(Boolean).map((img: string, idx: number) => (
+                    <div key={idx} className="min-w-full h-full flex items-center justify-center bg-black">
+                      <img 
+                        src={img} 
+                        alt={selectedDiary.title} 
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  ))}
                 </div>
-              )}
-            </div>
-            
-            <div className="mt-8 text-center max-w-2xl px-4">
-              <span className="text-secondary font-black tracking-widest text-xs uppercase">{selectedDiary.date}</span>
-              <h4 className="text-white text-2xl font-serif font-bold mt-2 mb-4">{selectedDiary.title}</h4>
-              <p className="text-white/60 text-sm leading-relaxed">{selectedDiary.content}</p>
-            </div>
+
+                {/* 좌우 버튼 - 사진 여러 장일 때 */}
+                {selectedDiary.images && selectedDiary.images.length > 1 && (
+                  <>
+                    <button 
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white text-xl flex items-center justify-center"
+                      onClick={(e) => { e.stopPropagation(); setCurrentImgIdx(prev => prev > 0 ? prev - 1 : selectedDiary.images.length - 1); }}
+                    >‹</button>
+                    <button 
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white text-xl flex items-center justify-center"
+                      onClick={(e) => { e.stopPropagation(); setCurrentImgIdx(prev => prev < selectedDiary.images.length - 1 ? prev + 1 : 0); }}
+                    >›</button>
+                    {/* 페이지 표시 점 */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                      {selectedDiary.images.map((_: any, i: number) => (
+                        <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentImgIdx ? 'bg-white w-4' : 'bg-white/30'}`} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
+
+          {/* 하단 정보 영역 */}
+          <div 
+            className="bg-black/90 backdrop-blur-xl px-6 pt-5 pb-8 border-t border-white/5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="text-secondary font-black tracking-widest text-[10px] uppercase block mb-1">{selectedDiary.date}</span>
+            <h4 className="text-white text-lg font-serif font-bold mb-2 leading-snug">{selectedDiary.title}</h4>
+            {selectedDiary.content && (
+              <p className="text-white/40 text-sm leading-relaxed line-clamp-2">{selectedDiary.content}</p>
+            )}
         </div>
       )}
     </div>

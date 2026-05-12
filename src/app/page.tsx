@@ -56,21 +56,40 @@ export default function Home() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background z-1"></div>
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center reveal-up">
-          <span className="inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-bold tracking-widest mb-6">
-            ESTABLISHED 2024 · 거제도
+        <div className="relative z-10 max-w-4xl mx-auto text-center reveal-up">
+          <span className="inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-bold tracking-widest mb-10 uppercase">
+            ESTABLISHED 2024 · 거제도 참농꾼
           </span>
-          <h1 className="text-5xl md:text-7xl font-serif font-black mb-8 leading-[1.1] tracking-tight">
-            자연의 삶을 <span className="text-primary italic underline decoration-secondary/30 underline-offset-8">기록</span>하고<br />
-            거제를 <span className="text-secondary">가이드</span>합니다
+
+          {/* 메인 타이틀: 나눔명조체 감성 폰트 */}
+          <h1 className="font-serif mb-6 leading-[1.3] tracking-tight">
+            <span className="block text-3xl md:text-5xl text-foreground/40 font-normal mb-2"
+              style={{ fontFamily: "var(--font-nanum-myeongjo), serif", letterSpacing: "0.05em" }}
+            >
+              자급자족을 꿈꾸는
+            </span>
+            <span className="block text-5xl md:text-7xl font-black text-foreground"
+              style={{ fontFamily: "var(--font-nanum-myeongjo), serif" }}
+            >
+              “게으른 농부”
+            </span>
+            <span className="block text-2xl md:text-3xl text-primary font-normal mt-4"
+              style={{ fontFamily: "var(--font-nanum-myeongjo), serif", fontStyle: "italic" }}
+            >
+              의 삶의 이야기
+            </span>
           </h1>
-          <p className="text-lg md:text-xl text-foreground/60 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-            농부의 정직한 땀방울이 담긴 일기와 사장님이 직접 발로 뛰어 찾은 거제의 숨은 보석들을 만나보세요.
+
+          <p className="text-base md:text-lg text-foreground/50 max-w-xl mx-auto mb-12 leading-[2] font-medium"
+            style={{ fontFamily: "var(--font-nanum-myeongjo), serif" }}
+          >
+            서둘러 가지 않아도 되는 일들, 너무 급하지 않아도 되는 어제들…<br />
+            거제도 논밖에서 삐시왼이 쓴 진짜 농부의 하루하루.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <HeroButton />
-            <a href="#diary" className="px-8 py-4 rounded-full font-bold text-foreground/40 hover:text-primary transition-colors">기록 살펴보기 ↓</a>
-          </div>
+          <a href="#diary" className="inline-flex items-center gap-2 text-sm font-bold text-foreground/30 hover:text-primary transition-colors">
+            <span>기록 살펴보기</span>
+            <span className="animate-bounce">↓</span>
+          </a>
         </div>
       </header>
 
@@ -80,7 +99,7 @@ export default function Home() {
         {/* ① 농부일기 & 현장소식 (Timeline) */}
         <section id="diary" className="mb-40 pt-20">
           <SectionHeader 
-            title="농부의 시간" 
+            title="게으른 농부의 게으른 시간들.." 
             subtitle="THE CHRONICLE" 
             icon="🌿" 
           />
