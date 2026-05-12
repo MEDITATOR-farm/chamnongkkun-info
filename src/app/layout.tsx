@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Nanum_Myeongjo, Outfit } from "next/font/google";
 import "./globals.css";
 import CursorEffect from "@/components/CursorEffect";
 import MobileNav from "@/components/MobileNav";
-import RecentViewsDrawer from "@/components/RecentViewsDrawer";
+// import RecentViewsDrawer from "@/components/RecentViewsDrawer"; ← 나중에 활성화 예정
 import Script from "next/script";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable} ${outfit.variable} antialiased font-sans`}>
         <CursorEffect />
         {children}
-        <RecentViewsDrawer />
+        {/* <RecentViewsDrawer /> ← 나중에 활성화 예정 */}
         <MobileNav />
         {/* <ChatBot /> ← 나중에 활성화 예정 */}
         <Script id="sw-register" strategy="afterInteractive">
