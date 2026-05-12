@@ -140,7 +140,7 @@ export default function Home() {
             subtitle="DAILY WISDOM" 
             icon="✨" 
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start reveal-up reveal-delay-3">
+          <div className="max-w-3xl space-y-8 reveal-up reveal-delay-3">
             <div className="space-y-8">
               <GlassCard className="border-l-8 border-l-secondary bg-secondary/5">
                 <DailyPoemClient poems={poems} />
@@ -154,15 +154,6 @@ export default function Home() {
                 </GlassCard>
               </div>
             </div>
-            
-            <GlassCard className="h-full flex flex-col justify-center text-center p-12 bg-accent/5 border-2 border-accent/20">
-              <div className="mb-6 text-4xl">🌤️</div>
-              <h3 className="font-serif font-bold text-2xl mb-2 text-primary">거제도의 오늘</h3>
-              <p className="text-foreground/40 mb-8 italic">"자연과 함께하는 소중한 하루입니다."</p>
-              <div className="max-w-[280px] mx-auto w-full">
-                <WeatherWidget />
-              </div>
-            </GlassCard>
           </div>
         </section>
 
