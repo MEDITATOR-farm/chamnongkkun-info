@@ -4,7 +4,6 @@ import path from "path";
 import MapLoader from "@/components/MapLoader";
 import SpotMapLoader from "@/components/SpotMapLoader";
 import FarmGallery from "@/components/FarmGallery";
-import DailyIdiomClient from "@/components/DailyIdiomClient";
 import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyPoemClient from "@/components/DailyPoemClient";
 import WeatherWidget, { WeatherWidgetCompact } from "@/components/WeatherWidget";
@@ -26,7 +25,6 @@ export default function Home() {
   diaries = diaries.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
   
   const poems = readJson(path.join(process.cwd(), "public/data/poems.json"));
-  const idioms = readJson(path.join(process.cwd(), "public/data/idioms.json"));
   const wisdoms = readJson(path.join(process.cwd(), "public/data/wisdom.json"));
 
   return (
@@ -127,9 +125,6 @@ export default function Home() {
                 <DailyPoemClient poems={poems} />
               </GlassCard>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <GlassCard className="bg-primary/5 border-t-4 border-t-primary">
-                  <DailyIdiomClient idioms={idioms} />
-                </GlassCard>
                 <GlassCard className="bg-primary/5 border-t-4 border-t-primary">
                   <DailyWisdomClient wisdoms={wisdoms} />
                 </GlassCard>
