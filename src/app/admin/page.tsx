@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface Message {
   sender: "user" | "admin";
@@ -13,12 +14,21 @@ const GITHUB_OWNER = 'MEDITATOR-farm';
 const GITHUB_REPO = 'chamnongkkun-info';
 const GITHUB_BRANCH = 'main';
 
-const AdminPage: React.FC = () => {
+const AdminContent: React.FC = () => {
+  const searchParams = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   
   // 탭 상태: poem, diary, file, chat
   const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file" | "chat">("poem");
+
+  // 주소창의 tab 파라미터 처리
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && ["poem", "diary", "file", "chat"].includes(tab)) {
+      setActiveTab(tab as any);
+    }
+  }, [searchParams]);
 
   // --- 토큰 관리 및 설정 관련 상태 ---
   const [ghToken, setGhToken] = useState("");
@@ -260,7 +270,7 @@ const AdminPage: React.FC = () => {
       const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(diaries, null, 2))));
       await commitToGithub(dataPath, updatedContentBase64, `관리자: 새로운 농부일기 등록 (${diaryForm.title})`);
 
-      alert("✅ 농부일기가 GitHub에 안전하게 등록되었습니다! 잠시 후 사이트에 자동 반영됩니다.");
+      alert("✅ 농부일기(현장소식)가 GitHub에 안전하게 등록되었습니다! 잠시 후 사이트에 자동 반영됩니다.");
       setDiaryForm({ title: "", content: "" });
       setDiaryImages(null);
       setDiaryVideo(null);
@@ -370,7 +380,7 @@ const AdminPage: React.FC = () => {
           📝 시 등록
         </button>
         <button onClick={() => setActiveTab("diary")} className={`px-4 py-2 font-bold rounded-lg transition-colors whitespace-nowrap ${activeTab === "diary" ? "bg-green-100 text-green-700" : "text-gray-600 hover:bg-gray-50"}`}>
-          🌿 농부일기
+          🌿 농부일기 & 현장소식
         </button>
         <button onClick={() => setActiveTab("file")} className={`px-4 py-2 font-bold rounded-lg transition-colors whitespace-nowrap ${activeTab === "file" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-50"}`}>
           📂 파일 업로드
@@ -423,13 +433,13 @@ const AdminPage: React.FC = () => {
           </div>
         )}
 
-        {/* --- 농부일기 폼 --- */}
+        {/* --- 농부일기 & 현장소식 폼 --- */}
         {activeTab === "diary" && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-xl font-bold text-green-800 mb-6">🌿 농부일기 작성</h2>
+            <h2 className="text-xl font-bold text-green-800 mb-6">🌿 농부일기 & 현장소식 작성</h2>
             <form onSubmit={handleDiarySubmit} className="space-y-5">
-              <input type="text" value={diaryForm.title} onChange={e => setDiaryForm({...diaryForm, title: e.target.value})} placeholder="일기 제목" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-green-500" />
-              <textarea value={diaryForm.content} onChange={e => setDiaryForm({...diaryForm, content: e.target.value})} rows={8} placeholder="농장 이야기를 입력하세요" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-green-500"></textarea>
+              <input type="text" value={diaryForm.title} onChange={e => setDiaryForm({...diaryForm, title: e.target.value})} placeholder="제목 (예: [현장소식] 오늘 농장 현황)" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-green-500" />
+              <textarea value={diaryForm.content} onChange={e => setDiaryForm({...diaryForm, content: e.target.value})} rows={8} placeholder="농장 현장 소식을 입력하세요" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-green-500"></textarea>
               <div className="border p-4 rounded-xl bg-gray-50 space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 mb-1">사진 선택 (여러 장)</label>
@@ -441,7 +451,7 @@ const AdminPage: React.FC = () => {
                 </div>
               </div>
               <button type="submit" disabled={isDiarySubmitting} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 transition-all text-lg">
-                {isDiarySubmitting ? "GitHub 업로드 중..." : "농부일기 등록"}
+                {isDiarySubmitting ? "GitHub 업로드 중..." : "등록하기"}
               </button>
             </form>
           </div>
@@ -481,6 +491,12 @@ const AdminPage: React.FC = () => {
   );
 };
 
-export default AdminPage;
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">관리자 페이지 로딩 중...</div>}>
+      <AdminContent />
+    </Suspense>
+  );
+}
 
 
