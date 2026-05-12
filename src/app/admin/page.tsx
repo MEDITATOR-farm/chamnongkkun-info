@@ -310,6 +310,7 @@ const AdminPage: React.FC = () => {
       <main className="flex-1 max-w-6xl w-full mx-auto p-8 space-y-12 pb-40">
         
         {activeTab === "poem" && (
+          <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* 설정 영역 */}
             <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-10">
@@ -381,7 +382,7 @@ const AdminPage: React.FC = () => {
           </div>
 
           {/* 시 목록 + 삭제 */}
-          <div className="lg:col-span-2 bg-white p-8 rounded-[32px] shadow-xl border border-gray-100 mt-8">
+          <div className="bg-white p-8 rounded-[32px] shadow-xl border border-gray-100 mt-8">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-gray-800">등록된 시 목록</h3>
               <button onClick={() => loadList('poems')} className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-black hover:bg-orange-100 transition-all">🔄 불러오기</button>
@@ -402,6 +403,7 @@ const AdminPage: React.FC = () => {
               </div>
             )}
           </div>
+          </>
         )}
 
         {activeTab === "diary" && (
