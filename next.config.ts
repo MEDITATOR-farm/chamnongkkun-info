@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export", // 배포 완료를 위해 다시 활성화했습니다! 실시간 데이터는 자동 빌드 시 업데이트됩니다.
+  // output: "export", // API 기능을 위해 이 설정을 비활성화했습니다. Vercel 배포 시 서버 기능이 정상 동작합니다.
   images: {
     unoptimized: true,
   },
