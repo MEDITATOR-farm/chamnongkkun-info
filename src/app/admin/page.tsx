@@ -68,6 +68,12 @@ const AdminPage: React.FC = () => {
     } catch (e: any) { alert('불러오기 실패: ' + e.message); }
   };
 
+  useEffect(() => {
+    if (!ghToken) return;
+    if (activeTab === 'poem') loadList('poems');
+    if (activeTab === 'diary') loadList('diaries');
+  }, [activeTab, ghToken]);
+
   const handleDelete = async (type: 'poems' | 'diaries', id: number) => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     if (!ghToken) return alert('토큰을 설정해주세요.');
@@ -384,20 +390,23 @@ const AdminPage: React.FC = () => {
           {/* 시 목록 + 삭제 */}
           <div className="bg-white p-8 rounded-[32px] shadow-xl border border-gray-100 mt-8">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-gray-800">등록된 시 목록</h3>
-              <button onClick={() => loadList('poems')} className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-black hover:bg-orange-100 transition-all">🔄 불러오기</button>
+              <h3 className="text-xl font-black text-gray-800">📜 등록된 시 ({poemList.length}편)</h3>
+              <button onClick={() => loadList('poems')} className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-black hover:bg-orange-100 transition-all">🔄 새로고침</button>
             </div>
-            {poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">"불러오기" 버튼을 눌러주세요</p> : (
-              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+            {poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">등록된 시가 없습니다</p> : (
+              <div className="space-y-4">
                 {poemList.map((p: any) => (
-                  <div key={p.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm text-gray-800 truncate">{p.title || '(제목없음)'}</p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">{p.author} · {p.date}</p>
+                  <div key={p.id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-black text-base text-gray-800">{p.title || '(제목없음)'}</p>
+                        <p className="text-xs text-gray-400 mt-1">{p.author} · {p.date}</p>
+                        <p className="text-sm text-gray-600 mt-3 whitespace-pre-line leading-relaxed bg-white p-3 rounded-xl border border-gray-50">{(p.content || '').slice(0, 100)}{(p.content || '').length > 100 ? '...' : ''}</p>
+                      </div>
+                      <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all flex-shrink-0 shadow-lg shadow-red-100">
+                        {isDeleting === `poems-${p.id}` ? '삭제중...' : '🗑 삭제'}
+                      </button>
                     </div>
-                    <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="ml-4 px-3 py-2 bg-red-50 text-red-500 rounded-xl text-xs font-black hover:bg-red-100 transition-all flex-shrink-0">
-                      {isDeleting === `poems-${p.id}` ? '...' : '🗑 삭제'}
-                    </button>
                   </div>
                 ))}
               </div>
@@ -435,20 +444,24 @@ const AdminPage: React.FC = () => {
             {/* 일기 목록 + 삭제 */}
             <div className="mt-10 pt-8 border-t border-gray-100">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-black text-gray-800">등록된 일기 목록</h3>
-                <button onClick={() => loadList('diaries')} className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-black hover:bg-green-100 transition-all">🔄 불러오기</button>
+                <h3 className="text-xl font-black text-gray-800">📔 등록된 일기 ({diaryList.length}건)</h3>
+                <button onClick={() => loadList('diaries')} className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-black hover:bg-green-100 transition-all">🔄 새로고침</button>
               </div>
-              {diaryList.length === 0 ? <p className="text-gray-300 text-sm text-center py-6">"불러오기" 버튼을 눌러주세요</p> : (
-                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              {diaryList.length === 0 ? <p className="text-gray-300 text-sm text-center py-6">등록된 일기가 없습니다</p> : (
+                <div className="space-y-4">
                   {diaryList.map((d: any) => (
-                    <div key={d.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm text-gray-800 truncate">{d.title}</p>
-                        <p className="text-[10px] text-gray-400 mt-0.5">{d.date}</p>
+                    <div key={d.id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div className="flex items-start gap-4">
+                        {d.image && <img src={d.image} alt="" className="w-20 h-20 rounded-xl object-cover flex-shrink-0 border border-gray-200" />}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-black text-base text-gray-800">{d.title}</p>
+                          <p className="text-xs text-gray-400 mt-1">{d.date}</p>
+                          {d.content && <p className="text-sm text-gray-600 mt-2 line-clamp-2">{d.content.slice(0,80)}{d.content.length > 80 ? '...' : ''}</p>}
+                        </div>
+                        <button onClick={() => handleDelete('diaries', d.id)} disabled={isDeleting === `diaries-${d.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all flex-shrink-0 shadow-lg shadow-red-100">
+                          {isDeleting === `diaries-${d.id}` ? '삭제중...' : '🗑 삭제'}
+                        </button>
                       </div>
-                      <button onClick={() => handleDelete('diaries', d.id)} disabled={isDeleting === `diaries-${d.id}`} className="ml-4 px-3 py-2 bg-red-50 text-red-500 rounded-xl text-xs font-black hover:bg-red-100 transition-all flex-shrink-0">
-                        {isDeleting === `diaries-${d.id}` ? '...' : '🗑 삭제'}
-                      </button>
                     </div>
                   ))}
                 </div>
