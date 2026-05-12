@@ -66,20 +66,20 @@ export default function Home() {
             <span className="block text-5xl md:text-7xl font-black text-foreground"
               style={{ fontFamily: "var(--font-nanum-myeongjo), serif" }}
             >
-              “게으른 농부”
+              "게으른 농부"의
             </span>
             <span className="block text-2xl md:text-3xl text-primary font-normal mt-4"
               style={{ fontFamily: "var(--font-nanum-myeongjo), serif", fontStyle: "italic" }}
             >
-              의 삶의 이야기
+              삶의 이야기
             </span>
           </h1>
 
           <p className="text-base md:text-lg text-foreground/50 max-w-xl mx-auto mb-12 leading-[2] font-medium"
             style={{ fontFamily: "var(--font-nanum-myeongjo), serif" }}
           >
-            서둘러 가지 않아도 되는 일들, 너무 급하지 않아도 되는 어제들…<br />
-            거제도 논밖에서 삐시왼이 쓴 진짜 농부의 하루하루.
+            거제도 한쪽에서 땅 파고 씨 뿌리고 사는 농부입니다.<br />
+            별거 없는 하루하루를 그냥 기록합니다.
           </p>
           <a href="#diary" className="inline-flex items-center gap-2 text-sm font-bold text-foreground/30 hover:text-primary transition-colors">
             <span>기록 살펴보기</span>
