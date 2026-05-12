@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 export default function DailyPoemClient({ poems }: { poems: any[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -9,62 +8,35 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
 
   const poem = poems && poems.length > 0 ? poems[currentIndex] : null;
 
-  const goPrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
-  };
-
-  const goNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (currentIndex < poems.length - 1) setCurrentIndex(currentIndex + 1);
-  };
-
   return (
     <>
       {/* 메인 카드 UI */}
-      <div 
-        className="group p-8 flex flex-col relative transition-all cursor-pointer h-full justify-between"
-        onClick={() => setIsOpen(true)}
-      >
+      <div className="p-6 md:p-8 flex flex-col h-full justify-between">
         <div className="flex flex-col h-full">
-          <div className="flex justify-between items-start mb-6">
+
+          {/* 상단: 타이틀 + 넘기기 버튼 */}
+          <div className="flex justify-between items-center mb-6">
             <span className="text-[10px] text-primary/40 font-black uppercase tracking-[0.3em]">
               POETRY OF THE DAY
             </span>
-            <div className="flex gap-4 items-center px-2">
-              <button 
-                onClick={goPrev} 
-                disabled={currentIndex === 0}
-                className={`text-xs font-serif font-bold transition-all ${currentIndex === 0 ? 'text-foreground/10 cursor-not-allowed' : 'text-primary hover:text-secondary'}`}
-              >
-                ◀ 前
-              </button>
-              <span className="text-[10px] text-foreground/20 font-bold">{currentIndex + 1} / {poems.length}</span>
-              <button 
-                onClick={goNext} 
-                disabled={!poems || currentIndex === poems.length - 1}
-                className={`text-xs font-serif font-bold transition-all ${(!poems || currentIndex === poems.length - 1) ? 'text-foreground/10 cursor-not-allowed' : 'text-primary hover:text-secondary'}`}
-              >
-                後 ▶
-              </button>
-            </div>
+            <span className="text-[10px] text-foreground/20 font-bold">{currentIndex + 1} / {poems.length}</span>
           </div>
           
           {poem ? (
             <div className="flex-grow flex flex-col justify-center">
               {poem.title && (
-                <h3 className="text-3xl font-serif font-bold text-foreground mb-8 leading-tight group-hover:text-primary transition-colors">
+                <h3 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-6 leading-tight">
                   {poem.title}
                 </h3>
               )}
-              <div className="space-y-4">
-                {(poem.content || "").split("\n").slice(0, 4).map((line: string, idx: number) => (
-                  <p key={idx} className="text-foreground/60 font-serif leading-relaxed text-lg italic">
+              <div className="space-y-3">
+                {(poem.content || "").split("\n").slice(0, 6).map((line: string, idx: number) => (
+                  <p key={idx} className="text-foreground/60 font-serif leading-relaxed text-base md:text-lg italic">
                     {line}
                   </p>
                 ))}
-                {(poem.content || "").split("\n").length > 4 && (
-                  <p className="text-primary/30 text-xs tracking-[0.5em] mt-4">. . .</p>
+                {(poem.content || "").split("\n").length > 6 && (
+                  <p className="text-primary/30 text-xs tracking-[0.5em] mt-2">. . .</p>
                 )}
               </div>
             </div>
@@ -72,55 +44,76 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
             <p className="text-foreground/30 font-serif italic text-lg text-center py-20">소중한 시가 준비 중입니다.</p>
           )}
           
-          <div className="mt-10 pt-6 border-t border-primary/5 flex justify-between items-center">
-            <span className="text-sm font-serif font-bold text-primary/60">— {poem?.author || "거제의 시인"}</span>
-            <span className="text-[10px] font-bold text-secondary tracking-widest uppercase">READ MORE →</span>
+          {/* 하단: 작가 + 넘기기 버튼 (큰 터치 영역) */}
+          <div className="mt-8 pt-5 border-t border-primary/5">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm font-serif font-bold text-primary/60">— {poem?.author || "거제의 시인"}</span>
+              <button
+                className="text-[10px] font-bold text-secondary tracking-widest uppercase px-3 py-1 rounded-full border border-secondary/20 hover:bg-secondary/10 transition-all"
+                onClick={() => setIsOpen(true)}
+              >
+                전문 보기 →
+              </button>
+            </div>
+
+            {/* 이전/다음 버튼 (모바일 터치 쉽도록 크게) */}
+            <div className="flex gap-2">
+              <button 
+                onClick={() => currentIndex > 0 && setCurrentIndex(currentIndex - 1)}
+                disabled={currentIndex === 0}
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${currentIndex === 0 ? 'bg-foreground/3 text-foreground/10 cursor-not-allowed' : 'bg-primary/5 text-primary hover:bg-primary/10 active:scale-95'}`}
+              >
+                ◀ 이전 시
+              </button>
+              <button 
+                onClick={() => currentIndex < poems.length - 1 && setCurrentIndex(currentIndex + 1)}
+                disabled={!poems || currentIndex === poems.length - 1}
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${(!poems || currentIndex === poems.length - 1) ? 'bg-foreground/3 text-foreground/10 cursor-not-allowed' : 'bg-primary/5 text-primary hover:bg-primary/10 active:scale-95'}`}
+              >
+                다음 시 ▶
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 모달 UI (걷는 독서 디자인 적용) */}
+      {/* 전문 보기 모달 */}
       {isOpen && poem && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 backdrop-blur-xl p-4 animate-in fade-in duration-500"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4"
           onClick={() => setIsOpen(false)}
         >
           <div 
-            className="relative w-full max-w-2xl aspect-square bg-background rounded-[48px] overflow-hidden shadow-2xl flex flex-col border-8 border-white/10"
+            className="relative w-full max-w-lg bg-background rounded-[32px] overflow-hidden shadow-2xl border border-primary/5 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* 닫기 버튼 */}
             <button 
-              className="absolute top-8 right-8 text-white/50 hover:text-white text-3xl z-[120] transition-colors"
+              className="absolute top-6 right-6 text-foreground/20 hover:text-foreground text-2xl z-[110] transition-colors"
               onClick={() => setIsOpen(false)}
             >
               ✕
             </button>
-
-            {/* 배경 이미지 및 오버레이 */}
-            {poem.imageUrl ? (
-              <>
-                <img src={poem.imageUrl} className="absolute inset-0 w-full h-full object-cover" alt="Poem Background" />
-                <div className="absolute inset-0" style={{ backgroundColor: `rgba(0,0,0,${(poem.opacity || 35) / 100})` }}></div>
-              </>
-            ) : (
-              <div className="absolute inset-0 bg-primary/5"></div>
-            )}
             
-            {/* 시 내용 (걷는 독서 스타일) */}
-            <div className="relative z-10 p-12 md:p-20 h-full flex flex-col justify-center text-center text-white">
-              <div className="absolute top-12 left-12 text-[10px] opacity-40 font-bold tracking-widest">{poem.date}</div>
-              <div className="absolute top-12 right-12 text-[10px] opacity-40 font-bold tracking-widest">출처 : {poem.author}</div>
+            <div className="p-10 md:p-16">
+              <span className="text-[10px] font-black text-secondary tracking-[0.3em] uppercase block mb-6">POETRY</span>
+              {poem.title && (
+                <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-10 leading-tight">
+                  {poem.title}
+                </h2>
+              )}
               
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {(poem.content || "").split("\n").map((line: string, idx: number) => (
-                  <p key={idx} className="text-2xl md:text-4xl font-serif font-bold leading-relaxed drop-shadow-2xl animate-revealUp">
+                  <p key={idx} className="text-foreground/70 font-serif leading-loose text-lg min-h-[1rem]">
                     {line}
                   </p>
                 ))}
               </div>
-
-              <div className="absolute bottom-12 right-12 text-[10px] opacity-40 font-bold tracking-[0.3em] uppercase">Design by Chamnongkkun</div>
+              
+              <div className="mt-16 pt-8 border-t border-primary/5">
+                <p className="text-foreground/80 font-serif font-bold text-xl">— {poem.author || "거제의 시인"}</p>
+                {poem.date && <p className="text-foreground/30 text-xs mt-2 tracking-widest">{poem.date}</p>}
+              </div>
             </div>
           </div>
         </div>
