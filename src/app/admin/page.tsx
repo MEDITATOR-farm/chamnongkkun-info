@@ -66,6 +66,11 @@ const AdminContent: React.FC = () => {
   const [diaryVideo, setDiaryVideo] = useState<File | null>(null);
   const [isDiarySubmitting, setIsDiarySubmitting] = useState(false);
 
+  // 입력창 초기화를 위한 Ref
+  const diaryImageInputRef = useRef<HTMLInputElement>(null);
+  const diaryVideoInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // 컴포넌트 로드 시 저장된 토큰 가져오기
   useEffect(() => {
     const savedToken = localStorage.getItem("CHAMNONG_GH_TOKEN") || "";
@@ -274,6 +279,10 @@ const AdminContent: React.FC = () => {
       setDiaryForm({ title: "", content: "" });
       setDiaryImages(null);
       setDiaryVideo(null);
+      
+      // 화면의 파일 선택창 비우기
+      if (diaryImageInputRef.current) diaryImageInputRef.current.value = "";
+      if (diaryVideoInputRef.current) diaryVideoInputRef.current.value = "";
     } catch (error: any) {
       alert(`❌ 등록 중 오류: ${error.message}`);
     } finally {
@@ -299,6 +308,7 @@ const AdminContent: React.FC = () => {
       
       setUploadMessage(`✅ 성공: ${path} 파일이 업로드되었습니다.`);
       setUploadFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error: any) {
       setUploadMessage(`❌ 실패: ${error.message}`);
     } finally {
@@ -443,11 +453,11 @@ const AdminContent: React.FC = () => {
               <div className="border p-4 rounded-xl bg-gray-50 space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 mb-1">사진 선택 (여러 장)</label>
-                  <input type="file" multiple accept="image/*" onChange={e => setDiaryImages(e.target.files)} className="w-full bg-white border p-2 rounded-lg text-sm" />
+                  <input ref={diaryImageInputRef} type="file" multiple accept="image/*" onChange={e => setDiaryImages(e.target.files)} className="w-full bg-white border p-2 rounded-lg text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 mb-1">동영상 선택 (1개)</label>
-                  <input type="file" accept="video/*" onChange={e => setDiaryVideo(e.target.files?.[0] || null)} className="w-full bg-white border p-2 rounded-lg text-sm" />
+                  <input ref={diaryVideoInputRef} type="file" accept="video/*" onChange={e => setDiaryVideo(e.target.files?.[0] || null)} className="w-full bg-white border p-2 rounded-lg text-sm" />
                 </div>
               </div>
               <button type="submit" disabled={isDiarySubmitting} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 transition-all text-lg">
@@ -463,7 +473,7 @@ const AdminContent: React.FC = () => {
             <h2 className="text-xl font-bold text-gray-800 mb-6">📂 데이터 파일 업로드</h2>
             <form onSubmit={handleFileUpload} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="file" onChange={(e) => setUploadFile(e.target.files?.[0] || null)} className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50" />
+                <input ref={fileInputRef} type="file" onChange={(e) => setUploadFile(e.target.files?.[0] || null)} className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50" />
                 <input type="text" value={uploadPath} onChange={(e) => setUploadPath(e.target.value)} placeholder="저장 경로 (예: data/xxx.xlsx)" className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50" />
               </div>
               <button type="submit" disabled={isUploading || !uploadFile} className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md">
