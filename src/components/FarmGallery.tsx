@@ -121,28 +121,33 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
           onClick={() => setSelectedDiary(null)}
         >
           <div 
-            className="relative w-full max-w-5xl max-h-[90vh] flex flex-col items-center"
+            className="relative w-full max-w-4xl flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
-              className="absolute -top-16 right-0 text-white/50 hover:text-white text-4xl z-[110] transition-colors"
+              className="absolute -top-14 right-0 text-white/50 hover:text-white text-3xl z-[110] transition-colors"
               onClick={() => setSelectedDiary(null)}
             >
               ✕
             </button>
             
-            <div className="w-full overflow-hidden rounded-3xl shadow-2xl bg-black flex items-center justify-center relative border border-white/10" style={{ maxHeight: '75vh', aspectRatio: selectedDiary.video ? 'auto' : '16/10' }}>
+            {/* 사진 크기에 맞게 자동 조절 */}
+            <div className="w-full overflow-hidden rounded-3xl shadow-2xl bg-black/20 relative border border-white/10">
               {selectedDiary.video ? (
-                <video src={selectedDiary.video} controls autoPlay className="max-w-full max-h-[75vh] object-contain" />
+                <video src={selectedDiary.video} controls autoPlay className="w-full max-h-[80vh] object-contain" />
               ) : (
-                <>
-                  <div className="flex h-full w-full transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${currentImgIdx * 100}%)` }}>
+                <div className="relative overflow-hidden">
+                  <div 
+                    className="flex transition-transform duration-700 ease-in-out" 
+                    style={{ transform: `translateX(-${currentImgIdx * 100}%)` }}
+                  >
                     {(selectedDiary.images && selectedDiary.images.length > 0 
                       ? selectedDiary.images 
                       : (selectedDiary.image ? [selectedDiary.image] : [])
                     ).filter(Boolean).map((img: string, idx: number) => (
-                      <div key={idx} className="min-w-full h-full flex items-center justify-center">
-                        <img src={img} alt={selectedDiary.title} className="max-w-full max-h-[75vh] object-contain" />
+                      <div key={idx} className="min-w-full flex items-center justify-center bg-black/10">
+                        {/* 사진 원본 비율 그대로, 최대 80vh 제한 */}
+                        <img src={img} alt={selectedDiary.title} className="w-full max-h-[80vh] object-contain" />
                       </div>
                     ))}
                   </div>
@@ -150,20 +155,20 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
                   {selectedDiary.images && selectedDiary.images.length > 1 && (
                     <>
                       <button 
-                        className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-3xl flex items-center justify-center backdrop-blur-md transition-all"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 text-white text-2xl flex items-center justify-center backdrop-blur-md transition-all"
                         onClick={() => setCurrentImgIdx(prev => (prev > 0 ? prev - 1 : selectedDiary.images.length - 1))}
                       >
                         ‹
                       </button>
                       <button 
-                        className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-3xl flex items-center justify-center backdrop-blur-md transition-all"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 text-white text-2xl flex items-center justify-center backdrop-blur-md transition-all"
                         onClick={() => setCurrentImgIdx(prev => (prev < selectedDiary.images.length - 1 ? prev + 1 : 0))}
                       >
                         ›
                       </button>
                     </>
                   )}
-                </>
+                </div>
               )}
             </div>
             
