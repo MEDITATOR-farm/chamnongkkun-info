@@ -51,6 +51,40 @@ const AdminPage: React.FC = () => {
     opacity: 35, // 0~100 (어둡기)
   });
   const [isPoemSubmitting, setIsPoemSubmitting] = useState(false);
+  const [poemList, setPoemList] = useState<any[]>([]);
+  const [diaryList, setDiaryList] = useState<any[]>([]);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  const loadList = async (type: 'poems' | 'diaries') => {
+    if (!ghToken) return alert('토큰을 먼저 설정해주세요.');
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
+      if (res.ok) {
+        const d = await res.json();
+        const items = JSON.parse(decodeURIComponent(escape(atob(d.content))));
+        if (type === 'poems') setPoemList(items);
+        else setDiaryList(items);
+      }
+    } catch (e: any) { alert('불러오기 실패: ' + e.message); }
+  };
+
+  const handleDelete = async (type: 'poems' | 'diaries', id: number) => {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    if (!ghToken) return alert('토큰을 설정해주세요.');
+    setIsDeleting(`${type}-${id}`);
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
+      if (!res.ok) throw new Error('파일을 찾을 수 없습니다.');
+      const d = await res.json();
+      const items = JSON.parse(decodeURIComponent(escape(atob(d.content))));
+      const filtered = items.filter((v: any) => v.id !== id);
+      await commitToGithub(`data/${type}.json`, JSON.stringify(filtered, null, 2), `관리자: ${type} 항목 삭제 (ID:${id})`, false);
+      if (type === 'poems') setPoemList(filtered);
+      else setDiaryList(filtered);
+      alert('✅ 삭제되었습니다.');
+    } catch (e: any) { alert('❌ 삭제 실패: ' + e.message); }
+    finally { setIsDeleting(null); }
+  };
 
   const POEM_PRESETS = [
     { name: "명상(선)", url: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1000" },
@@ -345,6 +379,29 @@ const AdminPage: React.FC = () => {
               <p className="text-center text-[10px] text-gray-400 font-medium">※ 실제 메인 페이지에 위 디자인 그대로 반영됩니다.</p>
             </div>
           </div>
+
+          {/* 시 목록 + 삭제 */}
+          <div className="lg:col-span-2 bg-white p-8 rounded-[32px] shadow-xl border border-gray-100 mt-8">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-black text-gray-800">등록된 시 목록</h3>
+              <button onClick={() => loadList('poems')} className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-black hover:bg-orange-100 transition-all">🔄 불러오기</button>
+            </div>
+            {poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">"불러오기" 버튼을 눌러주세요</p> : (
+              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                {poemList.map((p: any) => (
+                  <div key={p.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm text-gray-800 truncate">{p.title || '(제목없음)'}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{p.author} · {p.date}</p>
+                    </div>
+                    <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="ml-4 px-3 py-2 bg-red-50 text-red-500 rounded-xl text-xs font-black hover:bg-red-100 transition-all flex-shrink-0">
+                      {isDeleting === `poems-${p.id}` ? '...' : '🗑 삭제'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {activeTab === "diary" && (
@@ -372,6 +429,29 @@ const AdminPage: React.FC = () => {
                 {isDiarySubmitting ? "전송 중..." : "🌿 기록 완료"}
               </button>
             </form>
+
+            {/* 일기 목록 + 삭제 */}
+            <div className="mt-10 pt-8 border-t border-gray-100">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-black text-gray-800">등록된 일기 목록</h3>
+                <button onClick={() => loadList('diaries')} className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-black hover:bg-green-100 transition-all">🔄 불러오기</button>
+              </div>
+              {diaryList.length === 0 ? <p className="text-gray-300 text-sm text-center py-6">"불러오기" 버튼을 눌러주세요</p> : (
+                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                  {diaryList.map((d: any) => (
+                    <div key={d.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-sm text-gray-800 truncate">{d.title}</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">{d.date}</p>
+                      </div>
+                      <button onClick={() => handleDelete('diaries', d.id)} disabled={isDeleting === `diaries-${d.id}`} className="ml-4 px-3 py-2 bg-red-50 text-red-500 rounded-xl text-xs font-black hover:bg-red-100 transition-all flex-shrink-0">
+                        {isDeleting === `diaries-${d.id}` ? '...' : '🗑 삭제'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
