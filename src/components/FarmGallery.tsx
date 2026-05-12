@@ -9,62 +9,98 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
 
   if (!diaries || diaries.length === 0) return null;
 
+  // 날짜별로 그룹화 (연-월 기준)
+  const groupedDiaries: { [key: string]: any[] } = {};
+  diaries.forEach(diary => {
+    const date = new Date(diary.date);
+    const key = `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
+    if (!groupedDiaries[key]) groupedDiaries[key] = [];
+    groupedDiaries[key].push(diary);
+  });
+
+  const monthKeys = Object.keys(groupedDiaries);
+
   return (
     <div className="relative">
-      {/* 중앙 수직선 */}
-      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-primary/20 -translate-x-1/2"></div>
+      {/* 중앙 수직선 - 더 선명하고 그라데이션 효과 */}
+      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/30 via-primary/10 to-transparent -translate-x-1/2"></div>
       
-      <div className="space-y-24">
-        {diaries.map((diary: any, index: number) => (
-          <div key={index} className={`relative flex flex-col md:flex-row items-center gap-12 ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
-            
-            {/* 중앙 포인트 (동그라미) */}
-            <div className="absolute left-4 md:left-1/2 top-0 w-8 h-8 rounded-full bg-background border-4 border-primary -translate-x-1/2 z-10 hidden md:block"></div>
-            
-            {/* 콘텐츠 박스 */}
-            <div className={`w-full md:w-[calc(50%-48px)] reveal-up ${index % 2 === 1 ? 'md:text-right' : 'md:text-left'} ml-12 md:ml-0`}>
-              <div className="mb-4">
-                <span className="text-secondary font-black tracking-widest text-xs">{diary.date}</span>
-                <h3 className="text-2xl font-serif font-bold text-foreground mt-1">{diary.title}</h3>
+      <div className="space-y-32">
+        {monthKeys.map((monthKey) => (
+          <div key={monthKey} className="relative">
+            {/* 월별 타이틀 배지 */}
+            <div className="sticky top-24 z-20 mb-16 flex justify-start md:justify-center">
+              <div className="bg-primary text-white px-6 py-2 rounded-full font-serif font-bold shadow-xl shadow-primary/20 flex items-center gap-2 transform -translate-x-2 md:translate-x-0">
+                <span className="text-lg">🗓️</span>
+                {monthKey}
               </div>
-              
-              <div 
-                className="group relative rounded-[24px] overflow-hidden shadow-xl shadow-primary/5 cursor-pointer border border-primary/5 bg-white"
-                onClick={() => {
-                  setSelectedDiary(diary);
-                  setCurrentImgIdx(0);
-                }}
-              >
-                {diary.image ? (
-                  <img 
-                    src={diary.image} 
-                    alt={diary.title} 
-                    className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105" 
-                  />
-                ) : (
-                  <div className="w-full aspect-[4/3] bg-primary/5 flex items-center justify-center text-4xl">🌱</div>
-                )}
-                
-                {diary.video && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-colors">
-                    <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center pl-1 backdrop-blur-md shadow-2xl">
-                      <span className="text-primary text-2xl">▶</span>
-                    </div>
-                  </div>
-                )}
-
-                <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-white text-sm font-bold">자세히 보기 →</p>
-                </div>
-              </div>
-
-              <p className="mt-6 text-foreground/60 leading-relaxed line-clamp-3 font-medium">
-                {diary.content}
-              </p>
             </div>
-            
-            {/* 반대편 비어있는 공간용 (모바일에서는 숨김) */}
-            <div className="hidden md:block w-[calc(50%-48px)]"></div>
+
+            <div className="space-y-24">
+              {groupedDiaries[monthKey].map((diary, index) => {
+                // 전체 인덱스 계산 (지그재그를 위해)
+                const globalIndex = diaries.indexOf(diary);
+                const isRight = globalIndex % 2 === 1;
+
+                return (
+                  <div key={diary.id || index} className={`relative flex flex-col md:flex-row items-center gap-12 ${isRight ? 'md:flex-row-reverse' : ''}`}>
+                    
+                    {/* 중앙 포인트 (동그라미) - 호버 효과 추가 */}
+                    <div className="absolute left-4 md:left-1/2 top-0 w-6 h-6 rounded-full bg-white border-4 border-secondary -translate-x-1/2 z-10 hidden md:block shadow-sm"></div>
+                    
+                    {/* 콘텐츠 박스 */}
+                    <div className={`w-full md:w-[calc(50%-48px)] reveal-up ${isRight ? 'md:text-right' : 'md:text-left'} ml-12 md:ml-0`}>
+                      <div className="mb-6">
+                        <div className={`flex items-center gap-2 mb-1 ${isRight ? 'md:justify-end' : ''}`}>
+                          <span className="w-8 h-[2px] bg-secondary/30"></span>
+                          <span className="text-secondary font-black tracking-widest text-[10px] uppercase">RECORD No.{diaries.length - globalIndex}</span>
+                        </div>
+                        <span className="text-foreground/40 font-bold text-xs">{diary.date}</span>
+                        <h3 className="text-2xl md:text-3xl font-serif font-bold text-foreground mt-2 leading-tight">{diary.title}</h3>
+                      </div>
+                      
+                      <div 
+                        className="group relative rounded-[32px] overflow-hidden shadow-2xl shadow-primary/5 cursor-pointer border border-primary/5 bg-white transition-all duration-500 hover:-translate-y-2"
+                        onClick={() => {
+                          setSelectedDiary(diary);
+                          setCurrentImgIdx(0);
+                        }}
+                      >
+                        {diary.image ? (
+                          <img 
+                            src={diary.image} 
+                            alt={diary.title} 
+                            className="w-full aspect-[4/3] object-cover transition-transform duration-1000 group-hover:scale-110" 
+                          />
+                        ) : (
+                          <div className="w-full aspect-[4/3] bg-primary/5 flex items-center justify-center text-4xl">🌱</div>
+                        )}
+                        
+                        {diary.video && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-500">
+                            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center pl-1 backdrop-blur-md shadow-2xl transform transition-transform group-hover:scale-110">
+                              <span className="text-primary text-2xl">▶</span>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="bg-white text-primary px-6 py-2 rounded-full font-bold text-sm shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            기록 자세히 보기
+                          </span>
+                        </div>
+                      </div>
+
+                      <p className="mt-8 text-foreground/50 leading-relaxed line-clamp-3 font-medium text-sm md:text-base">
+                        {diary.content}
+                      </p>
+                    </div>
+                    
+                    <div className="hidden md:block w-[calc(50%-48px)]"></div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         ))}
       </div>

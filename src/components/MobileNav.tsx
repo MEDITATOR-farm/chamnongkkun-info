@@ -4,68 +4,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/",              icon: "🏠", label: "홈" },
-  { href: "/events",        icon: "🌸", label: "행사" },
-  { href: "/blog",          icon: "📝", label: "블로그" },
-  { href: "/support/youth", icon: "💰", label: "지원금" },
-  { href: "/about",         icon: "👤", label: "소개" },
+  { href: "/",      icon: "🏡", label: "홈" },
+  { href: "/#map",  icon: "📍", label: "거제지도" },
+  { href: "/#diary", icon: "🌱", label: "농부일기" },
+  { href: "/#wisdom", icon: "✨", label: "오늘의시" },
+  { href: "/about", icon: "👤", label: "소개" },
 ];
 
 export default function MobileNav() {
   const pathname = usePathname();
   
-  // 관리자 페이지에서는 메뉴를 숨깁니다.
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <nav style={{
-      position: "fixed",
-      bottom: 0, left: 0, right: 0,
-      zIndex: 100,
-      display: "flex",
-      background: "rgba(6,15,30,0.92)",
-      backdropFilter: "blur(20px)",
-      WebkitBackdropFilter: "blur(20px)",
-      borderTop: "1px solid rgba(255,255,255,0.1)",
-      padding: "6px 0 env(safe-area-inset-bottom, 6px)",
-    }}
-      className="sm:hidden"
-    >
+    <nav className="fixed bottom-0 inset-x-0 z-[100] sm:hidden bg-background/90 backdrop-blur-xl border-t border-primary/5 pb-[env(safe-area-inset-bottom,12px)] pt-3 px-2 flex justify-around">
       {NAV_ITEMS.map(({ href, icon, label }) => {
         const isActive = pathname === href;
         return (
           <Link
             key={href}
             href={href}
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "3px",
-              padding: "6px 0",
-              textDecoration: "none",
-              position: "relative",
-            }}
+            className="flex flex-col items-center gap-1.5 flex-1 py-1 transition-all active:scale-90"
           >
-            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>{icon}</span>
-            <span style={{
-              fontSize: "0.62rem",
-              fontWeight: isActive ? 800 : 500,
-              color: isActive ? "#22d3ee" : "rgba(255,255,255,0.45)",
-              letterSpacing: "0.02em",
-            }}>
+            <span className={`text-xl transition-all ${isActive ? 'scale-110 drop-shadow-md' : 'opacity-40 grayscale'}`}>{icon}</span>
+            <span className={`text-[10px] font-black tracking-tighter transition-colors ${isActive ? 'text-primary' : 'text-foreground/30'}`}>
               {label}
             </span>
-            {isActive && (
-              <div style={{
-                width: "4px", height: "4px",
-                borderRadius: "50%",
-                background: "#22d3ee",
-                marginTop: "1px",
-              }} />
-            )}
           </Link>
         );
       })}

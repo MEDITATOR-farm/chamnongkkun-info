@@ -19,21 +19,17 @@ export default function DailyIdiomClient({ idioms }: { idioms: any[] }) {
   if (!todaysIdiom) return null;
 
   return (
-    <div className="group p-4 sm:p-5 flex items-center relative overflow-hidden transition-all bg-transparent border-b border-white/10" translate="no">
-      <div className="absolute top-0 left-0 w-0.5 h-full bg-cyan-400 opacity-50" />
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 relative z-10 w-full">
-        <div className="flex-shrink-0 border border-white/25 text-white/60 text-[9px] font-black px-2 py-0.5 rounded tracking-widest flex items-center gap-1.5 w-fit">
-          💡 오늘의 사자성어
-        </div>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 flex-grow min-w-0">
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <span className="text-xl sm:text-2xl font-black text-white font-serif tracking-tighter">{todaysIdiom.hanja}</span>
-            <span className="text-[11px] sm:text-xs font-bold text-cyan-300 font-serif bg-cyan-400/15 px-1.5 py-0.5 rounded tracking-widest leading-none">({todaysIdiom.chars})</span>
+    <div className="p-6 relative group" translate="no">
+      <div className="flex flex-col gap-4">
+        <span className="text-[10px] font-black text-secondary tracking-[0.2em] uppercase">Today's Idiom</span>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-baseline gap-3">
+            <h3 className="text-3xl font-serif font-black text-primary tracking-tight">{todaysIdiom.hanja}</h3>
+            <span className="text-sm font-serif font-bold text-foreground/40 italic">[{todaysIdiom.chars}]</span>
           </div>
-          <div className="hidden sm:block w-px h-3 bg-white/20" />
-          <span className="text-sm sm:text-base font-semibold text-white/75 italic truncate max-w-full">
+          <p className="text-lg font-serif font-medium text-foreground/70 border-l-2 border-secondary/20 pl-4 mt-2">
             "{todaysIdiom.meaning}"
-          </span>
+          </p>
         </div>
       </div>
     </div>

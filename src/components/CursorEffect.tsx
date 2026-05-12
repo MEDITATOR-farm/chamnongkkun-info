@@ -4,42 +4,38 @@ import { useEffect, useRef } from "react";
 export default function CursorEffect() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const glowRef = useRef<HTMLDivElement>(null);
   const pos = useRef({ x: -100, y: -100 });
   const ring = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
     const dot = dotRef.current;
     const ringEl = ringRef.current;
-    const glowEl = glowRef.current;
-    if (!dot || !ringEl || !glowEl) return;
+    if (!dot || !ringEl) return;
 
     const move = (e: MouseEvent) => {
       pos.current = { x: e.clientX, y: e.clientY };
       dot.style.left = e.clientX + "px";
       dot.style.top = e.clientY + "px";
-      glowEl.style.left = e.clientX + "px";
-      glowEl.style.top = e.clientY + "px";
     };
 
     const enterHover = () => {
-      dot.style.width = "6px";
-      dot.style.height = "6px";
-      dot.style.background = "#22d3ee";
-      dot.style.boxShadow = "0 0 16px #22d3ee";
-      ringEl.style.width = "52px";
-      ringEl.style.height = "52px";
-      ringEl.style.borderColor = "rgba(34,211,238,0.6)";
+      dot.style.width = "40px";
+      dot.style.height = "40px";
+      dot.style.background = "var(--primary)";
+      dot.style.opacity = "0.1";
+      ringEl.style.width = "60px";
+      ringEl.style.height = "60px";
+      ringEl.style.borderColor = "var(--secondary)";
     };
 
     const leaveHover = () => {
-      dot.style.width = "10px";
-      dot.style.height = "10px";
-      dot.style.background = "rgba(255,255,255,0.9)";
-      dot.style.boxShadow = "0 0 14px rgba(255,255,255,0.4)";
-      ringEl.style.width = "36px";
-      ringEl.style.height = "36px";
-      ringEl.style.borderColor = "rgba(255,255,255,0.35)";
+      dot.style.width = "8px";
+      dot.style.height = "8px";
+      dot.style.background = "var(--primary)";
+      dot.style.opacity = "0.4";
+      ringEl.style.width = "30px";
+      ringEl.style.height = "30px";
+      ringEl.style.borderColor = "var(--primary)";
     };
 
     document.addEventListener("mousemove", move);
@@ -52,8 +48,8 @@ export default function CursorEffect() {
 
     let raf: number;
     const animate = () => {
-      ring.current.x += (pos.current.x - ring.current.x) * 0.1;
-      ring.current.y += (pos.current.y - ring.current.y) * 0.1;
+      ring.current.x += (pos.current.x - ring.current.x) * 0.15;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.15;
       ringEl.style.left = ring.current.x + "px";
       ringEl.style.top = ring.current.y + "px";
       raf = requestAnimationFrame(animate);
@@ -72,27 +68,21 @@ export default function CursorEffect() {
 
   return (
     <>
-      <div ref={dotRef} style={{
+      <div ref={dotRef} className="hidden md:block" style={{
         position: "fixed", pointerEvents: "none", zIndex: 9999,
-        width: "10px", height: "10px", borderRadius: "50%",
-        background: "rgba(255,255,255,0.9)",
-        boxShadow: "0 0 14px rgba(255,255,255,0.4)",
+        width: "8px", height: "8px", borderRadius: "50%",
+        background: "var(--primary)",
+        opacity: 0.4,
         transform: "translate(-50%,-50%)",
-        transition: "width 0.15s, height 0.15s, background 0.15s, box-shadow 0.15s",
+        transition: "width 0.3s, height 0.3s, background 0.3s, opacity 0.3s",
       }} />
-      <div ref={ringRef} style={{
+      <div ref={ringRef} className="hidden md:block" style={{
         position: "fixed", pointerEvents: "none", zIndex: 9998,
-        width: "36px", height: "36px", borderRadius: "50%",
-        border: "1.5px solid rgba(255,255,255,0.35)",
+        width: "30px", height: "30px", borderRadius: "50%",
+        border: "1px solid var(--primary)",
+        opacity: 0.2,
         transform: "translate(-50%,-50%)",
-        transition: "width 0.2s, height 0.2s, border-color 0.2s",
-      }} />
-      <div ref={glowRef} style={{
-        position: "fixed", pointerEvents: "none", zIndex: 9997,
-        width: "240px", height: "240px", borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(14,165,233,0.12), transparent 70%)",
-        transform: "translate(-50%,-50%)",
-        transition: "opacity 0.3s",
+        transition: "width 0.4s, height 0.4s, border-color 0.4s",
       }} />
     </>
   );
