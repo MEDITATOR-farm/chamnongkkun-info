@@ -52,9 +52,11 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
           
           {poem ? (
             <div className="flex-grow flex flex-col justify-center">
-              <h3 className="text-3xl font-serif font-bold text-foreground mb-8 leading-tight group-hover:text-primary transition-colors">
-                {poem.title}
-              </h3>
+              {poem.title && (
+                <h3 className="text-3xl font-serif font-bold text-foreground mb-8 leading-tight group-hover:text-primary transition-colors">
+                  {poem.title}
+                </h3>
+              )}
               <div className="space-y-4">
                 {(poem.content || "").split("\n").slice(0, 4).map((line: string, idx: number) => (
                   <p key={idx} className="text-foreground/60 font-serif leading-relaxed text-lg italic">
@@ -77,54 +79,48 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
         </div>
       </div>
 
-      {/* 모달 UI */}
+      {/* 모달 UI (걷는 독서 디자인 적용) */}
       {isOpen && poem && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/90 backdrop-blur-xl p-4 animate-in fade-in duration-500"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 backdrop-blur-xl p-4 animate-in fade-in duration-500"
           onClick={() => setIsOpen(false)}
         >
           <div 
-            className="relative w-full max-w-2xl bg-background rounded-[40px] overflow-hidden shadow-2xl flex flex-col border border-primary/5"
+            className="relative w-full max-w-2xl aspect-square bg-background rounded-[48px] overflow-hidden shadow-2xl flex flex-col border-8 border-white/10"
             onClick={(e) => e.stopPropagation()}
-            style={{ maxHeight: '90vh' }}
           >
+            {/* 닫기 버튼 */}
             <button 
-              className="absolute top-8 right-8 text-foreground/20 hover:text-primary text-3xl z-[110] transition-colors"
+              className="absolute top-8 right-8 text-white/50 hover:text-white text-3xl z-[120] transition-colors"
               onClick={() => setIsOpen(false)}
             >
               ✕
             </button>
+
+            {/* 배경 이미지 및 오버레이 */}
+            {poem.imageUrl ? (
+              <>
+                <img src={poem.imageUrl} className="absolute inset-0 w-full h-full object-cover" alt="Poem Background" />
+                <div className="absolute inset-0" style={{ backgroundColor: `rgba(0,0,0,${(poem.opacity || 35) / 100})` }}></div>
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-primary/5"></div>
+            )}
             
-            <div className="p-12 sm:p-20 overflow-y-auto w-full">
-              <div className="text-center mb-16">
-                <span className="text-[10px] font-black text-secondary tracking-[0.4em] uppercase mb-4 block">DAILY INSIGHT</span>
-                <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground leading-tight">
-                  {poem.title}
-                </h2>
-                <div className="w-12 h-1 bg-secondary mx-auto mt-8"></div>
-              </div>
+            {/* 시 내용 (걷는 독서 스타일) */}
+            <div className="relative z-10 p-12 md:p-20 h-full flex flex-col justify-center text-center text-white">
+              <div className="absolute top-12 left-12 text-[10px] opacity-40 font-bold tracking-widest">{poem.date}</div>
+              <div className="absolute top-12 right-12 text-[10px] opacity-40 font-bold tracking-widest">출처 : {poem.author}</div>
               
-              <div className="space-y-8 px-4">
+              <div className="space-y-8">
                 {(poem.content || "").split("\n").map((line: string, idx: number) => (
-                  <p key={idx} className="text-foreground/70 font-serif leading-loose text-xl text-center break-words min-h-[1.5rem]">
+                  <p key={idx} className="text-2xl md:text-4xl font-serif font-bold leading-relaxed drop-shadow-2xl animate-revealUp">
                     {line}
                   </p>
                 ))}
               </div>
-              
-              <div className="mt-20 text-center border-t border-primary/5 pt-12">
-                <p className="text-foreground font-serif font-bold text-2xl">— {poem.author || "거제의 시인"}</p>
-                {poem.date && <p className="text-foreground/30 text-xs mt-4 tracking-widest">{poem.date}</p>}
-              </div>
 
-              <div className="mt-16 flex justify-center">
-                <Link 
-                  href="/poems" 
-                  className="px-10 py-4 bg-primary text-white rounded-full text-sm font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all"
-                >
-                  과거의 시 더 읽어보기
-                </Link>
-              </div>
+              <div className="absolute bottom-12 right-12 text-[10px] opacity-40 font-bold tracking-[0.3em] uppercase">Design by Chamnongkkun</div>
             </div>
           </div>
         </div>

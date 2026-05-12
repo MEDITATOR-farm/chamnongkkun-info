@@ -8,7 +8,7 @@ interface Message {
   timestamp?: number;
 }
 
-// GitHub 기본 설정 (사장님 저장소 정보)
+// GitHub 기본 설정
 const GITHUB_OWNER = 'MEDITATOR-farm';
 const GITHUB_REPO = 'chamnongkkun-info';
 const GITHUB_BRANCH = 'main';
@@ -16,11 +16,8 @@ const GITHUB_BRANCH = 'main';
 const AdminPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
-  
-  // 탭 상태: poem, diary, file, chat
   const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file" | "chat">("poem");
 
-  // 주소창의 해시(#) 파라미터 처리
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace("#", "");
@@ -28,289 +25,186 @@ const AdminPage: React.FC = () => {
         setActiveTab(hash as any);
       }
     };
-
-    handleHash(); // 초기 접속 시 실행
+    handleHash();
     window.addEventListener("hashchange", handleHash);
     return () => window.removeEventListener("hashchange", handleHash);
   }, []);
 
-  // --- 토큰 관리 및 설정 관련 상태 ---
   const [ghToken, setGhToken] = useState("");
-  const [tempToken, setTempToken] = useState(""); // 입력창용 임시 토큰
+  const [tempToken, setTempToken] = useState("");
   const [showSettings, setShowSettings] = useState(false);
-
-  // --- 기존 채팅 관련 상태 ---
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // --- 파일 업로드 관련 상태 ---
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadPath, setUploadPath] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
 
-  // --- 시 올리기 관련 상태 ---
+  // --- 시 등록 관련 상태 (걷는 독서 디자인 버전) ---
   const [poemForm, setPoemForm] = useState({
     title: "",
-    content: "",
-    author: "",
-    mood: "차분한",
-    bgColor: "#ffffff",
-    textColor: "#000000",
+    content: "적게 소유하고\n깊게 사랑하라",
+    author: "박노해 시인",
+    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1000",
+    opacity: 35, // 0~100 (어둡기)
   });
   const [isPoemSubmitting, setIsPoemSubmitting] = useState(false);
 
+  const POEM_PRESETS = [
+    { name: "명상(선)", url: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1000" },
+    { name: "물방울", url: "https://images.unsplash.com/photo-1496062031456-07b8f162a322?auto=format&fit=crop&q=80&w=1000" },
+    { name: "고요한 숲", url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1000" },
+    { name: "바다의 아침", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000" },
+    { name: "밤하늘 은하수", url: "https://images.unsplash.com/photo-1506318137071-a8e063b4b47e?auto=format&fit=crop&q=80&w=1000" },
+    { name: "봄 벚꽃", url: "https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&q=80&w=1000" },
+    { name: "연꽃 만개", url: "https://images.unsplash.com/photo-1502675135487-e971002a6adb?auto=format&fit=crop&q=80&w=1000" },
+    { name: "가을 단풍", url: "https://images.unsplash.com/photo-1507181382277-02455ca4c23a?auto=format&fit=crop&q=80&w=1000" },
+  ];
+
   // --- 농부일기 올리기 관련 상태 ---
-  const [diaryForm, setDiaryForm] = useState({
-    title: "",
-    content: "",
-  });
+  const [diaryForm, setDiaryForm] = useState({ title: "", content: "" });
   const [diaryImages, setDiaryImages] = useState<FileList | null>(null);
   const [diaryVideo, setDiaryVideo] = useState<File | null>(null);
   const [isDiarySubmitting, setIsDiarySubmitting] = useState(false);
 
-  // 입력창 초기화를 위한 Ref
   const diaryImageInputRef = useRef<HTMLInputElement>(null);
   const diaryVideoInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 컴포넌트 로드 시 저장된 토큰 가져오기
   useEffect(() => {
     const savedToken = localStorage.getItem("CHAMNONG_GH_TOKEN") || "";
     setGhToken(savedToken);
     setTempToken(savedToken);
   }, []);
 
-  // 토큰 저장하기
   const handleSaveToken = () => {
     localStorage.setItem("CHAMNONG_GH_TOKEN", tempToken);
     setGhToken(tempToken);
     setShowSettings(false);
-    alert("✅ 토큰이 브라우저에 저장되었습니다! 이제 매번 입력하지 않아도 됩니다.");
+    alert("✅ 토큰이 저장되었습니다.");
   };
 
-  // 1. 관리자 로그인
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === "admin1234") {
-      setIsAuthenticated(true);
-    } else {
-      alert("관리자 비밀번호가 틀렸습니다.");
-    }
-  };
-
-  // --- [핵심] GitHub API 유틸리티 함수 ---
-  const commitToGithub = async (path: string, contentBase64: string, message: string) => {
-    if (!ghToken) {
-      setShowSettings(true);
-      throw new Error("GitHub 토큰을 먼저 설정해주세요.");
-    }
-
-    // 1. 기존 파일의 SHA 값 확인 (덮어쓰기를 위해 필요)
-    let sha = undefined;
-    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`, {
-      headers: { 
-        Authorization: `Bearer ${ghToken}`,
-        Accept: "application/vnd.github.v3+json"
-      },
-      cache: "no-store", // 캐시 방지: 항상 최신 SHA를 가져옴
-    });
-    if (getRes.ok) {
-      const data = await getRes.json();
-      sha = data.sha;
-    }
-
-    // 2. 파일 저장 (PUT)
-    const putRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${ghToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message,
-        content: contentBase64,
-        branch: GITHUB_BRANCH,
-        sha: sha,
-      }),
-    });
-
-    if (!putRes.ok) {
-      const error = await putRes.json();
-      throw new Error(error.message || "GitHub 전송 실패");
-    }
-    return await putRes.json();
-  };
-
-  // 파일을 Base64로 변환하는 함수
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64 = (reader.result as string).split(",")[1];
-        resolve(base64);
-      };
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
       reader.onerror = error => reject(error);
     });
   };
 
-  // --- 3. 시 등록 (GitHub 직접 연동) ---
+  const commitToGithub = async (path: string, content: string, message: string, isBase64 = true) => {
+    if (!ghToken) throw new Error("토큰이 없습니다.");
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/${path}`;
+    const getRes = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+    let sha = "";
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha = data.sha;
+    }
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message,
+        content: isBase64 ? content : btoa(unescape(encodeURIComponent(content))),
+        sha: sha || undefined,
+        branch: GITHUB_BRANCH
+      })
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message);
+    }
+  };
+
   const handlePoemSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!poemForm.title || !poemForm.content) {
-      alert("제목과 내용을 입력해주세요.");
-      return;
-    }
-
-    if (!ghToken) {
-      alert("상단 ⚙️ 설정을 클릭해 GitHub 토큰을 먼저 입력해주세요.");
-      setShowSettings(true);
-      return;
-    }
-
+    if (!ghToken) return alert("토큰을 설정해주세요.");
     setIsPoemSubmitting(true);
     try {
-      const filePath = "public/data/poems.json";
-      let poems = [];
-      
-      // 최신 데이터 가져오기 (캐시 방지)
-      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}?ref=${GITHUB_BRANCH}`, {
-        headers: { 
-          Authorization: `Bearer ${ghToken}`,
-          Accept: "application/vnd.github.v3+json"
-        },
-        cache: "no-store",
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/poems.json`, {
+        headers: { 'Authorization': `token ${ghToken}` }
       });
-
-      if (getRes.ok) {
-        const data = await getRes.json();
-        const content = decodeURIComponent(escape(atob(data.content)));
-        poems = JSON.parse(content);
+      let poems = [];
+      if (res.ok) {
+        const fileData = await res.json();
+        poems = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
       }
-
       const newPoem = {
         id: Date.now(),
         ...poemForm,
-        date: new Date().toISOString().split("T")[0],
+        date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
       };
-      poems.unshift(newPoem);
-
-      const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(poems, null, 2))));
-      await commitToGithub(filePath, updatedContentBase64, `관리자: 새로운 시 등록 (${poemForm.title})`);
-      
-      alert("✅ 시가 성공적으로 GitHub에 등록되었습니다! 약 1~2분 뒤 사이트에 자동 반영됩니다.");
-      setPoemForm({ ...poemForm, title: "", content: "", author: "" });
-    } catch (error: any) {
-      alert(`❌ 오류 발생: ${error.message}`);
+      const updatedPoems = [newPoem, ...poems];
+      await commitToGithub('data/poems.json', JSON.stringify(updatedPoems, null, 2), "관리자: 새 시 등록 (걷는 독서 디자인)", false);
+      alert("✅ 시가 성공적으로 등록되었습니다!");
+      setPoemForm({ ...poemForm, title: "" });
+    } catch (e: any) {
+      alert("❌ 오류: " + e.message);
     } finally {
       setIsPoemSubmitting(false);
     }
   };
 
-  // --- 4. 농부일기 등록 (GitHub 직접 연동) ---
   const handleDiarySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!diaryForm.title || !diaryForm.content) {
-      alert("제목과 내용을 입력해주세요.");
-      return;
-    }
-
-    if (!ghToken) {
-      alert("상단 ⚙️ 설정을 클릭해 GitHub 토큰을 먼저 입력해주세요.");
-      setShowSettings(true);
-      return;
-    }
-
+    if (!ghToken) return alert("토큰을 설정해주세요.");
     setIsDiarySubmitting(true);
     try {
-      const imageUrls: string[] = [];
-      let videoUrl = "";
-
-      if (diaryImages) {
-        for (let i = 0; i < diaryImages.length; i++) {
-          const file = diaryImages[i];
-          const base64 = await fileToBase64(file);
-          const filename = `${Date.now()}-${file.name}`;
-          const path = `public/uploads/diaries/images/${filename}`;
-          await commitToGithub(path, base64, `관리자: 일기 이미지 업로드 (${file.name})`);
-          imageUrls.push(`/uploads/diaries/images/${filename}`);
-        }
+      let imagePath = "";
+      if (diaryImages && diaryImages.length > 0) {
+        const file = diaryImages[0];
+        imagePath = `uploads/diary_${Date.now()}_${file.name}`;
+        await commitToGithub(imagePath, await fileToBase64(file), `관리자: 일기 이미지 업로드`);
       }
-
+      let videoPath = "";
       if (diaryVideo) {
-        const base64 = await fileToBase64(diaryVideo);
-        const filename = `${Date.now()}-${diaryVideo.name}`;
-        const path = `public/uploads/diaries/videos/${filename}`;
-        await commitToGithub(path, base64, `관리자: 일기 영상 업로드 (${diaryVideo.name})`);
-        videoUrl = `/uploads/diaries/videos/${filename}`;
+        videoPath = `uploads/diary_vid_${Date.now()}_${diaryVideo.name}`;
+        await commitToGithub(videoPath, await fileToBase64(diaryVideo), `관리자: 일기 비디오 업로드`);
       }
-
-      const dataPath = "public/data/diaries.json";
-      let diaries = [];
-      
-      // 최신 데이터 가져오기 (캐시 방지)
-      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${dataPath}?ref=${GITHUB_BRANCH}`, {
-        headers: { 
-          Authorization: `Bearer ${ghToken}`,
-          Accept: "application/vnd.github.v3+json"
-        },
-        cache: "no-store",
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/diaries.json`, {
+        headers: { 'Authorization': `token ${ghToken}` }
       });
-
-      if (getRes.ok) {
-        const data = await getRes.json();
-        const content = decodeURIComponent(escape(atob(data.content)));
-        diaries = JSON.parse(content);
+      let diaries = [];
+      if (res.ok) {
+        const fileData = await res.json();
+        diaries = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
       }
-
-      const newDiary = {
+      const newEntry = {
         id: Date.now(),
+        date: new Date().toISOString().split('T')[0],
         title: diaryForm.title,
         content: diaryForm.content,
-        date: new Date().toISOString().split("T")[0],
-        image: imageUrls.length > 0 ? imageUrls[0] : null,
-        images: imageUrls,
-        video: videoUrl || null,
+        image: imagePath ? `/${imagePath}` : "",
+        video: videoPath ? `/${videoPath}` : ""
       };
-      diaries.unshift(newDiary);
-
-      const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(diaries, null, 2))));
-      await commitToGithub(dataPath, updatedContentBase64, `관리자: 새로운 농부일기 등록 (${diaryForm.title})`);
-
-      alert("✅ 농부일기(현장소식)가 GitHub에 안전하게 등록되었습니다! 잠시 후 사이트에 자동 반영됩니다.");
+      await commitToGithub('data/diaries.json', JSON.stringify([newEntry, ...diaries], null, 2), "관리자: 새 농부일기 등록", false);
+      alert("✅ 농부일기가 등록되었습니다!");
       setDiaryForm({ title: "", content: "" });
       setDiaryImages(null);
       setDiaryVideo(null);
-      
-      // 화면의 파일 선택창 비우기
       if (diaryImageInputRef.current) diaryImageInputRef.current.value = "";
       if (diaryVideoInputRef.current) diaryVideoInputRef.current.value = "";
-    } catch (error: any) {
-      alert(`❌ 등록 중 오류: ${error.message}`);
+    } catch (e: any) {
+      alert("❌ 오류: " + e.message);
     } finally {
       setIsDiarySubmitting(false);
     }
   };
 
-  // --- 5. 데이터 파일 직접 업로드 ---
   const handleFileUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!uploadFile) {
-      alert("파일을 선택해주세요.");
-      return;
-    }
-    
+    if (!uploadFile) return alert("파일을 선택해주세요.");
     setIsUploading(true);
-    setUploadMessage("GitHub로 직접 전송 중...");
-    
+    setUploadMessage("전송 중...");
     try {
       const base64 = await fileToBase64(uploadFile);
       const path = uploadPath.trim() || uploadFile.name;
       await commitToGithub(path, base64, `관리자: 파일 직접 업로드 (${path})`);
-      
-      setUploadMessage(`✅ 성공: ${path} 파일이 업로드되었습니다.`);
+      setUploadMessage(`✅ 성공: ${path} 업로드 완료`);
       setUploadFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error: any) {
@@ -320,191 +214,187 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  // 로그인되지 않은 경우
+  const handleLocalImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const base64 = await fileToBase64(e.target.files[0]);
+      setPoemForm({ ...poemForm, imageUrl: `data:${e.target.files[0].type};base64,${base64}` });
+    }
+  };
+
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="bg-white p-8 rounded-2xl shadow-xl w-full max-sm:px-6 max-w-sm space-y-6">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-sans">
+        <form onSubmit={(e) => { e.preventDefault(); if (password === "admin1234") setIsAuthenticated(true); else alert("비밀번호가 틀렸습니다."); }} className="bg-white p-8 rounded-[32px] shadow-2xl w-full max-w-sm space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800">참농꾼 마스터 통합 관리</h1>
-            <p className="text-gray-500 text-sm mt-2">비밀번호를 입력하세요.</p>
+            <h1 className="text-2xl font-black text-gray-800 tracking-tight">참농꾼 마스터 센터</h1>
+            <p className="text-gray-400 text-xs mt-2 font-bold uppercase tracking-widest">Administrator Login</p>
           </div>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호 (admin1234)"
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500"
-            autoFocus
-          />
-          <button type="submit" className="w-full bg-orange-500 text-white font-bold py-3 rounded-xl hover:bg-orange-600 transition-all">
-            접속하기
-          </button>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PASSWORD" className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4 outline-none focus:border-orange-500 transition-all font-bold" autoFocus />
+          <button type="submit" className="w-full bg-orange-500 text-white font-black py-4 rounded-2xl hover:bg-orange-600 shadow-xl shadow-orange-200 transition-all">접속하기</button>
         </form>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] flex flex-col">
-      {/* 헤더 */}
-      <header className="bg-orange-600 p-4 text-white shadow-md flex justify-between items-center">
-        <h1 className="font-bold text-xl">참농꾼 마스터 센터</h1>
-        <div className="flex gap-2">
-          <button onClick={() => setShowSettings(true)} className="text-lg bg-white/20 p-2 rounded-lg hover:bg-white/30" title="토큰 설정">
-            ⚙️ 설정
-          </button>
-          <button onClick={() => setIsAuthenticated(false)} className="text-sm bg-white/20 px-3 py-1 rounded-lg hover:bg-white/30">
-            로그아웃
-          </button>
+    <div className="min-h-screen bg-[#f3f4f6] flex flex-col font-sans">
+      <header className="bg-white px-8 py-4 shadow-sm flex justify-between items-center border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white font-black">M</div>
+          <h1 className="font-black text-lg text-gray-800 tracking-tighter uppercase">Master Center</h1>
+        </div>
+        <div className="flex gap-4">
+          <button onClick={() => setShowSettings(true)} className="text-sm font-bold text-gray-400 hover:text-gray-800 transition-colors">⚙️ SETTINGS</button>
+          <button onClick={() => setIsAuthenticated(false)} className="text-sm font-bold text-red-400 hover:text-red-600 transition-colors">LOGOUT</button>
         </div>
       </header>
 
-      {/* 설정 모달 (팝업) */}
       {showSettings && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-md space-y-6 border border-white/20">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-bold text-gray-800">GitHub 연동 설정</h3>
-              <button onClick={() => setShowSettings(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+              <h3 className="text-xl font-black text-gray-800">GitHub 연동 설정</h3>
+              <button onClick={() => setShowSettings(false)} className="text-gray-300 hover:text-gray-600 text-2xl">✕</button>
             </div>
             <div className="space-y-4">
-              <p className="text-sm text-gray-600 leading-relaxed">
-                GitHub 토큰을 입력하고 저장하세요. <br/>
-                <strong>브라우저에 안전하게 저장</strong>되어, 다음 접속 시에도 다시 입력할 필요가 없습니다.
-              </p>
-              <input
-                type="password"
-                value={tempToken}
-                onChange={(e) => setTempToken(e.target.value)}
-                placeholder="ghp_..."
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button onClick={handleSaveToken} className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all">
-                토큰 저장하기
-              </button>
+              <input type="password" value={tempToken} onChange={(e) => setTempToken(e.target.value)} placeholder="GITHUB TOKEN (ghp_...)" className="w-full border-2 border-gray-50 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 transition-all" />
+              <button onClick={handleSaveToken} className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100">저장하기</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* 메뉴 탭 */}
-      <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-2 flex gap-4 overflow-x-auto">
-        <button onClick={() => setActiveTab("poem")} className={`px-4 py-2 font-bold rounded-lg transition-colors whitespace-nowrap ${activeTab === "poem" ? "bg-orange-100 text-orange-700" : "text-gray-600 hover:bg-gray-50"}`}>
-          📝 시 등록
-        </button>
-        <button onClick={() => setActiveTab("diary")} className={`px-4 py-2 font-bold rounded-lg transition-colors whitespace-nowrap ${activeTab === "diary" ? "bg-green-100 text-green-700" : "text-gray-600 hover:bg-gray-50"}`}>
-          🌿 농부일기 & 현장소식
-        </button>
-        <button onClick={() => setActiveTab("file")} className={`px-4 py-2 font-bold rounded-lg transition-colors whitespace-nowrap ${activeTab === "file" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-50"}`}>
-          📂 파일 업로드
-        </button>
-        <button onClick={() => setActiveTab("chat")} className={`px-4 py-2 font-bold rounded-lg transition-colors whitespace-nowrap ${activeTab === "chat" ? "bg-purple-100 text-purple-700" : "text-gray-600 hover:bg-gray-50"}`}>
-          💬 상담 안내
-        </button>
+      <div className="bg-white/60 backdrop-blur-xl border-b border-gray-100 px-8 py-2 flex gap-8 overflow-x-auto">
+        {(["poem", "diary", "file", "chat"] as const).map(tab => (
+          <button key={tab} onClick={() => { setActiveTab(tab); window.location.hash = tab; }} className={`py-4 text-xs font-black uppercase tracking-widest transition-all relative ${activeTab === tab ? "text-orange-600" : "text-gray-400 hover:text-gray-600"}`}>
+            {tab === "poem" ? "Poem Design" : tab === "diary" ? "Chronicle" : tab === "file" ? "Files" : "Chat"}
+            {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-1 bg-orange-600 rounded-full" />}
+          </button>
+        ))}
       </div>
 
-      {/* 메인 콘텐츠 */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-4 space-y-6 flex flex-col pb-20">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-8 space-y-12 pb-40">
         
-        {/* 토큰 미설정 안내 */}
-        {!ghToken && (
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-xl">
-            <div className="flex items-center">
-              <div className="text-yellow-400 mr-3">⚠️</div>
-              <p className="text-sm text-yellow-700 font-bold">
-                아직 GitHub 연동이 설정되지 않았습니다. 상단의 ⚙️ 설정을 클릭해 토큰을 저장해 주세요.
-              </p>
+        {activeTab === "poem" && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* 설정 영역 */}
+            <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-10">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-black text-gray-800 tracking-tighter">걷는 독서 디자인</h2>
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest italic">Walking Reading Poem Designer</p>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block">오늘의 싯구</label>
+                  <textarea value={poemForm.content} onChange={e => setPoemForm({...poemForm, content: e.target.value})} rows={5} className="w-full border-2 border-gray-50 rounded-[24px] px-6 py-5 bg-gray-50 focus:border-orange-500 focus:bg-white transition-all font-serif text-lg leading-relaxed outline-none" placeholder="적게 소유하고 깊게 사랑하라"></textarea>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block">배경 테마 (사진)</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {POEM_PRESETS.map(preset => (
+                      <button key={preset.name} onClick={() => setPoemForm({...poemForm, imageUrl: preset.url})} className={`px-2 py-3 rounded-xl border text-[10px] font-bold transition-all ${poemForm.imageUrl === preset.url ? 'bg-orange-600 border-orange-600 text-white shadow-lg' : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50'}`}>
+                        {preset.name}
+                      </button>
+                    ))}
+                  </div>
+                  <label className="mt-4 flex items-center justify-center gap-2 w-full py-4 rounded-xl border-2 border-dashed border-gray-200 text-gray-400 text-xs font-bold hover:bg-gray-50 cursor-pointer transition-all">
+                    <span>📤 내 PC에서 사진 불러오기</span>
+                    <input type="file" onChange={handleLocalImageUpload} className="hidden" accept="image/*" />
+                  </label>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">배경 어둡기 (글자 가독성)</label>
+                    <span className="text-[10px] font-black text-orange-600">{poemForm.opacity}%</span>
+                  </div>
+                  <input type="range" min="0" max="90" value={poemForm.opacity} onChange={e => setPoemForm({...poemForm, opacity: parseInt(e.target.value)})} className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-600" />
+                </div>
+
+                <button onClick={handlePoemSubmit} disabled={isPoemSubmitting} className="w-full bg-gray-800 text-white font-black py-6 rounded-[24px] hover:bg-black shadow-2xl transition-all text-xl mt-4">
+                  {isPoemSubmitting ? "전송 중..." : "🚀 시 등록하기"}
+                </button>
+              </div>
+            </div>
+
+            {/* 프리뷰 영역 */}
+            <div className="sticky top-12 space-y-8">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-orange-600 animate-pulse"></span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Real-time Preview</span>
+              </div>
+              <div className="aspect-square w-full rounded-[48px] overflow-hidden shadow-2xl relative border-8 border-white group">
+                <img src={poemForm.imageUrl} className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0 transition-opacity duration-300" style={{ backgroundColor: `rgba(0,0,0,${poemForm.opacity / 100})` }}></div>
+                
+                <div className="absolute inset-0 p-16 flex flex-col justify-center text-center text-white">
+                  <div className="absolute top-12 left-12 text-[10px] opacity-40 font-bold tracking-widest">{new Date().toLocaleDateString()}</div>
+                  <div className="absolute top-12 right-12 text-[10px] opacity-40 font-bold tracking-widest">출처 : {poemForm.author}</div>
+                  
+                  <div className="space-y-6">
+                    {(poemForm.content || "").split("\n").map((line, idx) => (
+                      <p key={idx} className="text-2xl md:text-3xl font-serif font-bold leading-relaxed drop-shadow-xl animate-revealUp">{line}</p>
+                    ))}
+                  </div>
+
+                  <div className="absolute bottom-12 right-12 text-[10px] opacity-40 font-bold tracking-[0.3em] uppercase">Design by Chamnongkkun</div>
+                </div>
+              </div>
+              <p className="text-center text-[10px] text-gray-400 font-medium">※ 실제 메인 페이지에 위 디자인 그대로 반영됩니다.</p>
             </div>
           </div>
         )}
 
-        {/* --- 시 등록 폼 --- */}
-        {activeTab === "poem" && (
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">📝 새로운 시 등록</h2>
-            <form onSubmit={handlePoemSubmit} className="space-y-5">
-              <input type="text" value={poemForm.title} onChange={e => setPoemForm({...poemForm, title: e.target.value})} placeholder="시 제목" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-orange-500" />
-              <textarea value={poemForm.content} onChange={e => setPoemForm({...poemForm, content: e.target.value})} rows={6} placeholder="시 내용을 입력하세요" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-orange-500"></textarea>
-              <div className="grid grid-cols-2 gap-4">
-                <input type="text" value={poemForm.author} onChange={e => setPoemForm({...poemForm, author: e.target.value})} placeholder="작가 이름" className="w-full border rounded-xl px-4 py-3 bg-gray-50" />
-                <input type="text" value={poemForm.mood} onChange={e => setPoemForm({...poemForm, mood: e.target.value})} placeholder="분위기" className="w-full border rounded-xl px-4 py-3 bg-gray-50" />
-              </div>
-              <div className="grid grid-cols-2 gap-4 border p-4 rounded-xl bg-gray-50">
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs font-bold text-gray-500">배경색</span>
-                  <input type="color" value={poemForm.bgColor} onChange={e => setPoemForm({...poemForm, bgColor: e.target.value})} className="w-full h-10 rounded cursor-pointer" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs font-bold text-gray-500">글자색</span>
-                  <input type="color" value={poemForm.textColor} onChange={e => setPoemForm({...poemForm, textColor: e.target.value})} className="w-full h-10 rounded cursor-pointer" />
-                </div>
-              </div>
-              <button type="submit" disabled={isPoemSubmitting} className="w-full bg-orange-600 text-white font-bold py-4 rounded-xl hover:bg-orange-700 transition-all text-lg">
-                {isPoemSubmitting ? "전송 중..." : "시 등록하기"}
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* --- 농부일기 & 현장소식 폼 --- */}
         {activeTab === "diary" && (
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-xl font-bold text-green-800 mb-6">🌿 농부일기 & 현장소식 작성</h2>
-            <form onSubmit={handleDiarySubmit} className="space-y-5">
-              <input type="text" value={diaryForm.title} onChange={e => setDiaryForm({...diaryForm, title: e.target.value})} placeholder="제목 (예: [현장소식] 오늘 농장 현황)" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-green-500" />
-              <textarea value={diaryForm.content} onChange={e => setDiaryForm({...diaryForm, content: e.target.value})} rows={8} placeholder="농장 현장 소식을 입력하세요" className="w-full border rounded-xl px-4 py-3 bg-gray-50 focus:outline-green-500"></textarea>
-              <div className="border p-4 rounded-xl bg-gray-50 space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">사진 선택 (여러 장)</label>
-                  <input ref={diaryImageInputRef} type="file" multiple accept="image/*" onChange={e => setDiaryImages(e.target.files)} className="w-full bg-white border p-2 rounded-lg text-sm" />
+          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 max-w-3xl mx-auto">
+            <div className="mb-10">
+              <h2 className="text-3xl font-black text-gray-800 tracking-tighter">농부의 크로니클 등록</h2>
+              <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">Add Farmer's Chronicle Entry</p>
+            </div>
+            <form onSubmit={handleDiarySubmit} className="space-y-8">
+              <input type="text" value={diaryForm.title} onChange={e => setDiaryForm({...diaryForm, title: e.target.value})} placeholder="글 제목 (예: 감자 수확하는 날)" className="w-full border-2 border-gray-50 rounded-[20px] px-6 py-4 bg-gray-50 focus:border-green-600 focus:bg-white outline-none font-bold" />
+              <textarea value={diaryForm.content} onChange={e => setDiaryForm({...diaryForm, content: e.target.value})} rows={6} placeholder="오늘의 기록을 남겨주세요." className="w-full border-2 border-gray-50 rounded-[20px] px-6 py-4 bg-gray-50 focus:border-green-600 focus:bg-white outline-none leading-relaxed"></textarea>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">📷 사진 선택</label>
+                  <input type="file" multiple ref={diaryImageInputRef} onChange={e => setDiaryImages(e.target.files)} className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">동영상 선택 (1개)</label>
-                  <input ref={diaryVideoInputRef} type="file" accept="video/*" onChange={e => setDiaryVideo(e.target.files?.[0] || null)} className="w-full bg-white border p-2 rounded-lg text-sm" />
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">🎥 비디오 선택</label>
+                  <input type="file" ref={diaryVideoInputRef} onChange={e => setDiaryVideo(e.target.files ? e.target.files[0] : null)} className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                 </div>
               </div>
-              <button type="submit" disabled={isDiarySubmitting} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 transition-all text-lg">
-                {isDiarySubmitting ? "GitHub 업로드 중..." : "등록하기"}
+              
+              <button type="submit" disabled={isDiarySubmitting} className="w-full bg-green-600 text-white font-black py-6 rounded-[24px] hover:bg-green-700 shadow-xl shadow-green-100 transition-all text-xl">
+                {isDiarySubmitting ? "전송 중..." : "🌿 기록 완료"}
               </button>
             </form>
           </div>
         )}
 
-        {/* --- 파일 업로드 --- */}
         {activeTab === "file" && (
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">📂 데이터 파일 업로드</h2>
-            <form onSubmit={handleFileUpload} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input ref={fileInputRef} type="file" onChange={(e) => setUploadFile(e.target.files?.[0] || null)} className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50" />
-                <input type="text" value={uploadPath} onChange={(e) => setUploadPath(e.target.value)} placeholder="저장 경로 (예: data/xxx.xlsx)" className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50" />
+          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-black text-gray-800 mb-8 uppercase tracking-widest">File Management</h2>
+            <form onSubmit={handleFileUpload} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">경로 설정</label>
+                <input type="text" value={uploadPath} onChange={e => setUploadPath(e.target.value)} placeholder="data/images/photo.jpg" className="w-full border-2 border-gray-50 rounded-xl px-4 py-3 bg-gray-50 outline-none" />
               </div>
-              <button type="submit" disabled={isUploading || !uploadFile} className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md">
-                {isUploading ? "전송 중..." : "업로드 시작"}
+              <input type="file" ref={fileInputRef} onChange={e => setUploadFile(e.target.files ? e.target.files[0] : null)} className="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+              <button type="submit" disabled={isUploading} className="w-full bg-blue-600 text-white font-black py-4 rounded-xl hover:bg-blue-700 transition-all">
+                {isUploading ? "업로드 중..." : "📂 업로드 실행"}
               </button>
-              {uploadMessage && <p className="text-sm font-bold mt-2">{uploadMessage}</p>}
+              {uploadMessage && <p className="text-xs text-center font-bold text-blue-600">{uploadMessage}</p>}
             </form>
           </div>
         )}
 
-        {/* --- 상담 안내 --- */}
-        {activeTab === "chat" && (
-          <div className="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center">
-            <div className="text-4xl mb-4">💬</div>
-            <h3 className="text-lg font-bold text-gray-800 mb-2">실시간 상담 기능 사용 안내</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              현재 사장님의 사이트는 정적(Static) 모드로 운영 중입니다. <br/>
-              실시간 상담 내역을 관리하시려면 전용 서버 설정이 추가로 필요합니다. <br/>
-              현재는 **시와 일기 등록**을 중심으로 이용해 주세요!
-            </p>
-          </div>
-        )}
       </main>
     </div>
   );
 };
 
 export default AdminPage;
-
-
