@@ -61,6 +61,7 @@ const AdminPage: React.FC = () => {
   const [editImage, setEditImage] = useState<File|null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const editImageRef = useRef<HTMLInputElement>(null);
+  const [imageInfo, setImageInfo] = useState<{original: string, resized: string, w: number, h: number} | null>(null);
 
   const [listLoading, setListLoading] = useState(false);
 
@@ -301,10 +302,38 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  // 이미지를 최대 maxWidth 픽셀로 리사이즈해서 dataURL로 반환
+  const resizeImage = (file: File, maxWidth: number): Promise<{dataUrl: string, size: number, width: number, height: number}> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        URL.revokeObjectURL(url);
+        resolve({ dataUrl, size: Math.round(dataUrl.length * 0.75), width: w, height: h });
+      };
+      img.src = url;
+    });
+  };
+
   const handleLocalImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const base64 = await fileToBase64(e.target.files[0]);
-      setPoemForm({ ...poemForm, imageUrl: `data:${e.target.files[0].type};base64,${base64}` });
+      const file = e.target.files[0];
+      const originalKB = (file.size / 1024).toFixed(0);
+      const resized = await resizeImage(file, 1200);
+      setPoemForm({ ...poemForm, imageUrl: resized.dataUrl });
+      setImageInfo({
+        original: `${originalKB}KB`,
+        resized: `${(resized.size / 1024).toFixed(0)}KB`,
+        w: resized.width,
+        h: resized.height,
+      });
     }
   };
 
@@ -412,30 +441,70 @@ const AdminPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 프리뷰 영역 */}
-            <div className="sticky top-12 space-y-8">
+            {/* 프리뷰 영역 - DailyPoemClient와 완전히 동일한 구조 */}
+            <div className="sticky top-12 space-y-4">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-orange-600 animate-pulse"></span>
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Real-time Preview</span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">실제 사이트 미리보기 (1:1 동일)</span>
               </div>
-              <div className="aspect-square w-full rounded-[48px] overflow-hidden shadow-2xl relative border-8 border-white group">
-                <img src={poemForm.imageUrl} className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 transition-opacity duration-300" style={{ backgroundColor: `rgba(0,0,0,${poemForm.opacity / 100})` }}></div>
-                
-                <div className="absolute inset-0 p-16 flex flex-col justify-center text-center text-white">
-                  <div className="absolute top-12 left-12 text-[10px] opacity-40 font-bold tracking-widest">{new Date().toLocaleDateString()}</div>
-                  <div className="absolute top-12 right-12 text-[10px] opacity-40 font-bold tracking-widest">출처 : {poemForm.author}</div>
-                  
-                  <div className="space-y-6">
+
+              {/* ↓ DailyPoemClient 구조와 완전히 동일 */}
+              <div
+                className="relative w-full overflow-hidden shadow-2xl"
+                style={{
+                  borderRadius: "20px",
+                  minHeight: 320,
+                  background: poemForm.imageUrl
+                    ? undefined
+                    : "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+                }}
+              >
+                {poemForm.imageUrl && (
+                  <img
+                    src={poemForm.imageUrl}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{ display: "block" }}
+                  />
+                )}
+                {/* 어둡기 오버레이 */}
+                <div
+                  className="absolute inset-0 transition-opacity duration-300"
+                  style={{ backgroundColor: `rgba(0,0,0,${poemForm.opacity / 100})` }}
+                />
+                {/* 날짜 + 출처 */}
+                <div className="absolute top-4 left-4 text-[10px] text-white/40 font-bold tracking-widest">
+                  {new Date().toLocaleDateString('ko-KR')}
+                </div>
+                <div className="absolute top-4 right-4 text-[10px] text-white/40 font-bold tracking-widest">
+                  출처 : {poemForm.author}
+                </div>
+                {/* 시 본문 */}
+                <div className="relative z-10 flex flex-col items-center justify-center px-8 py-16 text-center text-white min-h-[320px]">
+                  <div className="space-y-3">
                     {(poemForm.content || "").split("\n").map((line, idx) => (
-                      <p key={idx} className="text-2xl md:text-3xl font-serif font-bold leading-relaxed drop-shadow-xl animate-revealUp">{line}</p>
+                      <p
+                        key={idx}
+                        className="font-serif text-xl md:text-2xl font-bold leading-relaxed drop-shadow-xl"
+                        style={{ minHeight: "1.5rem" }}
+                      >
+                        {line || "\u00A0"}
+                      </p>
                     ))}
                   </div>
-
-                  <div className="absolute bottom-12 right-12 text-[10px] opacity-40 font-bold tracking-[0.3em]">Design by AI & 瞑想家</div>
                 </div>
               </div>
-              <p className="text-center text-[10px] text-gray-400 font-medium">※ 실제 메인 페이지에 위 디자인 그대로 반영됩니다.</p>
+
+              {/* 이미지 리사이즈 정보 */}
+              {imageInfo && (
+                <div className="bg-blue-50 rounded-2xl p-4 text-xs space-y-1 border border-blue-100">
+                  <p className="font-black text-blue-700 text-[10px] uppercase tracking-widest mb-2">📐 이미지 최적화 결과</p>
+                  <p className="text-blue-600">원본 용량: <span className="font-bold">{imageInfo.original}</span></p>
+                  <p className="text-blue-600">최적화 후: <span className="font-bold">{imageInfo.resized}</span> ({imageInfo.w} × {imageInfo.h}px)</p>
+                </div>
+              )}
+
+              <p className="text-center text-[10px] text-gray-400 font-medium">※ 위 미리보기가 실제 사이트에 그대로 반영됩니다.</p>
             </div>
           </div>
 
