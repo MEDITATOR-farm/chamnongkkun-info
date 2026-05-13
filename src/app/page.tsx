@@ -137,7 +137,7 @@ export default function Home() {
           />
           <div className="max-w-3xl space-y-8 reveal-up reveal-delay-3">
             <div className="space-y-8">
-              <GlassCard className="border-l-8 border-l-secondary bg-secondary/5">
+              <GlassCard className="!p-0 overflow-hidden border border-primary/10">
                 <DailyPoemClient poems={poems} />
               </GlassCard>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
