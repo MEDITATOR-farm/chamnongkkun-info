@@ -432,7 +432,7 @@ const AdminPage: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="absolute bottom-12 right-12 text-[10px] opacity-40 font-bold tracking-[0.3em] uppercase">Design by Chamnongkkun</div>
+                  <div className="absolute bottom-12 right-12 text-[10px] opacity-40 font-bold tracking-[0.3em]">Design by AI & 瞑想家</div>
                 </div>
               </div>
               <p className="text-center text-[10px] text-gray-400 font-medium">※ 실제 메인 페이지에 위 디자인 그대로 반영됩니다.</p>

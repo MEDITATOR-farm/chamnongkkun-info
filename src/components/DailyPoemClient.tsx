@@ -75,7 +75,7 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
 
         {/* 워터마크 */}
         <div className="absolute bottom-4 right-4 text-[9px] text-white/20 font-bold tracking-[0.3em] uppercase">
-          Design by Chamnongkkun
+          Design by AI & 瞑想家
         </div>
       </div>
 
