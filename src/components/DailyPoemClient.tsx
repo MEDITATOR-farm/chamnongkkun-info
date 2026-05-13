@@ -54,7 +54,7 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
         </div>
 
         {/* 시 본문 — 최소 450px 보장, 내용 많으면 자동 확장 */}
-        <div className="relative z-10 flex flex-col items-center justify-center px-8 pt-14 pb-12 text-center text-white min-h-[450px]">
+        <div className="relative z-10 flex flex-col items-center justify-center px-8 pt-14 pb-12 text-center text-white min-h-[500px]">
           <div className="space-y-3 w-full">
             {(poem.content || "").split("\n").map((line: string, idx: number) => (
               <p
