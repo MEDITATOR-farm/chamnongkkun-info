@@ -132,9 +132,13 @@ export default function PoemsPage() {
               : "#fdf6ee";
             const textCol = poem.textColor || "#3d3228";
 
+            // 사진 시는 높이를 자동으로, 글 시는 고정 높이 사용
+            const isImagePoem = !!(poem.type === "image" || poem.imageUrl);
+
             return (
               <div key={poem.id} style={{
                 ...cardStyle,
+                height: isImagePoem ? "auto" : "380px",  // 사진 시는 높이 자동
                 background: bg,
                 color: textCol,
                 position: "relative",
@@ -173,11 +177,11 @@ export default function PoemsPage() {
                 {poem.author && <p style={{ fontSize: 13, marginBottom: 16, opacity: 0.7 }}>— {poem.author}</p>}
 
                 {(poem.type === "image" || poem.imageUrl) ? (
-                  <div style={{ flex: 1, display: "flex", alignItems: "center", overflow: "hidden", marginBottom: 16 }}>
+                  <div style={{ width: "100%", marginBottom: 16 }}>
                     <img
                       src={poem.imageUrl}
                       alt={poem.title}
-                      style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "12px" }}
+                      style={{ width: "100%", height: "auto", objectFit: "contain", borderRadius: "12px", display: "block" }}
                       loading="lazy"
                     />
                   </div>
