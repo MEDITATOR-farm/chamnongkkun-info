@@ -229,7 +229,14 @@ const AdminPage: React.FC = () => {
       let poems = [];
       if (res.ok) {
         const fileData = await res.json();
-        poems = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,'')))));
+        if (fileData.content) {
+          // 1MB 이하: base64 디코딩
+          poems = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,'')))));
+        } else if (fileData.download_url) {
+          // 1MB 초과: download_url로 직접 로딩
+          const raw = await fetch(fileData.download_url);
+          poems = await raw.json();
+        }
       }
       const newPoem = {
         id: Date.now(),
