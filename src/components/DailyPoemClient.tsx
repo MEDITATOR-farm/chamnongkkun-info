@@ -55,11 +55,7 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
 
         {/* 시 본문 */}
         <div className="relative z-10 flex flex-col items-center justify-center px-8 py-16 text-center text-white min-h-[320px]">
-          {poem.title && (
-            <p className="text-[11px] font-bold tracking-[0.4em] uppercase text-white/40 mb-6">
-              POETRY OF THE DAY
-            </p>
-          )}
+
           <div className="space-y-3">
             {(poem.content || "").split("\n").map((line: string, idx: number) => (
               <p
@@ -73,10 +69,7 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
           </div>
         </div>
 
-        {/* 워터마크 */}
-        <div className="absolute bottom-4 right-4 text-[9px] text-white/20 font-bold tracking-[0.3em] uppercase">
-          Design by AI & 瞑想家
-        </div>
+
       </div>
 
       {/* ── 이전 / 다음 네비게이션 ── */}
