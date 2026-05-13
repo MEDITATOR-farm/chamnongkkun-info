@@ -68,23 +68,9 @@ const AdminPage: React.FC = () => {
     if (!ghToken) return;
     setListLoading(true);
     try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
-      if (res.ok) {
-        const d = await res.json();
-        let items;
-        if (d.content) {
-          // 1MB 이하: base64 디코딩
-          items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
-        } else if (d.download_url) {
-          // 1MB 초과: download_url로 직접 로딩
-          const raw = await fetch(d.download_url);
-          items = await raw.json();
-        }
-        if (items) {
-          if (type === 'poems') setPoemList(items);
-          else setDiaryList(items);
-        }
-      }
+      const items = await fetchGithubJson(`data/${type}.json`);
+      if (type === 'poems') setPoemList(items);
+      else setDiaryList(items);
     } catch (e: any) { console.error('불러오기 실패:', e.message); }
     finally { setListLoading(false); }
   };
@@ -100,18 +86,8 @@ const AdminPage: React.FC = () => {
     if (!ghToken) return alert('토큰을 설정해주세요.');
     setIsDeleting(`${type}-${id}`);
     try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
-      if (!res.ok) throw new Error('파일을 찾을 수 없습니다.');
-      const d = await res.json();
-      let items: any[];
-      if (d.content) {
-        items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
-      } else if (d.download_url) {
-        const raw = await fetch(d.download_url);
-        items = await raw.json();
-      } else {
-        throw new Error('파일을 불러올 수 없습니다.');
-      }
+      const items = await fetchGithubJson(`data/${type}.json`);
+      if (!items.length) throw new Error('파일을 불러올 수 없습니다.');
       const filtered = items.filter((v: any) => v.id !== id);
       await commitToGithub(`data/${type}.json`, JSON.stringify(filtered, null, 2), `관리자: ${type} 항목 삭제 (ID:${id})`, false);
       if (type === 'poems') setPoemList(filtered);
@@ -138,18 +114,8 @@ const AdminPage: React.FC = () => {
         await commitToGithub(imgPath, await fileToBase64(editImage), `관리자: 수정 이미지 업로드`);
         newImagePath = `/${imgPath}`;
       }
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${editType}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
-      if (!res.ok) throw new Error('파일을 찾을 수 없습니다.');
-      const d = await res.json();
-      let items: any[];
-      if (d.content) {
-        items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
-      } else if (d.download_url) {
-        const raw = await fetch(d.download_url);
-        items = await raw.json();
-      } else {
-        throw new Error('파일을 불러올 수 없습니다.');
-      }
+      const items = await fetchGithubJson(`data/${editType}.json`);
+      if (!items.length) throw new Error('파일을 불러올 수 없습니다.');
       const now = new Date().toLocaleString('ko-KR');
       const updated = items.map((v:any) => {
         if (v.id !== editItem.id) return v;
@@ -210,6 +176,23 @@ const AdminPage: React.FC = () => {
     });
   };
 
+  // ✅ 공통 함수: GitHub에서 JSON 파일 읽기 (1MB 초과 자동 처리)
+  const fetchGithubJson = async (path: string): Promise<any[]> => {
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/${path}`;
+    const res = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+    if (!res.ok) return [];
+    const d = await res.json();
+    if (d.content) {
+      // 1MB 이하: GitHub가 base64로 직접 줌
+      return JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+    } else if (d.download_url) {
+      // 1MB 초과: 별도 URL로 직접 다운로드
+      const raw = await fetch(d.download_url);
+      return await raw.json();
+    }
+    return [];
+  };
+
   const commitToGithub = async (path: string, content: string, message: string, isBase64 = true) => {
     if (!ghToken) throw new Error("토큰이 없습니다.");
     const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/${path}`;
@@ -243,18 +226,7 @@ const AdminPage: React.FC = () => {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/poems.json`, {
         headers: { 'Authorization': `token ${ghToken}` }
       });
-      let poems = [];
-      if (res.ok) {
-        const fileData = await res.json();
-        if (fileData.content) {
-          // 1MB 이하: base64 디코딩
-          poems = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,'')))));
-        } else if (fileData.download_url) {
-          // 1MB 초과: download_url로 직접 로딩
-          const raw = await fetch(fileData.download_url);
-          poems = await raw.json();
-        }
-      }
+      const poems = await fetchGithubJson('data/poems.json');
       const newPoem = {
         id: Date.now(),
         ...poemForm,
@@ -287,14 +259,7 @@ const AdminPage: React.FC = () => {
         videoPath = `uploads/diary_vid_${Date.now()}_${diaryVideo.name}`;
         await commitToGithub(videoPath, await fileToBase64(diaryVideo), `관리자: 일기 비디오 업로드`);
       }
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/diaries.json`, {
-        headers: { 'Authorization': `token ${ghToken}` }
-      });
-      let diaries = [];
-      if (res.ok) {
-        const fileData = await res.json();
-        diaries = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,'')))));
-      }
+      const diaries = await fetchGithubJson('data/diaries.json');
       const newEntry = {
         id: Date.now(),
         date: new Date().toISOString().split('T')[0],
