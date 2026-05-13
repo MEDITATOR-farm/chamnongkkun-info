@@ -177,7 +177,7 @@ export default function PoemsPage() {
                     <img
                       src={poem.imageUrl}
                       alt={poem.title}
-                      style={{ width: "100%", height: "240px", objectFit: "cover", borderRadius: "12px" }}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "12px" }}
                       loading="lazy"
                     />
                   </div>
