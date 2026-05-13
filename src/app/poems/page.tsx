@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 export default function PoemsPage() {
   const [poems, setPoems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLocal, setIsLocal] = useState(false);
-  const [selectedPoem, setSelectedPoem] = useState<any>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   // 시 목록 가져오기 (클라이언트 측에서)
   useEffect(() => {
@@ -26,6 +26,33 @@ export default function PoemsPage() {
         setLoading(false);
       });
   }, []);
+
+  // 현재 선택된 시 객체
+  const selectedPoem = selectedIndex !== null ? poems[selectedIndex] : null;
+
+  // 이전 시로 이동
+  const goPrev = useCallback(() => {
+    if (selectedIndex === null) return;
+    setSelectedIndex(prev => (prev! > 0 ? prev! - 1 : poems.length - 1));
+  }, [selectedIndex, poems.length]);
+
+  // 다음 시로 이동
+  const goNext = useCallback(() => {
+    if (selectedIndex === null) return;
+    setSelectedIndex(prev => (prev! < poems.length - 1 ? prev! + 1 : 0));
+  }, [selectedIndex, poems.length]);
+
+  // 키보드 방향키로도 이동 가능하게
+  useEffect(() => {
+    if (selectedIndex === null) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "Escape") setSelectedIndex(null);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selectedIndex, goPrev, goNext]);
 
   // 삭제 처리 함수
   const handleDelete = async (id: number, title: string) => {
@@ -58,6 +85,7 @@ export default function PoemsPage() {
         alert("성공적으로 삭제되었습니다.");
         // UI에서 즉시 제거
         setPoems(prev => prev.filter(p => p.id !== id));
+        setSelectedIndex(null);
       } else {
         alert("실패: " + (data.error || "알 수 없는 오류"));
       }
@@ -97,70 +125,85 @@ export default function PoemsPage() {
         <p style={{ textAlign: "center", padding: "50px" }}>시를 불러오는 중입니다... ☕</p>
       ) : (
         <div style={gridStyle}>
-          {poems.map((poem) => (
-            <div key={poem.id} style={{
-              ...cardStyle,
-              background: poem.bgColor || "#ffffff",
-              color: poem.textColor || "#333333",
-              position: "relative"
-            }} onClick={() => setSelectedPoem(poem)}>
-              {/* 삭제 버튼 */}
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(poem.id, poem.title);
-                }}
-                style={{
-                  position: "absolute",
-                  top: 15, right: 15,
-                  background: "rgba(0,0,0,0.05)",
-                  border: "none",
-                  borderRadius: "50%",
-                  width: 30, height: 30,
-                  cursor: "pointer",
-                  fontSize: 14,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  opacity: 0.6,
-                  transition: "0.2s"
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.opacity = "1")}
-                onMouseOut={(e) => (e.currentTarget.style.opacity = "0.6")}
-                title="삭제하기"
-              >
-                ✕
-              </button>
+          {poems.map((poem, index) => {
+            // 배경색이 없거나 흰색인 경우 기본 크림색 배경 적용
+            const bg = poem.bgColor && poem.bgColor !== "#ffffff" && poem.bgColor !== "#FFFFFF"
+              ? poem.bgColor
+              : "#fdf6ee";
+            const textCol = poem.textColor || "#3d3228";
 
-              <div style={{ fontSize: 11, letterSpacing: 2, marginBottom: 8, opacity: 0.8 }}>
-                {poem.mood || "오늘의 시집"}
-              </div>
-              <h3 style={{ fontSize: 18, marginBottom: 4, fontWeight: "bold" }}>{poem.title}</h3>
-              {poem.author && <p style={{ fontSize: 13, marginBottom: 16, opacity: 0.7 }}>— {poem.author}</p>}
-              
-              {(poem.type === "image" || poem.imageUrl) ? (
-                <div style={{ width: "100%", marginBottom: 16 }}>
-                  <img src={poem.imageUrl} alt={poem.title} style={{ width: "100%", display: "block", objectFit: "contain", maxHeight: "500px", margin: "0 auto", borderRadius: "12px" }} loading="lazy" />
+            return (
+              <div key={poem.id} style={{
+                ...cardStyle,
+                background: bg,
+                color: textCol,
+                position: "relative",
+                border: `1px solid ${bg === "#fdf6ee" ? "#e8d5b7" : "transparent"}`,
+              }} onClick={() => setSelectedIndex(index)}>
+                {/* 삭제 버튼 */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(poem.id, poem.title);
+                  }}
+                  style={{
+                    position: "absolute",
+                    top: 15, right: 15,
+                    background: "rgba(0,0,0,0.07)",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: 30, height: 30,
+                    cursor: "pointer",
+                    fontSize: 14,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    opacity: 0.6,
+                    transition: "0.2s"
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.opacity = "1")}
+                  onMouseOut={(e) => (e.currentTarget.style.opacity = "0.6")}
+                  title="삭제하기"
+                >
+                  ✕
+                </button>
+
+                <div style={{ fontSize: 11, letterSpacing: 2, marginBottom: 8, opacity: 0.7 }}>
+                  {poem.mood || "오늘의 시집"}
                 </div>
-              ) : (
-                <p style={{ 
-                  fontSize: 14, 
-                  lineHeight: 1.6, 
-                  whiteSpace: "pre-wrap", 
-                  display: "-webkit-box",
-                  WebkitLineClamp: 4,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  marginBottom: 16
-                }}>
-                  {poem.content}
-                </p>
-              )}
-              
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "auto" }}>
-                <div style={{ fontSize: 11, opacity: 0.5 }}>{poem.date}</div>
-                <div style={{ fontSize: 11, fontWeight: "bold", opacity: 0.5 }}>크게 보기 🔍</div>
+                <h3 style={{ fontSize: 18, marginBottom: 4, fontWeight: "bold" }}>{poem.title}</h3>
+                {poem.author && <p style={{ fontSize: 13, marginBottom: 16, opacity: 0.7 }}>— {poem.author}</p>}
+
+                {(poem.type === "image" || poem.imageUrl) ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", overflow: "hidden", marginBottom: 16 }}>
+                    <img
+                      src={poem.imageUrl}
+                      alt={poem.title}
+                      style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "12px" }}
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <p style={{
+                    fontSize: 14,
+                    lineHeight: 1.7,
+                    whiteSpace: "pre-wrap",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 5,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    marginBottom: 16,
+                    flex: 1,
+                  }}>
+                    {poem.content}
+                  </p>
+                )}
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                  <div style={{ fontSize: 11, opacity: 0.5 }}>{poem.date}</div>
+                  <div style={{ fontSize: 11, fontWeight: "bold", opacity: 0.5 }}>크게 보기 🔍</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -168,53 +211,174 @@ export default function PoemsPage() {
         <p style={{ textAlign: "center", color: "#888", padding: "100px 0" }}>아직 등록된 시가 없네요. 📖</p>
       )}
 
-      {/* 
-        팝업(모달) 창: 지난 시 모음의 시를 클릭했을 때 나타납니다.
+      {/*
+        팝업(모달) 창: 시를 클릭했을 때 나타납니다.
+        이전 / 다음 버튼으로 시를 넘길 수 있습니다.
       */}
       {selectedPoem && (
-        <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
-          onClick={() => setSelectedPoem(null)} // 검은 바탕을 누르면 창이 닫힙니다.
+        <div
+          style={{
+            position: "fixed", inset: 0, zIndex: 100,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(4px)",
+            padding: "16px",
+          }}
+          onClick={() => setSelectedIndex(null)}
         >
-          <div 
-            className="relative w-full max-w-2xl bg-[#fdfbf7] rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-orange-100"
-            onClick={(e) => e.stopPropagation()} // 하얀 창을 눌렀을 때는 안 닫히게 막아줍니다.
-            style={{ maxHeight: '90vh' }}
+          {/* 이전 버튼 */}
+          <button
+            onClick={(e) => { e.stopPropagation(); goPrev(); }}
+            style={navBtnStyle}
+            title="이전 시"
+          >
+            ‹
+          </button>
+
+          {/* 시 본문 카드 - 항상 같은 크기 */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "relative",
+              width: "100%",
+              maxWidth: "580px",
+              height: "80vh",
+              maxHeight: "680px",
+              background: "#fdfbf7",
+              borderRadius: "24px",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.25)",
+              border: "1px solid rgba(249,115,22,0.15)",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}
           >
             {/* 닫기 버튼 */}
-            <button 
-              className="absolute top-4 right-4 text-slate-400 hover:text-orange-500 text-3xl z-[110] transition-colors bg-white/80 rounded-full w-10 h-10 flex items-center justify-center shadow-sm"
-              onClick={() => setSelectedPoem(null)}
+            <button
+              style={{
+                position: "absolute", top: 16, right: 16,
+                background: "white",
+                border: "none",
+                borderRadius: "50%",
+                width: 40, height: 40,
+                fontSize: 20, cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                color: "#888",
+                zIndex: 10,
+                transition: "color 0.2s"
+              }}
+              onMouseOver={e => (e.currentTarget.style.color = "#f97316")}
+              onMouseOut={e => (e.currentTarget.style.color = "#888")}
+              onClick={() => setSelectedIndex(null)}
             >
-              &times;
+              ×
             </button>
-            
-            <div className="p-6 sm:p-10 overflow-y-auto w-full">
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-800 mb-8 text-center border-b-2 border-orange-100 pb-6 w-full relative">
+
+            {/* 시 번호 표시 */}
+            <div style={{
+              textAlign: "center",
+              padding: "20px 20px 0",
+              fontSize: 12,
+              color: "#f97316",
+              fontWeight: "bold",
+              letterSpacing: 2,
+              opacity: 0.8,
+            }}>
+              {selectedIndex! + 1} / {poems.length}
+            </div>
+
+            {/* 스크롤 가능한 본문 영역 */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "16px 40px 24px" }}>
+              {/* 제목 */}
+              <h2 style={{
+                fontSize: "1.6rem",
+                fontFamily: "'Noto Serif KR', serif",
+                fontWeight: "bold",
+                color: "#3d3228",
+                textAlign: "center",
+                marginBottom: "24px",
+                paddingBottom: "20px",
+                borderBottom: "2px solid #fde8d0",
+                position: "relative",
+              }}>
                 {selectedPoem.title}
-                <div className="absolute -bottom-[1px] left-1/2 -translate-x-1/2 w-12 h-0.5 bg-orange-400"></div>
+                <span style={{
+                  position: "absolute", bottom: -2,
+                  left: "50%", transform: "translateX(-50%)",
+                  width: 48, height: 2,
+                  background: "#f97316", display: "block"
+                }} />
               </h2>
-              
+
+              {/* 이미지 시 */}
               {(selectedPoem.type === "image" || selectedPoem.imageUrl) ? (
-                <div className="w-full flex justify-center mb-8">
-                  <img src={selectedPoem.imageUrl} alt={selectedPoem.title} className="max-w-full h-auto rounded-xl shadow-md border border-slate-100" />
+                <div style={{ textAlign: "center" }}>
+                  <img
+                    src={selectedPoem.imageUrl}
+                    alt={selectedPoem.title}
+                    style={{ maxWidth: "100%", height: "auto", borderRadius: "12px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}
+                  />
                 </div>
               ) : (
-                <div className="space-y-4 sm:space-y-6 px-2 sm:px-8 py-6">
+                /* 텍스트 시 */
+                <div style={{ padding: "0 8px" }}>
                   {(selectedPoem.content || "").split("\n").map((line: string, idx: number) => (
-                    <p key={idx} className="text-slate-700 font-serif leading-loose text-base sm:text-lg text-center break-words min-h-[1.5rem]">
-                      {line}
+                    <p key={idx} style={{
+                      fontFamily: "'Noto Serif KR', serif",
+                      color: "#4a3f35",
+                      lineHeight: 2,
+                      fontSize: "1rem",
+                      textAlign: "center",
+                      minHeight: "1.5rem",
+                      margin: 0,
+                    }}>
+                      {line || "\u00A0"}
                     </p>
                   ))}
                 </div>
               )}
-              
-              <div className="mt-10 text-right px-4">
-                <p className="text-slate-600 font-serif font-bold text-lg">— {selectedPoem.author || "거제의 시인"}</p>
-                {selectedPoem.date && <p className="text-slate-400 text-sm mt-2">{selectedPoem.date}</p>}
+
+              {/* 작가 & 날짜 */}
+              <div style={{ marginTop: 32, textAlign: "right" }}>
+                <p style={{ fontFamily: "'Noto Serif KR', serif", fontWeight: "bold", color: "#5a4a3a", fontSize: "1rem" }}>
+                  — {selectedPoem.author || "거제의 시인"}
+                </p>
+                {selectedPoem.date && (
+                  <p style={{ color: "#aaa", fontSize: "0.8rem", marginTop: 6 }}>{selectedPoem.date}</p>
+                )}
               </div>
             </div>
+
+            {/* 하단 이전/다음 버튼 바 */}
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "12px 24px",
+              borderTop: "1px solid #f5e8d8",
+              background: "#fdf6ee",
+            }}>
+              <button onClick={goPrev} style={bottomNavBtn}>
+                ← 이전 시
+              </button>
+              <span style={{ fontSize: 12, color: "#ccc" }}>
+                ← → 방향키로도 이동
+              </span>
+              <button onClick={goNext} style={bottomNavBtn}>
+                다음 시 →
+              </button>
+            </div>
           </div>
+
+          {/* 다음 버튼 */}
+          <button
+            onClick={(e) => { e.stopPropagation(); goNext(); }}
+            style={navBtnStyle}
+            title="다음 시"
+          >
+            ›
+          </button>
         </div>
       )}
     </main>
@@ -226,15 +390,46 @@ const headerStyle: any = { textAlign: "center", marginBottom: 60 };
 const backLinkStyle: any = { color: "#888", textDecoration: "none", fontSize: 14, display: "inline-block", marginBottom: 20 };
 const titleStyle: any = { fontSize: 32, fontWeight: "bold", color: "#3d3228", marginBottom: 12 };
 const subtitleStyle: any = { color: "#888", fontSize: 16 };
-const gridStyle: any = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 };
-const cardStyle: any = { 
-  borderRadius: 20, 
-  padding: "32px 24px", 
-  boxShadow: "0 8px 32px rgba(0,0,0,0.06)", 
-  height: "100%", 
-  display: "flex", 
+const gridStyle: any = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+  gap: 24,
+  alignItems: "start",
+};
+const cardStyle: any = {
+  borderRadius: 20,
+  padding: "28px 24px",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
+  height: "280px",       /* ← 모든 카드 고정 높이 */
+  display: "flex",
   flexDirection: "column",
   fontFamily: "'Noto Serif KR', serif",
-  transition: "0.3s",
-  cursor: "pointer"
+  transition: "transform 0.2s, box-shadow 0.2s",
+  cursor: "pointer",
+  overflow: "hidden",
+};
+const navBtnStyle: any = {
+  background: "rgba(255,255,255,0.15)",
+  border: "none",
+  color: "white",
+  fontSize: 48,
+  width: 56, height: 56,
+  borderRadius: "50%",
+  cursor: "pointer",
+  display: "flex", alignItems: "center", justifyContent: "center",
+  flexShrink: 0,
+  margin: "0 8px",
+  transition: "background 0.2s",
+  lineHeight: 1,
+};
+const bottomNavBtn: any = {
+  background: "none",
+  border: "1px solid #e8d5b7",
+  borderRadius: 30,
+  padding: "8px 20px",
+  cursor: "pointer",
+  fontSize: 13,
+  color: "#8a6a4a",
+  fontFamily: "'Pretendard', sans-serif",
+  transition: "background 0.2s, color 0.2s",
 };
