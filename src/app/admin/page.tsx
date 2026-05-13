@@ -16,6 +16,7 @@ const GITHUB_BRANCH = 'main';
 const AdminPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file" | "chat">("poem");
 
   useEffect(() => {
@@ -334,7 +335,12 @@ const AdminPage: React.FC = () => {
             <h1 className="text-2xl font-black text-gray-800 tracking-tight">참농꾼 마스터 센터</h1>
             <p className="text-gray-400 text-xs mt-2 font-bold uppercase tracking-widest">Administrator Login</p>
           </div>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PASSWORD" className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4 outline-none focus:border-orange-500 transition-all font-bold" autoFocus />
+          <div className="relative">
+            <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PASSWORD" className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4 pr-14 outline-none focus:border-orange-500 transition-all font-bold" autoFocus />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors text-xl select-none" tabIndex={-1}>
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+          </div>
           <button type="submit" className="w-full bg-orange-500 text-white font-black py-4 rounded-2xl hover:bg-orange-600 shadow-xl shadow-orange-200 transition-all">접속하기</button>
         </form>
       </div>
