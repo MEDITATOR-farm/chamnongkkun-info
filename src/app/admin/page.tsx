@@ -103,7 +103,15 @@ const AdminPage: React.FC = () => {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${type}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
       if (!res.ok) throw new Error('파일을 찾을 수 없습니다.');
       const d = await res.json();
-      const items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+      let items: any[];
+      if (d.content) {
+        items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+      } else if (d.download_url) {
+        const raw = await fetch(d.download_url);
+        items = await raw.json();
+      } else {
+        throw new Error('파일을 불러올 수 없습니다.');
+      }
       const filtered = items.filter((v: any) => v.id !== id);
       await commitToGithub(`data/${type}.json`, JSON.stringify(filtered, null, 2), `관리자: ${type} 항목 삭제 (ID:${id})`, false);
       if (type === 'poems') setPoemList(filtered);
@@ -133,7 +141,15 @@ const AdminPage: React.FC = () => {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/${editType}.json`, { headers: { 'Authorization': `token ${ghToken}` } });
       if (!res.ok) throw new Error('파일을 찾을 수 없습니다.');
       const d = await res.json();
-      const items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+      let items: any[];
+      if (d.content) {
+        items = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+      } else if (d.download_url) {
+        const raw = await fetch(d.download_url);
+        items = await raw.json();
+      } else {
+        throw new Error('파일을 불러올 수 없습니다.');
+      }
       const now = new Date().toLocaleString('ko-KR');
       const updated = items.map((v:any) => {
         if (v.id !== editItem.id) return v;
