@@ -177,7 +177,7 @@ export default function PoemsPage() {
                     <img
                       src={poem.imageUrl}
                       alt={poem.title}
-                      style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "12px" }}
+                      style={{ width: "100%", height: "240px", objectFit: "cover", borderRadius: "12px" }}
                       loading="lazy"
                     />
                   </div>
@@ -400,7 +400,7 @@ const cardStyle: any = {
   borderRadius: 20,
   padding: "28px 24px",
   boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
-  height: "280px",       /* ← 모든 카드 고정 높이 */
+  height: "380px",       /* ← 모든 카드 고정 높이 */
   display: "flex",
   flexDirection: "column",
   fontFamily: "'Noto Serif KR', serif",
