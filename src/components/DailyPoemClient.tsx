@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export default function DailyPoemClient({ poems }: { poems: any[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,10 +78,10 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
         </div>
       </div>
 
-      {/* 전문 보기 모달 */}
-      {isOpen && poem && (
+      {/* 전문 보기 모달 - Portal로 body에 직접 렌더링 */}
+      {isOpen && poem && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4"
           onClick={() => setIsOpen(false)}
         >
           <div 
@@ -102,13 +103,29 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
                 </h2>
               )}
               
-              <div className="space-y-6">
-                {(poem.content || "").split("\n").map((line: string, idx: number) => (
-                  <p key={idx} className="text-foreground/70 font-serif leading-loose text-lg min-h-[1rem]">
-                    {line}
-                  </p>
-                ))}
-              </div>
+              {/* 배경 이미지가 있는 시 */}
+              {poem.imageUrl && (
+                <div className="relative w-full rounded-2xl overflow-hidden mb-8" style={{ minHeight: 240 }}>
+                  <img src={poem.imageUrl} alt={poem.title} className="w-full h-full object-cover" style={{ maxHeight: 400 }} />
+                  <div className="absolute inset-0" style={{ backgroundColor: `rgba(0,0,0,${(poem.opacity ?? 35) / 100})` }} />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center text-white">
+                    {(poem.content || "").split("\n").map((line: string, idx: number) => (
+                      <p key={idx} className="font-serif leading-loose text-lg md:text-xl font-bold drop-shadow-lg">{line}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 이미지 없는 텍스트 시 */}
+              {!poem.imageUrl && (
+                <div className="space-y-6">
+                  {(poem.content || "").split("\n").map((line: string, idx: number) => (
+                    <p key={idx} className="text-foreground/70 font-serif leading-loose text-lg min-h-[1rem]">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              )}
               
               <div className="mt-16 pt-8 border-t border-primary/5">
                 <p className="text-foreground/80 font-serif font-bold text-xl">— {poem.author || "거제의 시인"}</p>
@@ -116,7 +133,8 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
