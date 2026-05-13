@@ -22,14 +22,14 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
 
       {/* ── 시 카드 (배경 이미지 + 텍스트 오버레이) ── */}
       <div
-        className="relative w-full overflow-hidden"
+        className="relative w-full"
         style={{
           borderRadius: "20px",
-          minHeight: 320,
+          overflow: "hidden",           /* 모서리 둥구리만을 위해 유지 */
           background: hasBg ? undefined : "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
         }}
       >
-        {/* 배경 이미지 */}
+        {/* 배경 이미지: 콘텐츠 높이에 맞게 채우기 */}
         {hasBg && (
           <img
             src={poem.imageUrl}
@@ -39,37 +39,34 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
           />
         )}
 
-        {/* 어둡기 오버레이 */}
+        {/* 어둑기 오버레이 */}
         <div
           className="absolute inset-0"
           style={{ backgroundColor: `rgba(0,0,0,${opacity / 100})` }}
         />
 
         {/* 날짜 + 출처 */}
-        <div className="absolute top-4 left-4 text-[10px] text-white/40 font-bold tracking-widest">
+        <div className="absolute top-4 left-4 text-[10px] text-white/40 font-bold tracking-widest z-10">
           {poem.date}
         </div>
-        <div className="absolute top-4 right-4 text-[10px] text-white/40 font-bold tracking-widest">
+        <div className="absolute top-4 right-4 text-[10px] text-white/40 font-bold tracking-widest z-10">
           출처 : {poem.author || "거제의 시인"}
         </div>
 
-        {/* 시 본문 */}
-        <div className="relative z-10 flex flex-col items-center justify-center px-8 py-16 text-center text-white min-h-[320px]">
-
-          <div className="space-y-3">
+        {/* 시 본문 — 여백만 유지, 높이는 자동 */}
+        <div className="relative z-10 flex flex-col items-center justify-center px-8 pt-14 pb-10 text-center text-white">
+          <div className="space-y-3 w-full">
             {(poem.content || "").split("\n").map((line: string, idx: number) => (
               <p
                 key={idx}
                 className="font-serif text-xl md:text-2xl font-bold leading-relaxed drop-shadow-xl"
-                style={{ minHeight: "1.5rem" }}
+                style={{ minHeight: "1.5rem", wordBreak: "keep-all" }}
               >
                 {line || "\u00A0"}
               </p>
             ))}
           </div>
         </div>
-
-
       </div>
 
       {/* ── 이전 / 다음 네비게이션 ── */}
