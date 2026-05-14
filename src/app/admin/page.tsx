@@ -170,6 +170,70 @@ const AdminPage: React.FC = () => {
     finally { setIsEditing(false); }
   };
 
+  const handleDownloadImage = () => {
+    if (!poemPreview.imageUrl) {
+      alert("이미지가 없습니다.");
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = poemPreview.imageUrl;
+
+    img.onload = () => {
+      // 1:1 고해상도 비율 (1200x1200)
+      canvas.width = 1200;
+      canvas.height = 1200;
+
+      // 1. 배경 이미지 그리기 (비율에 맞춰 채우기)
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      const x = (canvas.width - img.width * scale) / 2;
+      const y = (canvas.height - img.height * scale) / 2;
+      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+      // 2. 어둡기 오버레이 적용
+      ctx.fillStyle = `rgba(0, 0, 0, ${poemPreview.opacity / 100})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 3. 텍스트 설정
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      
+      // 줄바꿈 처리
+      const lines = poemForm.content.split('\n');
+      const fontSize = 48;
+      const lineHeight = fontSize * 1.6;
+      const totalHeight = lines.length * lineHeight;
+      let startY = (canvas.height - totalHeight) / 2;
+
+      ctx.font = `500 ${fontSize}px "Noto Serif KR", serif`;
+      lines.forEach((line, i) => {
+        ctx.fillText(line, canvas.width / 2, startY + (i * lineHeight) + (lineHeight / 2));
+      });
+
+      // 4. 작가 정보 (하단)
+      if (poemForm.author) {
+        ctx.font = `300 24px "Noto Serif KR", serif`;
+        ctx.fillText(`${poemForm.author}`, canvas.width / 2, canvas.height - 100);
+      }
+
+      // 5. 다운로드 실행
+      const link = document.createElement('a');
+      link.download = `chamnongkkun_poem_${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+    
+    img.onerror = () => {
+      alert("이미지를 불러오는 데 실패했습니다. 외부 이미지의 경우 보안 정책에 의해 다운로드가 제한될 수 있습니다.");
+    };
+  };
+
   const POEM_PRESETS = [
     { name: "물방울", url: "https://images.unsplash.com/photo-1444090542259-0af8fa96557e?auto=format&fit=crop&q=80&w=1000" },
     { name: "고요한 숲", url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1000" },
@@ -737,6 +801,14 @@ const AdminPage: React.FC = () => {
                     <span className="text-xl tracking-tighter">{isPoemSubmitting ? "전송 중..." : "위 디자인으로 시 등록하기"}</span>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+
+                <button 
+                  onClick={handleDownloadImage} 
+                  className="w-full bg-slate-800 text-white font-black py-4 rounded-[28px] hover:bg-black shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3"
+                >
+                  <span className="text-xl">💾</span>
+                  <span className="text-base">이 디자인을 이미지로 저장하기</span>
                 </button>
               </div>
 
