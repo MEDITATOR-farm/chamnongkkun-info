@@ -741,34 +741,60 @@ const AdminPage: React.FC = () => {
 
           {/* 시 목록 + 삭제 */}
           <div className="bg-white p-8 rounded-[32px] shadow-xl border border-gray-100 mt-8">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-gray-800">📜 등록된 시 ({poemList.length}편)</h3>
-              <button onClick={() => loadList('poems')} className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-black hover:bg-orange-100 transition-all">🔄 새로고침</button>
+            <div className="flex justify-between items-center mb-8">
+              <h3 className="text-2xl font-black text-gray-800 tracking-tighter">📜 등록된 시 (총 {poemList.length}편)</h3>
+              <button onClick={() => loadList('poems')} className="px-6 py-2.5 bg-orange-50 text-orange-600 rounded-2xl text-[11px] font-black hover:bg-orange-100 transition-all shadow-sm">🔄 목록 새로고침</button>
             </div>
             {listLoading ? <p className="text-orange-500 text-sm text-center py-8 animate-pulse">불러오는 중...</p> : poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">토큰 설정 후 새로고침 해주세요</p> : (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {poemList.map((p: any) => (
-                  <div key={p.id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
-                    {/* 윗줄: 이미지 + 텍스트 */}
-                    <div className="flex items-center gap-3 p-3">
-                      {p.imageUrl && !p.imageUrl.startsWith('data:')
-                        ? <img src={p.imageUrl} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200" />
-                        : <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 text-xl flex-shrink-0">📝</div>
-                      }
-                      <div className="flex-1 min-w-0">
-                        <p className="font-black text-sm text-gray-800 truncate">
-                          {p.content?.split('\n')[0] || '(내용없음)'}
+                  <div key={p.id} className="group bg-white rounded-[32px] border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                    {/* 1. 제목 (있을 때만 표시) */}
+                    <div className="px-5 py-3 h-12 flex items-center border-b border-gray-50">
+                      <p className="font-black text-sm text-gray-800 truncate">
+                        {p.title || ''}
+                      </p>
+                    </div>
+
+                    {/* 2. 내용 (배경과 함께 미리보기) */}
+                    <div className="relative aspect-[4/3] overflow-hidden bg-gray-900">
+                      {p.imageUrl ? (
+                        <img src={p.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black" />
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center p-4">
+                        <p className="text-white text-[10px] md:text-xs font-serif leading-relaxed text-center line-clamp-4 drop-shadow-md">
+                          {p.content}
                         </p>
-                        <p className="text-[11px] text-gray-400 mt-0.5 truncate">{p.author} · {p.date}</p>
-                        {p.editHistory && <p className="text-[10px] text-blue-400 mt-0.5 truncate">✏️ {p.editHistory[p.editHistory.length-1]?.date}</p>}
                       </div>
                     </div>
-                    {/* 아랫줄: 버튼 */}
-                    <div className="flex border-t border-gray-100">
-                      <button onClick={() => openEdit('poems', p)} className="flex-1 py-2.5 text-xs font-black text-blue-500 hover:bg-blue-50 transition-all border-r border-gray-100">✏️ 수정</button>
-                      <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="flex-1 py-2.5 text-xs font-black text-red-400 hover:bg-red-50 transition-all">
-                        {isDeleting === `poems-${p.id}` ? '삭제중...' : '🗑 삭제'}
-                      </button>
+
+                    {/* 3. 정보 (시인 : 등록일) */}
+                    <div className="p-4 bg-white space-y-3">
+                      <div className="flex justify-between items-center">
+                        <p className="text-[11px] font-bold text-gray-400">
+                          {p.author} : {p.date}
+                        </p>
+                        {p.editHistory && <span className="text-[9px] text-blue-400 bg-blue-50 px-2 py-0.5 rounded-full font-bold">✏️ 수정됨</span>}
+                      </div>
+
+                      {/* 4. 수정 / 삭제 버튼 */}
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => openEdit('poems', p)} 
+                          className="flex-1 py-3 bg-gray-50 text-gray-700 text-[11px] font-black rounded-2xl hover:bg-blue-50 hover:text-blue-600 transition-all border border-transparent hover:border-blue-100"
+                        >
+                          수정하기
+                        </button>
+                        <button 
+                          onClick={() => handleDelete('poems', p.id)} 
+                          disabled={isDeleting === `poems-${p.id}`} 
+                          className="flex-1 py-3 bg-gray-50 text-red-400 text-[11px] font-black rounded-2xl hover:bg-red-50 transition-all border border-transparent hover:border-red-100"
+                        >
+                          {isDeleting === `poems-${p.id}` ? '삭제중...' : '삭제'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
