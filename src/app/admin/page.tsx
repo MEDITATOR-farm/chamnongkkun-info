@@ -17,12 +17,12 @@ const AdminPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file" | "chat">("poem");
+  const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file">("poem");
 
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace("#", "");
-      if (hash && ["poem", "diary", "file", "chat"].includes(hash)) {
+      if (hash && ["poem", "diary", "file"].includes(hash)) {
         setActiveTab(hash as any);
       }
     };
@@ -65,6 +65,14 @@ const AdminPage: React.FC = () => {
   const [imageInfo, setImageInfo] = useState<{original: string, resized: string, w: number, h: number} | null>(null);
 
   const [listLoading, setListLoading] = useState(false);
+
+  // --- 완성 이미지 파일 업로드 모드 ---
+  const [poemMode, setPoemMode] = useState<'design' | 'upload'>('design');
+  const [imageUploadForm, setImageUploadForm] = useState({ title: '', author: '박노해 시인', content: '' });
+  const [imageUploadFile, setImageUploadFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [isImageUploading, setIsImageUploading] = useState(false);
+  const imageUploadInputRef = useRef<HTMLInputElement>(null);
 
   const loadList = async (type: 'poems' | 'diaries') => {
     if (!ghToken) return;
@@ -245,6 +253,44 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  // ✅ 완성 이미지 파일 시 등록 핸들러
+  const handleImagePoemSubmit = async () => {
+    if (!ghToken) return alert('토큰을 설정해주세요.');
+    if (!imageUploadFile) return alert('이미지 파일을 선택해주세요.');
+    if (!imageUploadForm.title.trim()) return alert('제목을 입력해주세요.');
+    setIsImageUploading(true);
+    try {
+      // 1) 이미지 리사이즈 후 GitHub에 업로드
+      const resized = await resizeImage(imageUploadFile, 1200);
+      const base64 = resized.dataUrl.split(',')[1];
+      const imgPath = `uploads/poem_img_${Date.now()}_${imageUploadFile.name.replace(/\s/g, '_')}`;
+      await commitToGithub(imgPath, base64, `관리자: 완성 시 이미지 업로드`);
+      // 2) poems.json에 항목 추가
+      const poems = await fetchGithubJson('data/poems.json');
+      const newPoem = {
+        id: Date.now(),
+        title: imageUploadForm.title,
+        content: imageUploadForm.content,
+        author: imageUploadForm.author,
+        imageUrl: `/${imgPath}`,
+        opacity: 0,
+        date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+        type: 'image',
+      };
+      await commitToGithub('data/poems.json', JSON.stringify([newPoem, ...poems], null, 2), '관리자: 완성 이미지 시 등록', false);
+      alert('✅ 완성 이미지 시가 등록되었습니다!');
+      setImageUploadForm({ title: '', author: '박노해 시인', content: '' });
+      setImageUploadFile(null);
+      setImagePreview('');
+      if (imageUploadInputRef.current) imageUploadInputRef.current.value = '';
+      await loadList('poems');
+    } catch (e: any) {
+      alert('❌ 오류: ' + e.message);
+    } finally {
+      setIsImageUploading(false);
+    }
+  };
+
   const handleDiarySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ghToken) return alert("토큰을 설정해주세요.");
@@ -404,9 +450,9 @@ const AdminPage: React.FC = () => {
       )}
 
       <div className="bg-white/60 backdrop-blur-xl border-b border-gray-100 px-2 md:px-8 py-0 flex overflow-x-auto">
-        {(["poem", "diary", "file", "chat"] as const).map(tab => (
+        {(["poem", "diary", "file"] as const).map(tab => (
           <button key={tab} onClick={() => { setActiveTab(tab); window.location.hash = tab; }} className={`py-3 px-3 md:px-0 md:mr-8 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all relative whitespace-nowrap ${activeTab === tab ? "text-orange-600" : "text-gray-400 hover:text-gray-600"}`}>
-            {tab === "poem" ? "📝 시 등록" : tab === "diary" ? "📔 일기" : tab === "file" ? "📂 파일" : "💬 채팅"}
+            {tab === "poem" ? "📝 시 등록" : tab === "diary" ? "📔 일기" : "📂 파일"}
             {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600 rounded-full" />}
           </button>
         ))}
@@ -416,9 +462,121 @@ const AdminPage: React.FC = () => {
         
         {activeTab === "poem" && (
           <>
+          {/* 모드 전환 탭 */}
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setPoemMode('design')}
+              className={`flex-1 py-3 rounded-2xl text-xs font-black transition-all ${
+                poemMode === 'design'
+                  ? 'bg-orange-600 text-white shadow-lg shadow-orange-200'
+                  : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'
+              }`}
+            >
+              🎨 직접 디자인하기
+            </button>
+            <button
+              onClick={() => setPoemMode('upload')}
+              className={`flex-1 py-3 rounded-2xl text-xs font-black transition-all ${
+                poemMode === 'upload'
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-200'
+                  : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'
+              }`}
+            >
+              🖼️ 완성 이미지 올리기
+            </button>
+          </div>
+
+          {/* ===== 완성 이미지 업로드 폼 ===== */}
+          {poemMode === 'upload' && (
+            <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
+              <div>
+                <h2 className="text-2xl font-black text-gray-800 tracking-tighter">완성 이미지 등록</h2>
+                <p className="text-gray-400 text-xs font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
+              </div>
+
+              {/* 이미지 업로드 드롭존 */}
+              <label className="block cursor-pointer">
+                <div className={`w-full rounded-[24px] border-2 border-dashed transition-all overflow-hidden ${
+                  imagePreview ? 'border-purple-300 p-0' : 'border-gray-200 hover:border-purple-400 hover:bg-purple-50 p-10'
+                }`}>
+                  {imagePreview ? (
+                    <div className="relative">
+                      <img src={imagePreview} alt="미리보기" className="w-full object-contain rounded-[22px]" style={{maxHeight: 360}} />
+                      <div className="absolute top-3 right-3 bg-black/60 text-white text-[10px] font-black px-3 py-1 rounded-full">
+                        클릭하면 이미지 교체
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 text-gray-400">
+                      <div className="text-5xl">🖼️</div>
+                      <p className="font-black text-sm">여기를 눌러 완성된 시 이미지를 선택하세요</p>
+                      <p className="text-[11px]">JPG, PNG, WEBP 모두 가능</p>
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={imageUploadInputRef}
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setImageUploadFile(file);
+                    const url = URL.createObjectURL(file);
+                    setImagePreview(url);
+                  }}
+                />
+              </label>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목 (필수)</label>
+                  <input
+                    type="text"
+                    value={imageUploadForm.title}
+                    onChange={e => setImageUploadForm({...imageUploadForm, title: e.target.value})}
+                    placeholder="예: 적게 소유하고 깊게 사랑하라"
+                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">작가 / 출처</label>
+                  <input
+                    type="text"
+                    value={imageUploadForm.author}
+                    onChange={e => setImageUploadForm({...imageUploadForm, author: e.target.value})}
+                    placeholder="박노해 시인"
+                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">시 내용 (선택 - 텍스트 검색용)</label>
+                  <textarea
+                    value={imageUploadForm.content}
+                    onChange={e => setImageUploadForm({...imageUploadForm, content: e.target.value})}
+                    rows={3}
+                    placeholder="이미지에 담긴 시 내용을 입력하면 나중에 검색할 수 있어요 (선택사항)"
+                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all leading-relaxed"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handleImagePoemSubmit}
+                disabled={isImageUploading || !imageUploadFile || !imageUploadForm.title.trim()}
+                className="w-full bg-purple-600 text-white font-black py-5 rounded-[24px] hover:bg-purple-700 shadow-xl shadow-purple-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {isImageUploading ? '업로드 중... ⏳' : '🚀 완성 이미지 등록하기'}
+              </button>
+            </div>
+          )}
+
+          {/* ===== 디자인 모드 폼 ===== */}
+          {poemMode === 'design' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* 설정 영역 */}
-            <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-10">
+            <div className="bg-white p-6 md:p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-10">
               <div className="space-y-2">
                 <h2 className="text-3xl font-black text-gray-800 tracking-tighter">걷는 독서 디자인</h2>
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest italic">Walking Reading Poem Designer</p>
@@ -525,6 +683,7 @@ const AdminPage: React.FC = () => {
               <p className="text-center text-[10px] text-gray-400 font-medium">※ 위 미리보기가 실제 사이트에 그대로 반영됩니다.</p>
             </div>
           </div>
+          )}
 
           {/* 시 목록 + 삭제 */}
           <div className="bg-white p-8 rounded-[32px] shadow-xl border border-gray-100 mt-8">
