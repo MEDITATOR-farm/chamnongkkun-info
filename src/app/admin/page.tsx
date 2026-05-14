@@ -494,20 +494,35 @@ const AdminPage: React.FC = () => {
                 <p className="text-gray-400 text-xs font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
               </div>
 
-              {/* 이미지 업로드 드롭존 */}
+              {/* 이미지 업로드 드롭존 - 디자인 모드 프리뷰와 동일한 크기 */}
               <label className="block cursor-pointer">
-                <div className={`w-full rounded-[24px] border-2 border-dashed transition-all overflow-hidden ${
-                  imagePreview ? 'border-purple-300 p-0' : 'border-gray-200 hover:border-purple-400 hover:bg-purple-50 p-10'
-                }`}>
+                <div
+                  className="relative w-full overflow-hidden shadow-2xl"
+                  style={{ borderRadius: "20px", minHeight: 320 }}
+                >
                   {imagePreview ? (
-                    <div className="relative">
-                      <img src={imagePreview} alt="미리보기" className="w-full object-contain rounded-[22px]" style={{maxHeight: 360}} />
-                      <div className="absolute top-3 right-3 bg-black/60 text-white text-[10px] font-black px-3 py-1 rounded-full">
+                    <>
+                      <img
+                        src={imagePreview}
+                        alt="미리보기"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ display: "block" }}
+                      />
+                      <div className="absolute top-3 right-3 bg-black/60 text-white text-[10px] font-black px-3 py-1 rounded-full z-10">
                         클릭하면 이미지 교체
                       </div>
-                    </div>
+                      {/* 빈 공간 확보용 */}
+                      <div className="relative z-0" style={{ minHeight: 320 }} />
+                    </>
                   ) : (
-                    <div className="flex flex-col items-center gap-3 text-gray-400">
+                    <div
+                      className="flex flex-col items-center justify-center gap-3 text-gray-400 w-full"
+                      style={{
+                        minHeight: 320,
+                        background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
+                        borderRadius: "20px",
+                      }}
+                    >
                       <div className="text-5xl">🖼️</div>
                       <p className="font-black text-sm">여기를 눌러 완성된 시 이미지를 선택하세요</p>
                       <p className="text-[11px]">JPG, PNG, WEBP 모두 가능</p>
