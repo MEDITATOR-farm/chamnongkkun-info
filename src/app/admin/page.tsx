@@ -754,7 +754,7 @@ const AdminPage: React.FC = () => {
           {/* 시 목록 + 삭제 */}
           <div className="bg-white p-8 rounded-[32px] shadow-xl border border-gray-100 mt-8">
             <div className="flex justify-between items-center mb-8">
-              <h3 className="text-2xl font-black text-gray-800 tracking-tighter">📜 등록된 시 (총 {poemList.length}편)</h3>
+              <h3 className="text-base font-serif font-black text-gray-800 tracking-tighter italic">📜 등록된 시 (총 {poemList.length}편)</h3>
               <button onClick={() => loadList('poems')} className="px-6 py-2.5 bg-orange-50 text-orange-600 rounded-2xl text-[11px] font-black hover:bg-orange-100 transition-all shadow-sm">🔄 목록 새로고침</button>
             </div>
             {listLoading ? <p className="text-orange-500 text-sm text-center py-8 animate-pulse">불러오는 중...</p> : poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">토큰 설정 후 새로고침 해주세요</p> : (
