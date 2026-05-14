@@ -20,6 +20,17 @@ const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file">("poem");
 
   useEffect(() => {
+    // ✅ 세션 자동 로그인 체크 (30일 유효)
+    const session = localStorage.getItem("CHAMNONG_ADMIN_SESSION");
+    if (session) {
+      const { expires } = JSON.parse(session);
+      if (Date.now() < expires) {
+        setIsAuthenticated(true);
+      } else {
+        localStorage.removeItem("CHAMNONG_ADMIN_SESSION"); // 만료 세션 삭제
+      }
+    }
+
     const handleHash = () => {
       const hash = window.location.hash.replace("#", "");
       if (hash && ["poem", "diary", "file"].includes(hash)) {
@@ -387,7 +398,18 @@ const AdminPage: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-sans">
-        <form onSubmit={(e) => { e.preventDefault(); if (password === "admin1234") setIsAuthenticated(true); else alert("비밀번호가 틀렸습니다."); }} className="bg-white p-8 rounded-[32px] shadow-2xl w-full max-w-sm space-y-6">
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (password === "admin1234") {
+            // ✅ 30일짜리 세션 저장
+            localStorage.setItem("CHAMNONG_ADMIN_SESSION", JSON.stringify({
+              expires: Date.now() + 30 * 24 * 60 * 60 * 1000
+            }));
+            setIsAuthenticated(true);
+          } else {
+            alert("비밀번호가 틀렸습니다.");
+          }
+        }} className="bg-white p-8 rounded-[32px] shadow-2xl w-full max-w-sm space-y-6">
           <div className="text-center">
             <h1 className="text-2xl font-black text-gray-800 tracking-tight">참농꾼 마스터 센터</h1>
             <p className="text-gray-400 text-xs mt-2 font-bold uppercase tracking-widest">Administrator Login</p>
@@ -413,7 +435,10 @@ const AdminPage: React.FC = () => {
         </div>
         <div className="flex gap-2 md:gap-4">
           <button onClick={() => setShowSettings(true)} className="text-xs md:text-sm font-bold text-gray-400 hover:text-gray-800 transition-colors px-2 py-1">⚙️ 설정</button>
-          <button onClick={() => setIsAuthenticated(false)} className="text-xs md:text-sm font-bold text-red-400 hover:text-red-600 transition-colors px-2 py-1">로그아웃</button>
+          <button onClick={() => {
+            localStorage.removeItem("CHAMNONG_ADMIN_SESSION");
+            setIsAuthenticated(false);
+          }} className="text-xs md:text-sm font-bold text-red-400 hover:text-red-600 transition-colors px-2 py-1">로그아웃</button>
         </div>
       </header>
 
