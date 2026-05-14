@@ -114,11 +114,18 @@
   },
   {
     "id": 1775602816030,
-    "title": "因緣",
+    "title": "",
     "author": "박노해",
-    "imageUrl": "/uploads/poems/1775602815946-0407.png",
+    "imageUrl": "/uploads/poems_edit_1778734706127_0407.png",
     "type": "image",
-    "date": "2026-04-07"
+    "date": "2026-04-07",
+    "content": "",
+    "editHistory": [
+      {
+        "date": "2026. 5. 14. 오후 1:58:31",
+        "note": "관리자 수정"
+      }
+    ]
   },
   {
     "id": 1775513958550,
