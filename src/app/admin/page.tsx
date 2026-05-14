@@ -120,11 +120,11 @@ const AdminPage: React.FC = () => {
   const openEdit = (type: 'poems'|'diaries', item: any) => {
     setEditType(type);
     setEditItem(item);
-    if (type === 'poems') {
-      setEditForm({ content: item.content||'', author: item.author||'' });
-    } else {
-      setEditForm({ title: item.title||'', content: item.content||'', author: item.author||'' } as any);
-    }
+    setEditForm({ 
+      title: item.title || '', 
+      content: item.content || '', 
+      author: item.author || '' 
+    } as any);
     setEditImage(null);
   };
 
@@ -145,8 +145,21 @@ const AdminPage: React.FC = () => {
         if (v.id !== editItem.id) return v;
         const history = v.editHistory || [];
         history.push({ date: now, note: '관리자 수정' });
-        if (editType === 'poems') return { ...v, content: editForm.content, author: editForm.author, imageUrl: newImagePath, editHistory: history };
-        return { ...v, title: (editForm as any).title, content: editForm.content, image: newImagePath, editHistory: history };
+        
+        const updatedItem = { 
+          ...v, 
+          title: (editForm as any).title, 
+          content: editForm.content, 
+          author: editForm.author,
+          editHistory: history 
+        };
+
+        if (editType === 'poems') {
+          updatedItem.imageUrl = newImagePath;
+        } else {
+          updatedItem.image = newImagePath;
+        }
+        return updatedItem;
       });
       await commitToGithub(`data/${editType}.json`, JSON.stringify(updated, null, 2), `관리자: ${editType} 항목 수정 (ID:${editItem.id})`, false);
       if (editType === 'poems') setPoemList(updated);
@@ -947,12 +960,10 @@ const AdminPage: React.FC = () => {
               <button onClick={() => {setEditItem(null);setEditType(null);}} className="text-gray-300 hover:text-gray-600 text-2xl">✕</button>
             </div>
             <div className="space-y-4">
-              {editType === 'diaries' && (
-                <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목</label>
-                  <input type="text" value={(editForm as any).title} onChange={e=>setEditForm({...editForm,title:e.target.value} as any)} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" />
-                </div>
-              )}
+              <div>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목</label>
+                <input type="text" value={(editForm as any).title} onChange={e=>setEditForm({...editForm,title:e.target.value} as any)} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" placeholder="제목을 입력하세요 (선택사항)" />
+              </div>
               {/* 내용 필드: 일기거나, 시 중에서 내용이 있는 경우(디자인 모드)만 표시 */}
               {!(editType === 'poems' && !editItem.content) && (
                 <div>
