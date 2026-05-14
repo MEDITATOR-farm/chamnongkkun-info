@@ -333,17 +333,25 @@ const AdminPage: React.FC = () => {
     if (!ghToken) return alert("토큰을 설정해주세요.");
     setIsPoemSubmitting(true);
     try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/data/poems.json`, {
-        headers: { 'Authorization': `token ${ghToken}` }
-      });
+      let finalImageUrl = poemForm.imageUrl;
+      
+      // 로컬 PC에서 업로드한 이미지(Base64)인 경우 GitHub에 실제 이미지로 업로드
+      if (finalImageUrl && finalImageUrl.startsWith("data:image")) {
+        const base64Data = finalImageUrl.split(',')[1];
+        const imgPath = `uploads/poem_bg_${Date.now()}.jpg`;
+        await commitToGithub(imgPath, base64Data, `관리자: 시 배경 이미지 업로드`);
+        finalImageUrl = `/${imgPath}`;
+      }
+
       const poems = await fetchGithubJson('data/poems.json');
       const newPoem = {
         id: Date.now(),
         ...poemForm,
+        imageUrl: finalImageUrl,
         date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
       };
       const updatedPoems = [newPoem, ...poems];
-      await commitToGithub('data/poems.json', JSON.stringify(updatedPoems, null, 2), "관리자: 새 시 등록 (걷는 독서 디자인)", false);
+      await commitToGithub('data/poems.json', JSON.stringify(updatedPoems, null, 2), "관리자: 새 시 등록 (디자인)", false);
       alert("✅ 시가 성공적으로 등록되었습니다!");
       setPoemForm({ ...poemForm });
     } catch (e: any) {
