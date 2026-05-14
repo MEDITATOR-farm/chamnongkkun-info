@@ -158,14 +158,14 @@ const AdminPage: React.FC = () => {
   };
 
   const POEM_PRESETS = [
-    { name: "명상(선)", url: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1000" },
-    { name: "물방울", url: "https://images.unsplash.com/photo-1496062031456-07b8f162a322?auto=format&fit=crop&q=80&w=1000" },
+    { name: "명상(선)", url: "https://images.unsplash.com/photo-1474418397713-7ded61d99ef3?auto=format&fit=crop&q=80&w=1000" },
+    { name: "물방울", url: "https://images.unsplash.com/photo-1444090542259-0af8fa96557e?auto=format&fit=crop&q=80&w=1000" },
     { name: "고요한 숲", url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1000" },
     { name: "바다의 아침", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000" },
-    { name: "밤하늘 은하수", url: "https://images.unsplash.com/photo-1506318137071-a8e063b4b47e?auto=format&fit=crop&q=80&w=1000" },
+    { name: "밤하늘 은하수", url: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=1000" },
     { name: "봄 벚꽃", url: "https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&q=80&w=1000" },
     { name: "연꽃 만개", url: "https://images.unsplash.com/photo-1502675135487-e971002a6adb?auto=format&fit=crop&q=80&w=1000" },
-    { name: "가을 단풍", url: "https://images.unsplash.com/photo-1507181382277-02455ca4c23a?auto=format&fit=crop&q=80&w=1000" },
+    { name: "가을 단풍", url: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1000" },
   ];
 
   // --- 농부일기 올리기 관련 상태 ---
@@ -718,7 +718,7 @@ const AdminPage: React.FC = () => {
                 <button 
                   onClick={handlePoemSubmit} 
                   disabled={isPoemSubmitting} 
-                  className="group relative w-full overflow-hidden bg-orange-600 text-white font-black py-7 rounded-[32px] hover:bg-orange-700 shadow-2xl shadow-orange-200 transition-all active:scale-95"
+                  className="group relative w-full overflow-hidden bg-orange-600 text-white font-black py-4 rounded-[28px] hover:bg-orange-700 shadow-2xl shadow-orange-200 transition-all active:scale-95"
                 >
                   <div className="relative z-10 flex items-center justify-center gap-3">
                     <span className="text-2xl">{isPoemSubmitting ? "⏳" : "🚀"}</span>
