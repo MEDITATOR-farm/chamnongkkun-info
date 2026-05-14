@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { NavLinks, GlassCard, SectionHeader } from "@/components/GlassCard";
 import fs from "fs";
 import path from "path";
@@ -36,6 +37,13 @@ export default function Home() {
         <div className="flex items-center gap-4">
           <NavLinks />
           <WeatherWidgetCompact />
+          <Link 
+            href="/admin" 
+            className="w-10 h-10 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center hover:bg-primary/10 transition-all group"
+            title="관리자 모드"
+          >
+            <span className="text-lg group-hover:rotate-45 transition-transform duration-300">⚙️</span>
+          </Link>
         </div>
       </nav>
 
