@@ -139,7 +139,7 @@ const AdminPage: React.FC = () => {
       if (editImage) {
         const imgPath = `uploads/${editType}_edit_${Date.now()}_${editImage.name}`;
         await commitToGithub(imgPath, await fileToBase64(editImage), `관리자: 수정 이미지 업로드`);
-        newImagePath = `/${imgPath}`;
+        newImagePath = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`;
       }
       const items = await fetchGithubJson(`data/${editType}.json`);
       if (!items.length) throw new Error('파일을 불러올 수 없습니다.');
@@ -340,7 +340,7 @@ const AdminPage: React.FC = () => {
         const base64Data = finalImageUrl.split(',')[1];
         const imgPath = `uploads/poem_bg_${Date.now()}.jpg`;
         await commitToGithub(imgPath, base64Data, `관리자: 시 배경 이미지 업로드`);
-        finalImageUrl = `/${imgPath}`;
+        finalImageUrl = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`;
       }
 
       const poems = await fetchGithubJson('data/poems.json');
@@ -377,7 +377,7 @@ const AdminPage: React.FC = () => {
       const newPoem = {
         id: Date.now(),
         author: imageUploadForm.author,
-        imageUrl: `/${imgPath}`,
+        imageUrl: `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`,
         opacity: 0,
         date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }),
         type: 'image',
@@ -434,8 +434,8 @@ const AdminPage: React.FC = () => {
         date: new Date().toISOString().split('T')[0],
         title: diaryForm.title,
         content: diaryForm.content,
-        image: imagePath ? `/${imagePath}` : "",
-        video: videoPath ? `/${videoPath}` : ""
+        image: imagePath ? `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imagePath}` : "",
+        video: videoPath ? `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${videoPath}` : ""
       };
       await commitToGithub('data/diaries.json', JSON.stringify([newEntry, ...diaries], null, 2), "관리자: 새 농부일기 등록", false);
       alert("✅ 농부일기가 등록되었습니다!");
