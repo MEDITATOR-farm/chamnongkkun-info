@@ -4,10 +4,16 @@
     "title": "길을 ..",
     "content": "",
     "author": "박노해 시인",
-    "imageUrl": "/uploads/poem_img_1778728051891_19846.png",
+    "imageUrl": "/uploads/poems_edit_1778728079102_19846.png",
     "opacity": 0,
     "date": "2026. 05. 14.",
-    "type": "image"
+    "type": "image",
+    "editHistory": [
+      {
+        "date": "2026. 5. 14. 오후 12:08:02",
+        "note": "관리자 수정"
+      }
+    ]
   },
   {
     "id": 1778725652593,
