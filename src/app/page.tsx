@@ -30,10 +30,10 @@ export default function Home() {
       
       {/* ── 네비게이션 ── */}
       <nav className="fixed top-0 inset-x-0 z-50 h-20 px-6 md:px-12 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b border-primary/5">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black">C</div>
-          <span className="text-xl font-serif font-black tracking-tighter">참농꾼</span>
-        </div>
+        <Link href="/" className="flex items-center gap-3 group">
+          <img src="/logo.png" alt="참농꾼 로고" className="h-10 w-auto object-contain transition-transform group-hover:scale-110 duration-300" />
+          <span className="text-xl font-serif font-black tracking-tighter text-foreground group-hover:text-primary transition-colors">참농꾼</span>
+        </Link>
         <div className="flex items-center gap-4">
           <NavLinks />
           <WeatherWidgetCompact />
