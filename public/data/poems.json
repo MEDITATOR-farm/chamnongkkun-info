@@ -31,7 +31,7 @@
   {
     "id": 1778635291937,
     "title": "좋은 마음",
-    "content": "좋은 마음으로 좋은 일들을\n\n오래오래 해나가면 그렇게 되어간다.\n\n'좋은 사람에게 좋은 일이'\n\nIf you do good things with a good heart\n\nfor a very long time, you will become so.\n\n'Good things for good people.'",
+    "content": "좋은 마음으로 좋은 일들을\n오래오래 해나가면 그렇게 되어간다.\n'좋은 사람에게 좋은 일이'\n",
     "author": "박노해 시인",
     "imageUrl": "/uploads/poems_edit_1778636018129_KakaoTalk_20241106_212027536_17.jpg",
     "opacity": 35,
@@ -39,6 +39,10 @@
     "editHistory": [
       {
         "date": "2026. 5. 13. 오전 10:33:42",
+        "note": "관리자 수정"
+      },
+      {
+        "date": "2026. 5. 14. 오후 1:52:25",
         "note": "관리자 수정"
       }
     ]
