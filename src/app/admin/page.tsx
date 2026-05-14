@@ -171,7 +171,6 @@ const AdminPage: React.FC = () => {
   };
 
   const POEM_PRESETS = [
-    { name: "새벽 안개", url: "https://images.unsplash.com/photo-1470252649358-9675a4001ae0?auto=format&fit=crop&q=80&w=1000" },
     { name: "물방울", url: "https://images.unsplash.com/photo-1444090542259-0af8fa96557e?auto=format&fit=crop&q=80&w=1000" },
     { name: "고요한 숲", url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1000" },
     { name: "바다의 아침", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000" },
