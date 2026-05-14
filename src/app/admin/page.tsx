@@ -34,6 +34,7 @@ const AdminPage: React.FC = () => {
   const [ghToken, setGhToken] = useState("");
   const [tempToken, setTempToken] = useState("");
   const [showSettings, setShowSettings] = useState(false);
+  const [showToken, setShowToken] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -378,7 +379,24 @@ const AdminPage: React.FC = () => {
               <button onClick={() => setShowSettings(false)} className="text-gray-300 hover:text-gray-600 text-2xl">✕</button>
             </div>
             <div className="space-y-4">
-              <input type="password" value={tempToken} onChange={(e) => setTempToken(e.target.value)} placeholder="GITHUB TOKEN (ghp_...)" className="w-full border-2 border-gray-50 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 transition-all" />
+              <div className="relative">
+                <input
+                  type={showToken ? "text" : "password"}
+                  value={tempToken}
+                  onChange={(e) => setTempToken(e.target.value)}
+                  placeholder="GITHUB TOKEN (ghp_...)"
+                  className="w-full border-2 border-gray-50 rounded-2xl px-6 py-4 pr-14 outline-none focus:border-blue-500 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowToken(!showToken)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors text-xl select-none"
+                  tabIndex={-1}
+                  title={showToken ? "토큰 숨기기" : "토큰 보기"}
+                >
+                  {showToken ? "🙈" : "👁️"}
+                </button>
+              </div>
               <button onClick={handleSaveToken} className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100">저장하기</button>
             </div>
           </div>
