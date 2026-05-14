@@ -61,6 +61,9 @@ const AdminPage: React.FC = () => {
     author: "박노해 시인",
     imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1000",
     opacity: 40, // 0~100 (어둡기)
+    fontSize: 24, // 기본 폰트 크기
+    fontColor: "#ffffff", // 기본 폰트 색상
+    fontFamily: "var(--font-nanum-myeongjo), serif", // 기본 폰트
   });
   const [isPoemSubmitting, setIsPoemSubmitting] = useState(false);
   const [poemList, setPoemList] = useState<any[]>([]);
@@ -200,18 +203,23 @@ const AdminPage: React.FC = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // 3. 텍스트 설정
-      ctx.fillStyle = "white";
+      ctx.fillStyle = poemForm.fontColor || "white";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       
       // 줄바꿈 처리
       const lines = poemForm.content.split('\n');
-      const fontSize = 48;
+      const baseFontSize = poemForm.fontSize || 24;
+      const fontSize = baseFontSize * 1.5; // 캔버스 1200 크기에 맞게 스케일업
       const lineHeight = fontSize * 1.6;
       const totalHeight = lines.length * lineHeight;
       let startY = (canvas.height - totalHeight) / 2;
 
-      ctx.font = `500 ${fontSize}px "Noto Serif KR", serif`;
+      let fontName = "Noto Serif KR, serif";
+      if (poemForm.fontFamily?.includes("nanum-myeongjo")) fontName = "Nanum Myeongjo, serif";
+      else if (poemForm.fontFamily?.includes("geist-sans") || poemForm.fontFamily?.includes("sans-serif")) fontName = "sans-serif";
+
+      ctx.font = `500 ${fontSize}px ${fontName}`;
       lines.forEach((line, i) => {
         ctx.fillText(line, canvas.width / 2, startY + (i * lineHeight) + (lineHeight / 2));
       });
@@ -734,11 +742,43 @@ const AdminPage: React.FC = () => {
                   </label>
                 </div>
 
-                {/* 4. 배경 어둡기 */}
+                {/* 4. 글꼴, 색상, 크기 선택 추가 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">4</span> 
+                      글꼴 선택
+                    </label>
+                    <select value={poemForm.fontFamily} onChange={e => setPoemForm({...poemForm, fontFamily: e.target.value})} className="w-full border-2 border-gray-50 rounded-xl px-4 py-3 bg-gray-50 outline-none focus:border-orange-500 transition-all text-xs font-bold">
+                      <option value="var(--font-nanum-myeongjo), serif">명조체 (감성적인 느낌)</option>
+                      <option value="var(--font-geist-sans), sans-serif">고딕체 (깔끔한 느낌)</option>
+                      <option value="system-ui, sans-serif">기본체 (모던한 느낌)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">5</span> 
+                      글자 크기 ({poemForm.fontSize}px)
+                    </label>
+                    <input type="range" min="16" max="60" value={poemForm.fontSize} onChange={e => setPoemForm({...poemForm, fontSize: parseInt(e.target.value)})} className="w-full h-2 mt-4 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-600" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">6</span> 
+                      글자 색상
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input type="color" value={poemForm.fontColor} onChange={e => setPoemForm({...poemForm, fontColor: e.target.value})} className="w-10 h-10 rounded cursor-pointer border-0 p-0" />
+                      <span className="text-xs font-bold text-gray-500 uppercase">{poemForm.fontColor}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. 배경 어둡기 */}
                 <div>
                   <div className="flex justify-between items-center mb-3">
                     <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">4</span> 
+                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">7</span> 
                       배경 어둡기 (가독성 조절)
                     </label>
                     <span className="text-[11px] font-black text-orange-600">{poemForm.opacity}%</span>
@@ -751,7 +791,7 @@ const AdminPage: React.FC = () => {
             {/* 프리뷰 + 등록 버튼 영역 (5~6번) */}
             <div className="sticky top-12 space-y-6">
               <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-orange-600 text-white flex items-center justify-center text-[10px] font-bold">5</span> 
+                <span className="w-5 h-5 rounded-full bg-orange-600 text-white flex items-center justify-center text-[10px] font-bold">8</span> 
                 <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">실제 사이트 미리보기 (최종 확인)</span>
               </div>
 
@@ -781,7 +821,7 @@ const AdminPage: React.FC = () => {
                 <div className="relative z-10 flex flex-col items-center justify-center px-10 py-16 text-center text-white min-h-[500px]">
                   <div className="space-y-4 w-full">
                     {(poemForm.content || "").split("\n").map((line, idx) => (
-                      <p key={idx} className="font-serif text-2xl md:text-3xl font-bold leading-relaxed drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]" style={{ wordBreak: "keep-all" }}>
+                      <p key={idx} className="font-bold leading-relaxed drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]" style={{ wordBreak: "keep-all", fontSize: `${poemForm.fontSize || 24}px`, color: poemForm.fontColor || "#ffffff", fontFamily: poemForm.fontFamily || "var(--font-nanum-myeongjo), serif" }}>
                         {line || "\u00A0"}
                       </p>
                     ))}

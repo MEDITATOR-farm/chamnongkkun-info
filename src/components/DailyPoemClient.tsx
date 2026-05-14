@@ -59,8 +59,14 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
             {(poem.content || "").split("\n").map((line: string, idx: number) => (
               <p
                 key={idx}
-                className="font-serif text-xl md:text-2xl font-bold leading-relaxed drop-shadow-xl"
-                style={{ minHeight: "1.5rem", wordBreak: "keep-all" }}
+                className="font-bold leading-relaxed drop-shadow-xl"
+                style={{ 
+                  minHeight: "1.5rem", 
+                  wordBreak: "keep-all",
+                  fontSize: poem.fontSize ? `${poem.fontSize}px` : "1.5rem",
+                  color: poem.fontColor || "#ffffff",
+                  fontFamily: poem.fontFamily || "var(--font-nanum-myeongjo), serif"
+                }}
               >
                 {line || "\u00A0"}
               </p>

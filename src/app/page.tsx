@@ -163,41 +163,45 @@ export default function Home() {
       </main>
 
       {/* ── 푸터 ── */}
-      <footer className="bg-primary text-white/90 py-20 px-6 border-t-8 border-secondary">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-12">
-          <div className="max-w-sm">
-            <h2 className="text-3xl font-serif font-bold mb-4">참농꾼</h2>
-            <p className="text-white/60 leading-relaxed font-serif italic text-lg">
+      <footer className="bg-primary text-white/90 py-12 md:py-20 px-6 border-t-8 border-secondary text-center md:text-left">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-10 md:gap-12">
+          
+          <div className="max-w-sm mx-auto md:mx-0">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold mb-3 md:mb-4">참농꾼</h2>
+            <p className="text-white/60 leading-relaxed font-serif italic text-base md:text-lg">
               "자연과 함께 숨 쉬고,<br />
               정직한 땀방울로 거제의 삶을 기록합니다."
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-12">
-            <div>
-              <h4 className="font-bold mb-6 text-secondary uppercase tracking-widest text-xs">Menu</h4>
-              <ul className="space-y-4 text-sm font-medium">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 mt-6 md:mt-0 w-full md:w-auto">
+            <div className="border-t border-white/10 md:border-none pt-6 md:pt-0">
+              <h4 className="font-bold mb-4 md:mb-6 text-secondary uppercase tracking-widest text-xs">Menu</h4>
+              <ul className="space-y-3 md:space-y-4 text-sm font-medium">
                 <li><a href="/" className="hover:text-secondary transition-colors">홈</a></li>
                 <li><a href="/#map" className="hover:text-secondary transition-colors">거제지도</a></li>
                 <li><a href="/#wisdom" className="hover:text-secondary transition-colors">지혜/인사이트</a></li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-bold mb-6 text-secondary uppercase tracking-widest text-xs">Family</h4>
-              <ul className="space-y-4 text-sm font-medium">
+            <div className="border-t border-white/10 md:border-none pt-6 md:pt-0">
+              <h4 className="font-bold mb-4 md:mb-6 text-secondary uppercase tracking-widest text-xs">Family</h4>
+              <ul className="space-y-3 md:space-y-4 text-sm font-medium">
                 <li><a href="https://smartstore.naver.com/chamnongkkun" target="_blank" className="hover:text-secondary transition-colors">네이버 스토어</a></li>
                 <li><a href="/about" className="hover:text-secondary transition-colors">참농꾼 소개</a></li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-bold mb-6 text-secondary uppercase tracking-widest text-xs">Philosophy</h4>
+            <div className="border-t border-white/10 md:border-none pt-6 md:pt-0">
+              <h4 className="font-bold mb-4 md:mb-6 text-secondary uppercase tracking-widest text-xs">Philosophy</h4>
               <p className="text-xs text-white/40 leading-loose">
                 우리는 매일의 기록을 통해<br />
                 누적된 신뢰의 가치를 믿습니다.
               </p>
             </div>
           </div>
+          
         </div>
-        <div className="max-w-6xl mx-auto mt-20 pt-10 border-t border-white/5 flex flex-col sm:flex-row justify-between gap-4 text-[10px] uppercase tracking-widest font-bold text-white/20">
+        
+        <div className="max-w-6xl mx-auto mt-12 md:mt-20 pt-8 md:pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3 text-[10px] uppercase tracking-widest font-bold text-white/20">
           <p>© 2026 CHAMNONGKKUN INFO. ALL RIGHTS RESERVED.</p>
           <p>THE BEST GUIDE TO GEOJE ISLAND 🐬</p>
         </div>
