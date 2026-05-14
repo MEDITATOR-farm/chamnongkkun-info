@@ -47,7 +47,13 @@
       "/uploads/diaries/images/1778560850704-KakaoTalk_20260512_130921849_02.jpg",
       "/uploads/diaries/images/1778560855197-KakaoTalk_20260512_130921849_04.jpg"
     ],
-    "video": null
+    "video": null,
+    "editHistory": [
+      {
+        "date": "2026. 5. 14. 오전 10:59:23",
+        "note": "관리자 수정"
+      }
+    ]
   },
   {
     "id": 1775017401978,
