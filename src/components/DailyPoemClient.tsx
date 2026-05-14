@@ -53,8 +53,8 @@ export default function DailyPoemClient({ poems }: { poems: any[] }) {
           출처 : {poem.author || "거제의 시인"}
         </div>
 
-        {/* 시 본문 — 모바일에서는 화면 높이의 70%(70vh)로 설정해 상하 스크롤 잘림 방지, PC는 500px */}
-        <div className="relative z-10 flex flex-col items-center justify-center px-8 pt-14 pb-12 text-center text-white min-h-[70vh] md:min-h-[500px]">
+        {/* 시 본문 — 모바일에서는 화면 높이의 약 55%(55vh)로 설정해 상하 스크롤 잘림 완전 방지, PC는 500px */}
+        <div className="relative z-10 flex flex-col items-center justify-center px-8 pt-14 pb-12 text-center text-white min-h-[55vh] md:min-h-[500px]">
           <div className="space-y-3 w-full">
             {(poem.content || "").split("\n").map((line: string, idx: number) => (
               <p
