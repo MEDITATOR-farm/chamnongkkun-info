@@ -360,14 +360,14 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] flex flex-col font-sans">
-      <header className="bg-white px-8 py-4 shadow-sm flex justify-between items-center border-b border-gray-100">
+      <header className="bg-white px-4 md:px-8 py-3 shadow-sm flex justify-between items-center border-b border-gray-100">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white font-black">M</div>
-          <h1 className="font-black text-lg text-gray-800 tracking-tighter uppercase">Master Center</h1>
+          <h1 className="font-black text-base md:text-lg text-gray-800 tracking-tighter uppercase">Master Center</h1>
         </div>
-        <div className="flex gap-4">
-          <button onClick={() => setShowSettings(true)} className="text-sm font-bold text-gray-400 hover:text-gray-800 transition-colors">⚙️ SETTINGS</button>
-          <button onClick={() => setIsAuthenticated(false)} className="text-sm font-bold text-red-400 hover:text-red-600 transition-colors">LOGOUT</button>
+        <div className="flex gap-2 md:gap-4">
+          <button onClick={() => setShowSettings(true)} className="text-xs md:text-sm font-bold text-gray-400 hover:text-gray-800 transition-colors px-2 py-1">⚙️ 설정</button>
+          <button onClick={() => setIsAuthenticated(false)} className="text-xs md:text-sm font-bold text-red-400 hover:text-red-600 transition-colors px-2 py-1">로그아웃</button>
         </div>
       </header>
 
@@ -403,16 +403,16 @@ const AdminPage: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-white/60 backdrop-blur-xl border-b border-gray-100 px-8 py-2 flex gap-8 overflow-x-auto">
+      <div className="bg-white/60 backdrop-blur-xl border-b border-gray-100 px-2 md:px-8 py-0 flex overflow-x-auto">
         {(["poem", "diary", "file", "chat"] as const).map(tab => (
-          <button key={tab} onClick={() => { setActiveTab(tab); window.location.hash = tab; }} className={`py-4 text-xs font-black uppercase tracking-widest transition-all relative ${activeTab === tab ? "text-orange-600" : "text-gray-400 hover:text-gray-600"}`}>
-            {tab === "poem" ? "Poem Design" : tab === "diary" ? "Chronicle" : tab === "file" ? "Files" : "Chat"}
-            {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-1 bg-orange-600 rounded-full" />}
+          <button key={tab} onClick={() => { setActiveTab(tab); window.location.hash = tab; }} className={`py-3 px-3 md:px-0 md:mr-8 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all relative whitespace-nowrap ${activeTab === tab ? "text-orange-600" : "text-gray-400 hover:text-gray-600"}`}>
+            {tab === "poem" ? "📝 시 등록" : tab === "diary" ? "📔 일기" : tab === "file" ? "📂 파일" : "💬 채팅"}
+            {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600 rounded-full" />}
           </button>
         ))}
       </div>
 
-      <main className="flex-1 max-w-6xl w-full mx-auto p-8 space-y-12 pb-40">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-3 md:p-8 space-y-6 md:space-y-12 pb-24">
         
         {activeTab === "poem" && (
           <>
@@ -533,22 +533,27 @@ const AdminPage: React.FC = () => {
               <button onClick={() => loadList('poems')} className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-black hover:bg-orange-100 transition-all">🔄 새로고침</button>
             </div>
             {listLoading ? <p className="text-orange-500 text-sm text-center py-8 animate-pulse">불러오는 중...</p> : poemList.length === 0 ? <p className="text-gray-300 text-sm text-center py-8">토큰 설정 후 새로고침 해주세요</p> : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {poemList.map((p: any) => (
-                  <div key={p.id} className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                    <div className="flex items-start gap-4">
-                      {p.imageUrl && !p.imageUrl.startsWith('data:') && <img src={p.imageUrl} alt="" className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-gray-200" />}
+                  <div key={p.id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+                    {/* 윗줄: 이미지 + 텍스트 */}
+                    <div className="flex items-center gap-3 p-3">
+                      {p.imageUrl && !p.imageUrl.startsWith('data:')
+                        ? <img src={p.imageUrl} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200" />
+                        : <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 text-xl flex-shrink-0">📝</div>
+                      }
                       <div className="flex-1 min-w-0">
-                        <p className="font-black text-base text-gray-800">{p.title || '(제목없음)'}</p>
-                        <p className="text-xs text-gray-400 mt-1">{p.author} · {p.date}</p>
-                        {p.editHistory && <p className="text-[10px] text-blue-400 mt-0.5">✏️ 마지막 수정: {p.editHistory[p.editHistory.length-1]?.date}</p>}
+                        <p className="font-black text-sm text-gray-800 truncate">{p.title || '(제목없음)'}</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5 truncate">{p.author} · {p.date}</p>
+                        {p.editHistory && <p className="text-[10px] text-blue-400 mt-0.5 truncate">✏️ {p.editHistory[p.editHistory.length-1]?.date}</p>}
                       </div>
-                      <div className="flex flex-col gap-2 flex-shrink-0">
-                        <button onClick={() => openEdit('poems', p)} className="px-4 py-2 bg-blue-500 text-white rounded-xl text-xs font-black hover:bg-blue-600 transition-all">✏️ 수정</button>
-                        <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all">
-                          {isDeleting === `poems-${p.id}` ? '삭제중...' : '🗑 삭제'}
-                        </button>
-                      </div>
+                    </div>
+                    {/* 아랫줄: 버튼 */}
+                    <div className="flex border-t border-gray-100">
+                      <button onClick={() => openEdit('poems', p)} className="flex-1 py-2.5 text-xs font-black text-blue-500 hover:bg-blue-50 transition-all border-r border-gray-100">✏️ 수정</button>
+                      <button onClick={() => handleDelete('poems', p.id)} disabled={isDeleting === `poems-${p.id}`} className="flex-1 py-2.5 text-xs font-black text-red-400 hover:bg-red-50 transition-all">
+                        {isDeleting === `poems-${p.id}` ? '삭제중...' : '🗑 삭제'}
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -591,23 +596,28 @@ const AdminPage: React.FC = () => {
                 <button onClick={() => loadList('diaries')} className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-black hover:bg-green-100 transition-all">🔄 새로고침</button>
               </div>
               {listLoading ? <p className="text-green-500 text-sm text-center py-6 animate-pulse">불러오는 중...</p> : diaryList.length === 0 ? <p className="text-gray-300 text-sm text-center py-6">토큰 설정 후 새로고침 해주세요</p> : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {diaryList.map((d: any) => (
-                    <div key={d.id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
-                      <div className="flex items-start gap-4">
-                        {d.image ? <img src={d.image} alt="" className="w-20 h-20 rounded-xl object-cover flex-shrink-0 border border-gray-200" /> : <div className="w-20 h-20 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 text-2xl flex-shrink-0">📷</div>}
+                    <div key={d.id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+                      {/* 윗줄: 이미지 + 텍스트 */}
+                      <div className="flex items-center gap-3 p-3">
+                        {d.image
+                          ? <img src={d.image} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-200" />
+                          : <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 text-xl flex-shrink-0">📷</div>
+                        }
                         <div className="flex-1 min-w-0">
-                          <p className="font-black text-base text-gray-800">{d.title}</p>
-                          <p className="text-xs text-gray-400 mt-1">{d.date}</p>
-                          {d.content && <p className="text-sm text-gray-600 mt-2 line-clamp-2">{d.content.slice(0,80)}{d.content.length > 80 ? '...' : ''}</p>}
-                          {d.editHistory && <p className="text-[10px] text-blue-400 mt-1">✏️ 마지막 수정: {d.editHistory[d.editHistory.length-1]?.date}</p>}
+                          <p className="font-black text-sm text-gray-800 truncate">{d.title}</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">{d.date}</p>
+                          {d.content && <p className="text-[11px] text-gray-500 mt-0.5 truncate">{d.content.slice(0,40)}{d.content.length > 40 ? '...' : ''}</p>}
+                          {d.editHistory && <p className="text-[10px] text-blue-400 mt-0.5 truncate">✏️ {d.editHistory[d.editHistory.length-1]?.date}</p>}
                         </div>
-                        <div className="flex flex-col gap-2 flex-shrink-0">
-                          <button onClick={() => openEdit('diaries', d)} className="px-4 py-2 bg-blue-500 text-white rounded-xl text-xs font-black hover:bg-blue-600 transition-all">✏️ 수정</button>
-                          <button onClick={() => handleDelete('diaries', d.id)} disabled={isDeleting === `diaries-${d.id}`} className="px-4 py-2 bg-red-500 text-white rounded-xl text-xs font-black hover:bg-red-600 transition-all">
-                            {isDeleting === `diaries-${d.id}` ? '삭제중...' : '🗑 삭제'}
-                          </button>
-                        </div>
+                      </div>
+                      {/* 아랫줄: 버튼 */}
+                      <div className="flex border-t border-gray-100">
+                        <button onClick={() => openEdit('diaries', d)} className="flex-1 py-2.5 text-xs font-black text-blue-500 hover:bg-blue-50 transition-all border-r border-gray-100">✏️ 수정</button>
+                        <button onClick={() => handleDelete('diaries', d.id)} disabled={isDeleting === `diaries-${d.id}`} className="flex-1 py-2.5 text-xs font-black text-red-400 hover:bg-red-50 transition-all">
+                          {isDeleting === `diaries-${d.id}` ? '삭제중...' : '🗑 삭제'}
+                        </button>
                       </div>
                     </div>
                   ))}
