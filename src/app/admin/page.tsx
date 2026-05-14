@@ -178,7 +178,7 @@ const AdminPage: React.FC = () => {
     { name: "밤하늘 은하수", url: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=1000" },
     { name: "봄 벚꽃", url: "https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&q=80&w=1000" },
     { name: "연꽃 만개", url: "https://images.unsplash.com/photo-1502675135487-e971002a6adb?auto=format&fit=crop&q=80&w=1000" },
-    { name: "가을 단풍", url: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1000" },
+    { name: "들꽃 벌판", url: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&q=80&w=1000" },
   ];
 
   // --- 농부일기 올리기 관련 상태 ---
