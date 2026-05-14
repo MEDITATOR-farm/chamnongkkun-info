@@ -35,9 +35,29 @@ function getCategory(category: string): string {
   return "기타";
 }
 
-function MapMarkers({ spots, L, farmLocation }: { spots: Spot[], L: any, farmLocation: [number, number] }) {
+function MapMarkers({ spots, L, farmLocation, selectedId }: { spots: Spot[], L: any, farmLocation: [number, number], selectedId?: number }) {
   const map = useMap();
   const handleLinkClick = () => map.closePopup();
+
+  useEffect(() => {
+    if (selectedId !== undefined) {
+      if (selectedId === -1) {
+        map.setView(farmLocation, 15, { animate: true });
+      } else {
+        const selected = spots.find(s => s.rank === selectedId);
+        if (selected && selected.lat && selected.lng) {
+          map.setView([selected.lat, selected.lng], 15, { animate: true });
+          setTimeout(() => {
+            map.eachLayer((layer: any) => {
+              if (layer instanceof L.Marker && layer.getLatLng().lat === selected.lat && layer.getLatLng().lng === selected.lng) {
+                layer.openPopup();
+              }
+            });
+          }, 100);
+        }
+      }
+    }
+  }, [selectedId, map, spots, L, farmLocation]);
 
   return (
     <>
@@ -82,8 +102,8 @@ function MapMarkers({ spots, L, farmLocation }: { spots: Spot[], L: any, farmLoc
       {/* 🌲 명소 마커들 */}
       {spots
         .filter(s => s.lat && s.lng)
-        .map((spot, index) => (
-          <Marker key={index} position={[spot.lat, spot.lng]}>
+        .map((spot) => (
+          <Marker key={spot.rank} position={[spot.lat, spot.lng]}>
             <Popup className="custom-popup">
               <div className="p-2 min-w-[200px]">
                 <div className="flex items-center gap-2 mb-2">
@@ -110,6 +130,7 @@ export default function SpotMap() {
   const [spots, setSpots] = useState<Spot[]>([]);
   const [L, setL] = useState<any>(null);
   const [activeCategory, setActiveCategory] = useState("전체");
+  const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     import("leaflet").then((leaflet) => {
@@ -130,7 +151,7 @@ export default function SpotMap() {
 
   if (!spots.length || !L) {
     return (
-      <div className="h-[400px] md:h-[600px] lg:h-[800px] w-full bg-slate-100 animate-pulse rounded-[3rem] flex items-center justify-center text-slate-400 font-bold">
+      <div className="h-[500px] w-full bg-slate-100 animate-pulse rounded-[3rem] flex items-center justify-center text-slate-400 font-bold">
         거제 숨은 명소 지도를 불러오는 중... 🗺️
       </div>
     );
@@ -141,55 +162,86 @@ export default function SpotMap() {
 
   const filtered = activeCategory === "전체"
     ? spots
-    : spots.filter(s => getCategory(s.category) === activeCategory);
+    : spots.filter(s => s.category && getCategory(s.category) === activeCategory);
 
   return (
-    <div className="relative w-full rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group mt-8 mb-8">
+    <div className="flex flex-col md:block relative w-full h-[700px] md:h-[600px] lg:h-[800px] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-4 md:border-8 border-white bg-slate-50 mt-8 mb-8">
+      
+      {/* 1. 카테고리 필터 (상단 고정) */}
+      <div className="z-20 bg-white/95 backdrop-blur border-b border-slate-100 flex-shrink-0">
+        <div className="flex overflow-x-auto gap-2 px-4 py-3 no-scrollbar">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat.key}
+              onClick={() => {setActiveCategory(cat.key); setSelectedId(undefined);}}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all border
+                ${activeCategory === cat.key
+                  ? "bg-slate-800 text-white border-slate-800 shadow-md"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.key}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-      {/* 카테고리 필터 버튼 */}
-      <div className="flex overflow-x-auto gap-2 px-4 py-3 bg-white/95 backdrop-blur border-b border-slate-100" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-        <style dangerouslySetInnerHTML={{ __html: `div::-webkit-scrollbar { display: none; }` }} />
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat.key}
-            onClick={() => setActiveCategory(cat.key)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border
-              ${activeCategory === cat.key
-                ? "bg-slate-800 text-white border-slate-800 shadow-md"
-                : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
+      <div className="flex flex-col md:flex-row h-full overflow-hidden">
+        {/* 2. 지도 영역 (모바일에서는 상단 절반, 데스크탑에서는 전체) */}
+        <div className="h-[300px] md:h-full flex-shrink-0 md:flex-1 relative">
+          <MapContainer
+            center={center}
+            zoom={11}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+            className="z-0"
           >
-            <span>{cat.icon}</span>
-            <span>{cat.key}</span>
-            {cat.key !== "전체" && (
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ml-0.5 font-black
-                ${activeCategory === cat.key ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"}`}>
-                {spots.filter(s => getCategory(s.category) === cat.key).length}
-              </span>
-            )}
+            <MapMarkers spots={filtered} L={L} farmLocation={farmLocation} selectedId={selectedId} />
+          </MapContainer>
+          
+          {/* 농장 위치로 가기 버튼 (모바일용) */}
+          <button 
+            onClick={() => setSelectedId(-1)}
+            className="absolute bottom-4 right-4 z-10 bg-white p-3 rounded-full shadow-lg border border-slate-100 md:hidden"
+          >
+            🏠
           </button>
-        ))}
+        </div>
 
-        {/* 현재 필터 결과 수 */}
-        <span className="ml-auto text-[11px] text-slate-400 self-center flex-shrink-0 pl-2">
-          {activeCategory === "전체" ? `전체 ${spots.length}곳` : `${filtered.length}곳`}
-        </span>
+        {/* 3. 리스트 영역 (모바일에서만 하단 스크롤 리스트로 노출) */}
+        <div className="flex-1 md:hidden bg-white border-t border-slate-100 overflow-y-auto no-scrollbar">
+          <div className="p-4 space-y-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Spot List ({filtered.length})</span>
+              <span className="text-[10px] text-slate-300">리스트를 클릭하면 지도가 이동합니다</span>
+            </div>
+            {filtered.map((spot) => (
+              <div 
+                key={spot.rank}
+                onClick={() => setSelectedId(spot.rank)}
+                className={`p-4 rounded-2xl border transition-all ${selectedId === spot.rank ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-100" : "border-slate-50 bg-slate-50"}`}
+              >
+                <div className="flex justify-between items-start gap-3">
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-1">{spot.name}</h4>
+                    <p className="text-xs text-slate-500 line-clamp-1">{spot.summary}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-[10px] font-bold text-emerald-600 bg-white px-2 py-0.5 rounded-full border border-emerald-100">{spot.category}</span>
+                    </div>
+                  </div>
+                  <a href={spot.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
+                    className="p-2 bg-white rounded-xl shadow-sm border border-slate-100 text-xs">
+                    🔗
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* 지도 */}
-      <div className="h-[400px] md:h-[600px] lg:h-[800px]">
-        <MapContainer
-          center={center}
-          zoom={11}
-          scrollWheelZoom={false}
-          style={{ height: "100%", width: "100%" }}
-          className="z-0"
-        >
-          <MapMarkers spots={filtered} L={L} farmLocation={farmLocation} />
-        </MapContainer>
-      </div>
-
-      {/* 플로팅 안내 */}
-      <div className="absolute bottom-6 left-6 z-10 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 max-w-[200px] pointer-events-none">
+      {/* 데스크탑 전용 플로팅 안내 */}
+      <div className="hidden md:block absolute bottom-6 left-6 z-10 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 max-w-[200px] pointer-events-none">
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Interactive Map</p>
         <p className="text-xs font-bold text-slate-700">마커를 클릭하여 명소의 상세 정보를 확인해보세요!</p>
       </div>
