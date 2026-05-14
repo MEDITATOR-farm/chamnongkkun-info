@@ -78,7 +78,7 @@ const AdminPage: React.FC = () => {
 
   // --- 완성 이미지 파일 업로드 모드 ---
   const [poemMode, setPoemMode] = useState<'design' | 'upload'>('design');
-  const [imageUploadForm, setImageUploadForm] = useState({ author: '박노해 시인', content: '' });
+  const [imageUploadForm, setImageUploadForm] = useState({ author: '박노해 시인' });
   const [imageUploadFile, setImageUploadFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isImageUploading, setIsImageUploading] = useState(false);
@@ -284,7 +284,6 @@ const AdminPage: React.FC = () => {
       const poems = await fetchGithubJson('data/poems.json');
       const newPoem = {
         id: Date.now(),
-        content: imageUploadForm.content,
         author: imageUploadForm.author,
         imageUrl: `/${imgPath}`,
         opacity: 0,
@@ -293,7 +292,7 @@ const AdminPage: React.FC = () => {
       };
       await commitToGithub('data/poems.json', JSON.stringify([newPoem, ...poems], null, 2), '관리자: 완성 이미지 시 등록', false);
       alert('✅ 완성 이미지 시가 등록되었습니다!');
-      setImageUploadForm({ author: '박노해 시인', content: '' });
+      setImageUploadForm({ author: '박노해 시인' });
       setImageUploadFile(null);
       setImagePreview('');
       if (imageUploadInputRef.current) imageUploadInputRef.current.value = '';
@@ -538,92 +537,77 @@ const AdminPage: React.FC = () => {
           {/* ===== 완성 이미지 업로드 폼 ===== */}
           {poemMode === 'upload' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-black text-gray-800 tracking-tighter">완성 이미지 등록</h2>
-                    <p className="text-gray-400 text-xs font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
-                  </div>
-
-                  <div className="space-y-4">
+                  <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
                     <div>
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">작가 / 출처</label>
-                      <input
-                        type="text"
-                        value={imageUploadForm.author}
-                        onChange={e => setImageUploadForm({...imageUploadForm, author: e.target.value})}
-                        placeholder="박노해 시인"
-                        className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all"
-                      />
+                      <h2 className="text-2xl font-black text-gray-800 tracking-tighter">완성 이미지 등록</h2>
+                      <p className="text-gray-400 text-xs font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
                     </div>
-                    <div>
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">시 내용 (선택 - 텍스트 검색용)</label>
-                      <textarea
-                        value={imageUploadForm.content}
-                        onChange={e => setImageUploadForm({...imageUploadForm, content: e.target.value})}
-                        rows={3}
-                        placeholder="이미지에 담긴 시 내용을 입력하면 나중에 검색할 수 있어요 (선택사항)"
-                        className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all leading-relaxed"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">이미지 파일 (필수)</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        ref={imageUploadInputRef}
-                        className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-                          setImageUploadFile(file);
-                          const url = URL.createObjectURL(file);
-                          setImagePreview(url);
-                        }}
-                      />
-                    </div>
-                  </div>
 
-                  <button
-                    onClick={handleImagePoemSubmit}
-                    disabled={isImageUploading || !imageUploadFile}
-                    className="w-full bg-purple-600 text-white font-black py-5 rounded-[24px] hover:bg-purple-700 shadow-xl shadow-purple-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    {isImageUploading ? '업로드 중... ⏳' : '🚀 완성 이미지 등록하기'}
-                  </button>
-                </div>
-
-                {/* 완성 이미지 프리뷰 */}
-                <div className="sticky top-12 space-y-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">완성 이미지 미리보기</span>
-                  </div>
-                  
-                  <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100 font-serif">
-                    <div className="mb-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                      <span>{new Date().toLocaleDateString('ko-KR')}</span>
-                      <span>출처: {imageUploadForm.author || "작가 미상"}</span>
-                    </div>
-                    
-                    <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100" style={{ minHeight: 400 }}>
-                      {imagePreview ? (
-                        <img src={imagePreview} alt="미리보기" className="w-full h-full object-contain" />
-                      ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-300">
-                          <span className="text-4xl mb-2">🖼️</span>
-                          <p className="text-xs font-bold">이미지를 선택하면 여기에 표시됩니다</p>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {imageUploadForm.content && (
-                      <div className="mt-6 p-4 bg-gray-50 rounded-xl text-gray-500 text-sm leading-relaxed whitespace-pre-wrap italic">
-                        {imageUploadForm.content}
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">작가 / 출처</label>
+                        <input
+                          type="text"
+                          value={imageUploadForm.author}
+                          onChange={e => setImageUploadForm({...imageUploadForm, author: e.target.value})}
+                          placeholder="박노해 시인"
+                          className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all"
+                        />
                       </div>
-                    )}
+                      <div>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">이미지 파일 선택 (필수)</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={imageUploadInputRef}
+                          className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setImageUploadFile(file);
+                            const url = URL.createObjectURL(file);
+                            setImagePreview(url);
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-center text-[10px] text-gray-400 font-medium italic">※ 실제 사이트에서는 위 이미지가 크게 노출됩니다.</p>
-                </div>
+
+                  {/* 완성 이미지 프리뷰 + 등록 버튼 */}
+                  <div className="sticky top-12 space-y-6">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">완성 이미지 미리보기</span>
+                    </div>
+                    
+                    <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100 font-serif">
+                      <div className="mb-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                        <span>{new Date().toLocaleDateString('ko-KR')}</span>
+                        <span>출처: {imageUploadForm.author || "작가 미상"}</span>
+                      </div>
+                      
+                      <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100" style={{ minHeight: 400 }}>
+                        {imagePreview ? (
+                          <img src={imagePreview} alt="미리보기" className="w-full h-full object-contain" />
+                        ) : (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-300">
+                            <span className="text-4xl mb-2">🖼️</span>
+                            <p className="text-xs font-bold">이미지를 선택하면 여기에 표시됩니다</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleImagePoemSubmit}
+                      disabled={isImageUploading || !imageUploadFile}
+                      className="w-full bg-purple-600 text-white font-black py-5 rounded-[24px] hover:bg-purple-700 shadow-xl shadow-purple-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {isImageUploading ? '업로드 중... ⏳' : '🚀 완성 이미지 등록하기'}
+                    </button>
+                    
+                    <p className="text-center text-[10px] text-gray-400 font-medium italic">※ 실제 사이트에서는 위 이미지가 크게 노출됩니다.</p>
+                  </div>
               </div>
           )}
 
