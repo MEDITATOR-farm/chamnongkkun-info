@@ -598,7 +598,7 @@ const AdminPage: React.FC = () => {
                         <span>출처: {imageUploadForm.author || "작가 미상"}</span>
                       </div>
                       
-                      <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100" style={{ minHeight: 400 }}>
+                      <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square sm:aspect-auto sm:min-h-[400px]">
                         {imagePreview ? (
                           <img src={imagePreview} alt="미리보기" className="w-full h-full object-contain" />
                         ) : (
