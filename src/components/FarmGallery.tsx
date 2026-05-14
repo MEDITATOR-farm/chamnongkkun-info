@@ -18,21 +18,21 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
 
   return (
     <div className="relative">
-      {/* 중앙 수직선 */}
-      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/30 via-primary/10 to-transparent -translate-x-1/2" />
+      {/* 중앙 수직선 - 모바일에서는 숨김 */}
+      <div className="absolute hidden md:block left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/30 via-primary/10 to-transparent -translate-x-1/2" />
 
-      <div className="space-y-28">
+      <div className="space-y-16 md:space-y-28">
         {monthKeys.map((monthKey) => (
           <div key={monthKey} className="relative">
 
             {/* 월별 배지 */}
-            <div className="sticky top-24 z-20 mb-12 flex justify-start md:justify-center">
-              <div className="bg-primary text-white px-5 py-2 rounded-full font-serif font-bold shadow-xl shadow-primary/20 flex items-center gap-2 ml-2 md:ml-0 text-sm">
+            <div className="sticky top-24 z-20 mb-8 md:mb-12 flex justify-center">
+              <div className="bg-primary text-white px-5 py-2 rounded-full font-serif font-bold shadow-xl shadow-primary/20 flex items-center gap-2 text-sm">
                 🗓️ {monthKey}
               </div>
             </div>
 
-            <div className="space-y-20">
+            <div className="space-y-12 md:space-y-20">
               {groupedDiaries[monthKey].map((diary, index) => {
                 const globalIndex = diaries.indexOf(diary);
                 const isRight = globalIndex % 2 === 1;
@@ -44,16 +44,19 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
                 return (
                   <div
                     key={diary.id || index}
-                    className={`relative flex flex-col md:flex-row items-start gap-10 ${isRight ? "md:flex-row-reverse" : ""}`}
+                    className={`relative flex flex-col md:flex-row items-start gap-6 md:gap-10 ${isRight ? "md:flex-row-reverse" : ""}`}
                   >
-                    <div className="absolute left-4 md:left-1/2 top-2 w-4 h-4 rounded-full bg-white border-4 border-secondary -translate-x-1/2 z-10 hidden md:block shadow-sm" />
+                    {/* 타임라인 점 - 모바일에서는 숨김 */}
+                    <div className="absolute left-1/2 top-2 w-4 h-4 rounded-full bg-white border-4 border-secondary -translate-x-1/2 z-10 hidden md:block shadow-sm" />
 
-                    <div className="w-full md:w-[calc(50%-40px)] ml-10 md:ml-0">
+                    <div className="w-full md:w-[calc(50%-40px)]">
                       <div className="mb-4">
-                        <span className="text-secondary font-black tracking-widest text-[10px] uppercase">
-                          RECORD No.{diaries.length - globalIndex}
-                        </span>
-                        <div className="text-foreground/30 font-bold text-xs mt-0.5">{diary.date}</div>
+                        <div className="flex items-center justify-between md:block">
+                          <span className="text-secondary font-black tracking-widest text-[10px] uppercase">
+                            RECORD No.{diaries.length - globalIndex}
+                          </span>
+                          <div className="text-foreground/30 font-bold text-xs md:mt-0.5">{diary.date}</div>
+                        </div>
                         <h3 className="text-xl md:text-2xl font-serif font-bold text-foreground mt-2 leading-snug">
                           {diary.title}
                         </h3>
