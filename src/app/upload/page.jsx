@@ -20,7 +20,6 @@ export default function UploadPage() {
   const [preview, setPreview] = useState(null);
   const [password, setPassword] = useState("");
   const [author, setAuthor] = useState("");
-  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [themeIndex, setThemeIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -51,7 +50,6 @@ export default function UploadPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setTitle(data.title);
         setContent(data.content);
         setThemeIndex(Math.floor(Math.random() * themes.length));
         setStep(2);
@@ -80,7 +78,6 @@ export default function UploadPage() {
 
     const theme = themes[themeIndex];
     const poemData = {
-      title,
       author,
       content,
       password,
@@ -119,7 +116,6 @@ export default function UploadPage() {
     formData.append("image", image);
     formData.append("password", password);
     formData.append("author", author);
-    formData.append("title", title);
 
     try {
       const res = await fetch("/api/save-poem-image", {
@@ -178,12 +174,6 @@ export default function UploadPage() {
             </div>
           )}
 
-          {uploadMode === "direct" && (
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>시 제목 (선택)</label>
-              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="예: 봄날의 편지" style={inputStyle} />
-            </div>
-          )}
 
           <div style={inputGroupStyle}>
             <label style={labelStyle}>시인 이름</label>
@@ -227,14 +217,6 @@ export default function UploadPage() {
             }}>
               {currentTheme.mood}
             </span>
-            <input 
-              value={title} onChange={(e) => setTitle(e.target.value)} 
-              style={{ 
-                ...titleInputStyle, 
-                color: currentTheme.textColor,
-                borderBottom: "1px solid rgba(0,0,0,0.1)"
-              }} 
-            />
             <textarea 
               value={content} onChange={(e) => setContent(e.target.value)} 
               style={{ 

@@ -57,7 +57,6 @@ const AdminPage: React.FC = () => {
 
   // --- 시 등록 관련 상태 (걷는 독서 디자인 버전) ---
   const [poemForm, setPoemForm] = useState({
-    title: "",
     content: "적게 소유하고\n깊게 사랑하라",
     author: "박노해 시인",
     imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1000",
@@ -69,7 +68,7 @@ const AdminPage: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [editItem, setEditItem] = useState<any>(null);
   const [editType, setEditType] = useState<'poems'|'diaries'|null>(null);
-  const [editForm, setEditForm] = useState({title:'',content:'',author:''});
+  const [editForm, setEditForm] = useState({content:'',author:''});
   const [editImage, setEditImage] = useState<File|null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const editImageRef = useRef<HTMLInputElement>(null);
@@ -79,7 +78,7 @@ const AdminPage: React.FC = () => {
 
   // --- 완성 이미지 파일 업로드 모드 ---
   const [poemMode, setPoemMode] = useState<'design' | 'upload'>('design');
-  const [imageUploadForm, setImageUploadForm] = useState({ title: '', author: '박노해 시인', content: '' });
+  const [imageUploadForm, setImageUploadForm] = useState({ author: '박노해 시인', content: '' });
   const [imageUploadFile, setImageUploadFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isImageUploading, setIsImageUploading] = useState(false);
@@ -121,7 +120,11 @@ const AdminPage: React.FC = () => {
   const openEdit = (type: 'poems'|'diaries', item: any) => {
     setEditType(type);
     setEditItem(item);
-    setEditForm({ title: item.title||'', content: item.content||'', author: item.author||'' });
+    if (type === 'poems') {
+      setEditForm({ content: item.content||'', author: item.author||'' });
+    } else {
+      setEditForm({ title: item.title||'', content: item.content||'', author: item.author||'' } as any);
+    }
     setEditImage(null);
   };
 
@@ -142,8 +145,8 @@ const AdminPage: React.FC = () => {
         if (v.id !== editItem.id) return v;
         const history = v.editHistory || [];
         history.push({ date: now, note: '관리자 수정' });
-        if (editType === 'poems') return { ...v, title: editForm.title, content: editForm.content, author: editForm.author, imageUrl: newImagePath, editHistory: history };
-        return { ...v, title: editForm.title, content: editForm.content, image: newImagePath, editHistory: history };
+        if (editType === 'poems') return { ...v, content: editForm.content, author: editForm.author, imageUrl: newImagePath, editHistory: history };
+        return { ...v, title: (editForm as any).title, content: editForm.content, image: newImagePath, editHistory: history };
       });
       await commitToGithub(`data/${editType}.json`, JSON.stringify(updated, null, 2), `관리자: ${editType} 항목 수정 (ID:${editItem.id})`, false);
       if (editType === 'poems') setPoemList(updated);
@@ -169,6 +172,8 @@ const AdminPage: React.FC = () => {
   const [diaryForm, setDiaryForm] = useState({ title: "", content: "" });
   const [diaryImages, setDiaryImages] = useState<FileList | null>(null);
   const [diaryVideo, setDiaryVideo] = useState<File | null>(null);
+  const [diaryPreviewImages, setDiaryPreviewImages] = useState<string[]>([]);
+  const [diaryPreviewVideo, setDiaryPreviewVideo] = useState<string>("");
   const [isDiarySubmitting, setIsDiarySubmitting] = useState(false);
 
   const diaryImageInputRef = useRef<HTMLInputElement>(null);
@@ -256,7 +261,7 @@ const AdminPage: React.FC = () => {
       const updatedPoems = [newPoem, ...poems];
       await commitToGithub('data/poems.json', JSON.stringify(updatedPoems, null, 2), "관리자: 새 시 등록 (걷는 독서 디자인)", false);
       alert("✅ 시가 성공적으로 등록되었습니다!");
-      setPoemForm({ ...poemForm, title: "" });
+      setPoemForm({ ...poemForm });
     } catch (e: any) {
       alert("❌ 오류: " + e.message);
     } finally {
@@ -268,7 +273,6 @@ const AdminPage: React.FC = () => {
   const handleImagePoemSubmit = async () => {
     if (!ghToken) return alert('토큰을 설정해주세요.');
     if (!imageUploadFile) return alert('이미지 파일을 선택해주세요.');
-    if (!imageUploadForm.title.trim()) return alert('제목을 입력해주세요.');
     setIsImageUploading(true);
     try {
       // 1) 이미지 리사이즈 후 GitHub에 업로드
@@ -280,7 +284,6 @@ const AdminPage: React.FC = () => {
       const poems = await fetchGithubJson('data/poems.json');
       const newPoem = {
         id: Date.now(),
-        title: imageUploadForm.title,
         content: imageUploadForm.content,
         author: imageUploadForm.author,
         imageUrl: `/${imgPath}`,
@@ -290,7 +293,7 @@ const AdminPage: React.FC = () => {
       };
       await commitToGithub('data/poems.json', JSON.stringify([newPoem, ...poems], null, 2), '관리자: 완성 이미지 시 등록', false);
       alert('✅ 완성 이미지 시가 등록되었습니다!');
-      setImageUploadForm({ title: '', author: '박노해 시인', content: '' });
+      setImageUploadForm({ author: '박노해 시인', content: '' });
       setImageUploadFile(null);
       setImagePreview('');
       if (imageUploadInputRef.current) imageUploadInputRef.current.value = '';
@@ -299,6 +302,22 @@ const AdminPage: React.FC = () => {
       alert('❌ 오류: ' + e.message);
     } finally {
       setIsImageUploading(false);
+    }
+  };
+
+  const handleDiaryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setDiaryImages(e.target.files);
+      const urls = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+      setDiaryPreviewImages(urls);
+    }
+  };
+
+  const handleDiaryVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setDiaryVideo(file);
+      setDiaryPreviewVideo(URL.createObjectURL(file));
     }
   };
 
@@ -338,6 +357,11 @@ const AdminPage: React.FC = () => {
       alert("❌ 오류: " + e.message);
     } finally {
       setIsDiarySubmitting(false);
+      // 프리뷰 URL 정리
+      diaryPreviewImages.forEach(url => URL.revokeObjectURL(url));
+      if (diaryPreviewVideo) URL.revokeObjectURL(diaryPreviewVideo);
+      setDiaryPreviewImages([]);
+      setDiaryPreviewVideo("");
     }
   };
 
@@ -513,103 +537,94 @@ const AdminPage: React.FC = () => {
 
           {/* ===== 완성 이미지 업로드 폼 ===== */}
           {poemMode === 'upload' && (
-            <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
-              <div>
-                <h2 className="text-2xl font-black text-gray-800 tracking-tighter">완성 이미지 등록</h2>
-                <p className="text-gray-400 text-xs font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
-              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-black text-gray-800 tracking-tighter">완성 이미지 등록</h2>
+                    <p className="text-gray-400 text-xs font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
+                  </div>
 
-              {/* 이미지 업로드 드롭존 - 디자인 모드 프리뷰와 동일한 크기 */}
-              <label className="block cursor-pointer">
-                <div
-                  className="relative w-full overflow-hidden shadow-2xl"
-                  style={{ borderRadius: "20px", minHeight: 320 }}
-                >
-                  {imagePreview ? (
-                    <>
-                      <img
-                        src={imagePreview}
-                        alt="미리보기"
-                        className="absolute inset-0 w-full h-full object-cover"
-                        style={{ display: "block" }}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">작가 / 출처</label>
+                      <input
+                        type="text"
+                        value={imageUploadForm.author}
+                        onChange={e => setImageUploadForm({...imageUploadForm, author: e.target.value})}
+                        placeholder="박노해 시인"
+                        className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all"
                       />
-                      <div className="absolute top-3 right-3 bg-black/60 text-white text-[10px] font-black px-3 py-1 rounded-full z-10">
-                        클릭하면 이미지 교체
-                      </div>
-                      {/* 빈 공간 확보용 */}
-                      <div className="relative z-0" style={{ minHeight: 320 }} />
-                    </>
-                  ) : (
-                    <div
-                      className="flex flex-col items-center justify-center gap-3 text-gray-400 w-full"
-                      style={{
-                        minHeight: 320,
-                        background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
-                        borderRadius: "20px",
-                      }}
-                    >
-                      <div className="text-5xl">🖼️</div>
-                      <p className="font-black text-sm">여기를 눌러 완성된 시 이미지를 선택하세요</p>
-                      <p className="text-[11px]">JPG, PNG, WEBP 모두 가능</p>
                     </div>
-                  )}
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={imageUploadInputRef}
-                  className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    setImageUploadFile(file);
-                    const url = URL.createObjectURL(file);
-                    setImagePreview(url);
-                  }}
-                />
-              </label>
+                    <div>
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">시 내용 (선택 - 텍스트 검색용)</label>
+                      <textarea
+                        value={imageUploadForm.content}
+                        onChange={e => setImageUploadForm({...imageUploadForm, content: e.target.value})}
+                        rows={3}
+                        placeholder="이미지에 담긴 시 내용을 입력하면 나중에 검색할 수 있어요 (선택사항)"
+                        className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all leading-relaxed"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">이미지 파일 (필수)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={imageUploadInputRef}
+                        className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setImageUploadFile(file);
+                          const url = URL.createObjectURL(file);
+                          setImagePreview(url);
+                        }}
+                      />
+                    </div>
+                  </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목 (필수)</label>
-                  <input
-                    type="text"
-                    value={imageUploadForm.title}
-                    onChange={e => setImageUploadForm({...imageUploadForm, title: e.target.value})}
-                    placeholder="예: 적게 소유하고 깊게 사랑하라"
-                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all font-bold"
-                  />
+                  <button
+                    onClick={handleImagePoemSubmit}
+                    disabled={isImageUploading || !imageUploadFile}
+                    className="w-full bg-purple-600 text-white font-black py-5 rounded-[24px] hover:bg-purple-700 shadow-xl shadow-purple-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {isImageUploading ? '업로드 중... ⏳' : '🚀 완성 이미지 등록하기'}
+                  </button>
                 </div>
-                <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">작가 / 출처</label>
-                  <input
-                    type="text"
-                    value={imageUploadForm.author}
-                    onChange={e => setImageUploadForm({...imageUploadForm, author: e.target.value})}
-                    placeholder="박노해 시인"
-                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">시 내용 (선택 - 텍스트 검색용)</label>
-                  <textarea
-                    value={imageUploadForm.content}
-                    onChange={e => setImageUploadForm({...imageUploadForm, content: e.target.value})}
-                    rows={3}
-                    placeholder="이미지에 담긴 시 내용을 입력하면 나중에 검색할 수 있어요 (선택사항)"
-                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-purple-500 transition-all leading-relaxed"
-                  />
+
+                {/* 완성 이미지 프리뷰 */}
+                <div className="sticky top-12 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">완성 이미지 미리보기</span>
+                  </div>
+                  
+                  <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100 font-serif">
+                    <div className="mb-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                      <span>{new Date().toLocaleDateString('ko-KR')}</span>
+                      <span>출처: {imageUploadForm.author || "작가 미상"}</span>
+                    </div>
+                    
+                    <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100" style={{ minHeight: 400 }}>
+                      {imagePreview ? (
+                        <img src={imagePreview} alt="미리보기" className="w-full h-full object-contain" />
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-300">
+                          <span className="text-4xl mb-2">🖼️</span>
+                          <p className="text-xs font-bold">이미지를 선택하면 여기에 표시됩니다</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {imageUploadForm.content && (
+                      <div className="mt-6 p-4 bg-gray-50 rounded-xl text-gray-500 text-sm leading-relaxed whitespace-pre-wrap italic">
+                        {imageUploadForm.content}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-center text-[10px] text-gray-400 font-medium italic">※ 실제 사이트에서는 위 이미지가 크게 노출됩니다.</p>
                 </div>
               </div>
-
-              <button
-                onClick={handleImagePoemSubmit}
-                disabled={isImageUploading || !imageUploadFile || !imageUploadForm.title.trim()}
-                className="w-full bg-purple-600 text-white font-black py-5 rounded-[24px] hover:bg-purple-700 shadow-xl shadow-purple-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {isImageUploading ? '업로드 중... ⏳' : '🚀 완성 이미지 등록하기'}
-              </button>
-            </div>
           )}
 
           {/* ===== 디자인 모드 폼 ===== */}
@@ -695,14 +710,14 @@ const AdminPage: React.FC = () => {
                 <div className="absolute top-4 right-4 text-[10px] text-white/40 font-bold tracking-widest">
                   출처 : {poemForm.author}
                 </div>
-                {/* 시 본문 */}
-                <div className="relative z-10 flex flex-col items-center justify-center px-8 py-16 text-center text-white min-h-[320px]">
-                  <div className="space-y-3">
+                {/* 시 본문 — 최소 500px 보장, 내용 많으면 자동 확장 */}
+                <div className="relative z-10 flex flex-col items-center justify-center px-8 pt-14 pb-12 text-center text-white min-h-[500px]">
+                  <div className="space-y-3 w-full">
                     {(poemForm.content || "").split("\n").map((line, idx) => (
                       <p
                         key={idx}
                         className="font-serif text-xl md:text-2xl font-bold leading-relaxed drop-shadow-xl"
-                        style={{ minHeight: "1.5rem" }}
+                        style={{ minHeight: "1.5rem", wordBreak: "keep-all" }}
                       >
                         {line || "\u00A0"}
                       </p>
@@ -742,7 +757,9 @@ const AdminPage: React.FC = () => {
                         : <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 text-xl flex-shrink-0">📝</div>
                       }
                       <div className="flex-1 min-w-0">
-                        <p className="font-black text-sm text-gray-800 truncate">{p.title || '(제목없음)'}</p>
+                        <p className="font-black text-sm text-gray-800 truncate">
+                          {p.content?.split('\n')[0] || '(내용없음)'}
+                        </p>
                         <p className="text-[11px] text-gray-400 mt-0.5 truncate">{p.author} · {p.date}</p>
                         {p.editHistory && <p className="text-[10px] text-blue-400 mt-0.5 truncate">✏️ {p.editHistory[p.editHistory.length-1]?.date}</p>}
                       </div>
@@ -763,30 +780,81 @@ const AdminPage: React.FC = () => {
         )}
 
         {activeTab === "diary" && (
-          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 max-w-3xl mx-auto">
-            <div className="mb-10">
-              <h2 className="text-3xl font-black text-gray-800 tracking-tighter">농부의 크로니클 등록</h2>
-              <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">Add Farmer's Chronicle Entry</p>
-            </div>
-            <form onSubmit={handleDiarySubmit} className="space-y-8">
-              <input type="text" value={diaryForm.title} onChange={e => setDiaryForm({...diaryForm, title: e.target.value})} placeholder="글 제목 (예: 감자 수확하는 날)" className="w-full border-2 border-gray-50 rounded-[20px] px-6 py-4 bg-gray-50 focus:border-green-600 focus:bg-white outline-none font-bold" />
-              <textarea value={diaryForm.content} onChange={e => setDiaryForm({...diaryForm, content: e.target.value})} rows={6} placeholder="오늘의 기록을 남겨주세요." className="w-full border-2 border-gray-50 rounded-[20px] px-6 py-4 bg-gray-50 focus:border-green-600 focus:bg-white outline-none leading-relaxed"></textarea>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">📷 사진 선택</label>
-                  <input type="file" multiple ref={diaryImageInputRef} onChange={e => setDiaryImages(e.target.files)} className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">🎥 비디오 선택</label>
-                  <input type="file" ref={diaryVideoInputRef} onChange={e => setDiaryVideo(e.target.files ? e.target.files[0] : null)} className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-                </div>
+          <>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* 설정 영역 */}
+            <div className="bg-white p-6 md:p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-10">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-black text-gray-800 tracking-tighter">농부의 크로니클 등록</h2>
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest italic">Farmer's Chronicle Entry</p>
               </div>
-              
-              <button type="submit" disabled={isDiarySubmitting} className="w-full bg-green-600 text-white font-black py-6 rounded-[24px] hover:bg-green-700 shadow-xl shadow-green-100 transition-all text-xl">
-                {isDiarySubmitting ? "전송 중..." : "🌿 기록 완료"}
-              </button>
-            </form>
+
+              <form onSubmit={handleDiarySubmit} className="space-y-8">
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block">글 제목</label>
+                  <input type="text" value={diaryForm.title} onChange={e => setDiaryForm({...diaryForm, title: e.target.value})} placeholder="예: 감자 수확하는 날" className="w-full border-2 border-gray-50 rounded-[20px] px-6 py-4 bg-gray-50 focus:border-green-600 focus:bg-white outline-none font-bold transition-all" />
+                </div>
+                
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block">오늘의 기록</label>
+                  <textarea value={diaryForm.content} onChange={e => setDiaryForm({...diaryForm, content: e.target.value})} rows={10} placeholder="오늘의 기록을 남겨주세요." className="w-full border-2 border-gray-50 rounded-[20px] px-6 py-4 bg-gray-50 focus:border-green-600 focus:bg-white outline-none leading-relaxed transition-all"></textarea>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">📷 사진 선택</label>
+                    <input type="file" multiple ref={diaryImageInputRef} onChange={handleDiaryImagesChange} className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">🎥 비디오 선택</label>
+                    <input type="file" ref={diaryVideoInputRef} onChange={handleDiaryVideoChange} className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+                  </div>
+                </div>
+                
+                <button type="submit" disabled={isDiarySubmitting} className="w-full bg-green-600 text-white font-black py-6 rounded-[24px] hover:bg-green-700 shadow-2xl shadow-green-100 transition-all text-xl mt-4">
+                  {isDiarySubmitting ? "전송 중..." : "🌿 기록 완료"}
+                </button>
+              </form>
+            </div>
+
+            {/* 프리뷰 영역 */}
+            <div className="sticky top-12 space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-600 animate-pulse"></span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">실제 사이트 미리보기</span>
+              </div>
+
+              <div 
+                className="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl border border-[#f0eee0] relative font-serif"
+                style={{ fontFamily: "'Noto Serif KR', serif" }}
+              >
+                <div className="text-[14px] text-[#8b4513] opacity-60 mb-3">{new Date().toLocaleDateString('ko-KR')}</div>
+                <h3 className="text-2xl font-bold text-[#3d3228] mb-6">{diaryForm.title || "제목을 입력해 주세요"}</h3>
+
+                {diaryPreviewImages.length > 0 && (
+                  <div className="mb-6 rounded-2xl overflow-hidden border border-[#f0eee0]">
+                    <img src={diaryPreviewImages[0]} alt="미리보기" className="w-full h-auto max-h-[500px] object-contain block bg-gray-50" />
+                    {diaryPreviewImages.length > 1 && (
+                      <div className="bg-black/60 text-white text-[10px] font-black px-3 py-1 absolute top-12 right-12 rounded-full">
+                        +{diaryPreviewImages.length - 1}장 더보기
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {diaryPreviewVideo && (
+                  <div className="mb-6 rounded-2xl overflow-hidden border border-[#f0eee0]">
+                    <video src={diaryPreviewVideo} controls className="w-full h-auto max-h-[500px] bg-black block" />
+                  </div>
+                )}
+
+                <p className="text-[17px] leading-[1.9] text-[#5d5248] whitespace-pre-wrap">
+                  {diaryForm.content || "내용을 입력하면 여기에 실시간으로 표시됩니다."}
+                </p>
+              </div>
+              <p className="text-center text-[10px] text-gray-400 font-medium italic">※ 실제 사이트에서는 위 디자인대로 방문자에게 보여집니다.</p>
+            </div>
+          </div>
 
             {/* 일기 목록 + 삭제 */}
             <div className="mt-10 pt-8 border-t border-gray-100">
@@ -823,7 +891,7 @@ const AdminPage: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
+          </>
         )}
 
         {activeTab === "file" && (
@@ -854,10 +922,12 @@ const AdminPage: React.FC = () => {
               <button onClick={() => {setEditItem(null);setEditType(null);}} className="text-gray-300 hover:text-gray-600 text-2xl">✕</button>
             </div>
             <div className="space-y-4">
-              <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목</label>
-                <input type="text" value={editForm.title} onChange={e=>setEditForm({...editForm,title:e.target.value})} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" />
-              </div>
+              {editType === 'diaries' && (
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목</label>
+                  <input type="text" value={(editForm as any).title} onChange={e=>setEditForm({...editForm,title:e.target.value} as any)} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" />
+                </div>
+              )}
               <div>
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">내용</label>
                 <textarea value={editForm.content} onChange={e=>setEditForm({...editForm,content:e.target.value})} rows={5} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500 leading-relaxed" />
