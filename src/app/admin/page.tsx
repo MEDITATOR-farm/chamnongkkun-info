@@ -171,7 +171,7 @@ const AdminPage: React.FC = () => {
   };
 
   const handleDownloadImage = () => {
-    if (!poemPreview.imageUrl) {
+    if (!poemForm.imageUrl) {
       alert("이미지가 없습니다.");
       return;
     }
@@ -182,7 +182,7 @@ const AdminPage: React.FC = () => {
 
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.src = poemPreview.imageUrl;
+    img.src = poemForm.imageUrl;
 
     img.onload = () => {
       // 1:1 고해상도 비율 (1200x1200)
@@ -196,7 +196,7 @@ const AdminPage: React.FC = () => {
       ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
 
       // 2. 어둡기 오버레이 적용
-      ctx.fillStyle = `rgba(0, 0, 0, ${poemPreview.opacity / 100})`;
+      ctx.fillStyle = `rgba(0, 0, 0, ${poemForm.opacity / 100})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // 3. 텍스트 설정
