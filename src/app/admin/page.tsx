@@ -953,10 +953,13 @@ const AdminPage: React.FC = () => {
                   <input type="text" value={(editForm as any).title} onChange={e=>setEditForm({...editForm,title:e.target.value} as any)} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" />
                 </div>
               )}
-              <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">내용</label>
-                <textarea value={editForm.content} onChange={e=>setEditForm({...editForm,content:e.target.value})} rows={5} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500 leading-relaxed" />
-              </div>
+              {/* 내용 필드: 일기거나, 시 중에서 내용이 있는 경우(디자인 모드)만 표시 */}
+              {!(editType === 'poems' && !editItem.content) && (
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">내용</label>
+                  <textarea value={editForm.content} onChange={e=>setEditForm({...editForm,content:e.target.value})} rows={5} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500 leading-relaxed" />
+                </div>
+              )}
               {editType === 'poems' && (
                 <div>
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">작가</label>
