@@ -17,7 +17,7 @@ const AdminPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file">("poem");
+  const [activeTab, setActiveTab] = useState<"poem" | "diary" | "file" | "photo">("poem");
 
   useEffect(() => {
     // ✅ 세션 자동 로그인 체크 (30일 유효)
@@ -33,7 +33,7 @@ const AdminPage: React.FC = () => {
 
     const handleHash = () => {
       const hash = window.location.hash.replace("#", "");
-      if (hash && ["poem", "diary", "file"].includes(hash)) {
+      if (hash && ["poem", "diary", "file", "photo"].includes(hash)) {
         setActiveTab(hash as any);
       }
     };
@@ -86,6 +86,13 @@ const AdminPage: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isImageUploading, setIsImageUploading] = useState(false);
   const imageUploadInputRef = useRef<HTMLInputElement>(null);
+
+  // --- 일상 사진 올리기 관련 상태 ---
+  const [photoForm, setPhotoForm] = useState({ title: "" });
+  const [photoImageFile, setPhotoImageFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [isPhotoUploading, setIsPhotoUploading] = useState(false);
+  const photoImageInputRef = useRef<HTMLInputElement>(null);
 
   const loadList = async (type: 'poems' | 'diaries') => {
     if (!ghToken) return;
@@ -396,6 +403,37 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  const handlePhotoSubmit = async () => {
+    if (!ghToken) return alert('토큰을 설정해주세요.');
+    if (!photoImageFile) return alert('사진 파일을 선택해주세요.');
+    setIsPhotoUploading(true);
+    try {
+      const resized = await resizeImage(photoImageFile, 1200);
+      const base64 = resized.dataUrl.split(',')[1];
+      const imgPath = `uploads/photo_${Date.now()}_${photoImageFile.name.replace(/\s/g, '_')}`;
+      await commitToGithub(imgPath, base64, `관리자: 일상 사진 업로드`);
+
+      const photos = await fetchGithubJson('data/photos.json');
+      const newPhoto = {
+        id: Date.now(),
+        title: photoForm.title,
+        imageUrl: `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`,
+        date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+        location: '거제도'
+      };
+      await commitToGithub('data/photos.json', JSON.stringify([newPhoto, ...photos], null, 2), '관리자: 일상 사진 등록', false);
+      alert('✅ 일상 사진이 등록되었습니다!');
+      setPhotoForm({ title: "" });
+      setPhotoImageFile(null);
+      setPhotoPreview("");
+      if (photoImageInputRef.current) photoImageInputRef.current.value = "";
+    } catch (e: any) {
+      alert('❌ 오류: ' + e.message);
+    } finally {
+      setIsPhotoUploading(false);
+    }
+  };
+
   const handleDiaryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setDiaryImages(e.target.files);
@@ -590,9 +628,9 @@ const AdminPage: React.FC = () => {
       )}
 
       <div className="bg-white/60 backdrop-blur-xl border-b border-gray-100 px-2 md:px-8 py-0 flex overflow-x-auto">
-        {(["poem", "diary", "file"] as const).map(tab => (
+        {(["poem", "diary", "photo", "file"] as const).map(tab => (
           <button key={tab} onClick={() => { setActiveTab(tab); window.location.hash = tab; }} className={`py-3 px-3 md:px-0 md:mr-8 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all relative whitespace-nowrap ${activeTab === tab ? "text-orange-600" : "text-gray-400 hover:text-gray-600"}`}>
-            {tab === "poem" ? "📝 시 등록" : tab === "diary" ? "📔 일기" : "📂 파일"}
+            {tab === "poem" ? "📝 시 등록" : tab === "diary" ? "📔 일기" : tab === "photo" ? "📸 일상 사진" : "📂 파일"}
             {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600 rounded-full" />}
           </button>
         ))}
@@ -1049,6 +1087,86 @@ const AdminPage: React.FC = () => {
               )}
             </div>
           </>
+        )}
+
+        {activeTab === "photo" && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
+              <div>
+                <h2 className="text-2xl font-black text-gray-800 tracking-tighter">📸 일상 사진 등록</h2>
+                <p className="text-gray-400 text-xs font-bold mt-1">간단하게 평상시 사진을 올릴 수 있어요</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목 (선택)</label>
+                  <input
+                    type="text"
+                    value={photoForm.title}
+                    onChange={e => setPhotoForm({...photoForm, title: e.target.value})}
+                    placeholder="아름다운 거제도의 아침"
+                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-green-500 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">사진 선택 (필수)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={photoImageInputRef}
+                    className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setPhotoImageFile(file);
+                      const url = URL.createObjectURL(file);
+                      setPhotoPreview(url);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="sticky top-12 space-y-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">사진 미리보기</span>
+              </div>
+              
+              <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100">
+                <div className="mb-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                  <span>{new Date().toLocaleDateString('ko-KR')}</span>
+                  <span>거제도</span>
+                </div>
+                
+                <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square sm:aspect-auto sm:min-h-[400px]">
+                  {photoPreview ? (
+                    <img src={photoPreview} alt="미리보기" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-300">
+                      <span className="text-4xl mb-2">📸</span>
+                      <p className="text-xs font-bold">사진을 선택하면 표시됩니다</p>
+                    </div>
+                  )}
+                  {/* 하단 정보 오버레이 (미리보기 용) */}
+                  {photoPreview && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
+                      {photoForm.title && <h3 className="font-bold text-lg mb-1">{photoForm.title}</h3>}
+                      <p className="text-xs opacity-80 flex items-center gap-1">📍 거제도 · {new Date().toLocaleDateString('ko-KR')}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <button
+                onClick={handlePhotoSubmit}
+                disabled={isPhotoUploading || !photoImageFile}
+                className="w-full bg-green-500 text-white font-black py-5 rounded-[24px] hover:bg-green-600 shadow-xl shadow-green-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {isPhotoUploading ? '업로드 중... ⏳' : '🚀 사진 등록하기'}
+              </button>
+            </div>
+          </div>
         )}
 
         {activeTab === "file" && (

@@ -8,6 +8,7 @@ import FarmGallery from "@/components/FarmGallery";
 import DailyIdiomClient from "@/components/DailyIdiomClient";
 import DailyWisdomClient from "@/components/DailyWisdomClient";
 import DailyPoemClient from "@/components/DailyPoemClient";
+import DailyPhotoClient from "@/components/DailyPhotoClient";
 import { WeatherWidgetCompact } from "@/components/WeatherWidget";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -22,6 +23,7 @@ export default function Home() {
   diaries = diaries.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
   
   const poems = readJson(path.join(process.cwd(), "public/data/poems.json"));
+  const photos = readJson(path.join(process.cwd(), "public/data/photos.json"));
   const idioms = readJson(path.join(process.cwd(), "public/data/idioms.json"));
   const wisdoms = readJson(path.join(process.cwd(), "public/data/wisdom.json"));
 
@@ -148,6 +150,15 @@ export default function Home() {
               <GlassCard className="!p-0 overflow-hidden border border-primary/10">
                 <DailyPoemClient poems={poems} />
               </GlassCard>
+
+              {photos && photos.length > 0 && (
+                <GlassCard className="!p-0 overflow-hidden border border-primary/10 reveal-up">
+                  <div className="p-5 border-b border-primary/5 bg-primary/5">
+                    <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-foreground/80">📸 평상시 기록</h3>
+                  </div>
+                  <DailyPhotoClient photos={photos} />
+                </GlassCard>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <GlassCard className="bg-primary/5 border-t-4 border-t-primary">
                   <DailyIdiomClient idioms={idioms} />
