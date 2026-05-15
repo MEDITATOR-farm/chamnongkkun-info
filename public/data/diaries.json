@@ -7,8 +7,7 @@
     "image": "/uploads/diaries/images/1778561768662-KakaoTalk_20260512_130921849_07.jpg",
     "images": [
       "/uploads/diaries/images/1778561768662-KakaoTalk_20260512_130921849_07.jpg",
-      "/uploads/diaries/images/1778561773837-KakaoTalk_20260512_130921849_08.jpg",
-      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1778827053146_0_KakaoTalk_20260512_130921849_04.jpg"
+      "/uploads/diaries/images/1778561773837-KakaoTalk_20260512_130921849_08.jpg"
     ],
     "video": null,
     "author": "",
@@ -16,6 +15,10 @@
     "editHistory": [
       {
         "date": "2026. 5. 15. 오후 3:37:36",
+        "note": "관리자 수정"
+      },
+      {
+        "date": "2026. 5. 15. 오후 3:40:20",
         "note": "관리자 수정"
       }
     ]
