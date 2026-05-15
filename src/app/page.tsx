@@ -152,12 +152,14 @@ export default function Home() {
               </GlassCard>
 
               {photos && photos.length > 0 && (
-                <GlassCard className="!p-0 overflow-hidden border border-primary/10 reveal-up">
-                  <div className="p-5 border-b border-primary/5 bg-primary/5">
-                    <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-foreground/80">📸 나의 일상</h3>
-                  </div>
-                  <DailyPhotoClient photos={photos} />
-                </GlassCard>
+                <div id="daily-photo" className="scroll-mt-24">
+                  <GlassCard className="!p-0 overflow-hidden border border-primary/10 reveal-up">
+                    <div className="p-5 border-b border-primary/5 bg-primary/5">
+                      <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-foreground/80">📸 나의 일상</h3>
+                    </div>
+                    <DailyPhotoClient photos={photos} />
+                  </GlassCard>
+                </div>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <GlassCard className="bg-primary/5 border-t-4 border-t-primary">

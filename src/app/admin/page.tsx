@@ -68,10 +68,11 @@ const AdminPage: React.FC = () => {
   const [isPoemSubmitting, setIsPoemSubmitting] = useState(false);
   const [poemList, setPoemList] = useState<any[]>([]);
   const [diaryList, setDiaryList] = useState<any[]>([]);
+  const [photoList, setPhotoList] = useState<any[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [editItem, setEditItem] = useState<any>(null);
-  const [editType, setEditType] = useState<'poems'|'diaries'|null>(null);
-  const [editForm, setEditForm] = useState({content:'',author:''});
+  const [editType, setEditType] = useState<'poems'|'diaries'|'photos'|null>(null);
+  const [editForm, setEditForm] = useState({content:'',author:'',title:'',location:''});
   const [editImage, setEditImage] = useState<File|null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const editImageRef = useRef<HTMLInputElement>(null);
@@ -88,19 +89,20 @@ const AdminPage: React.FC = () => {
   const imageUploadInputRef = useRef<HTMLInputElement>(null);
 
   // --- 일상 사진 올리기 관련 상태 ---
-  const [photoForm, setPhotoForm] = useState({ title: "" });
+  const [photoForm, setPhotoForm] = useState({ title: "", location: "" });
   const [photoImageFile, setPhotoImageFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>("");
   const [isPhotoUploading, setIsPhotoUploading] = useState(false);
   const photoImageInputRef = useRef<HTMLInputElement>(null);
 
-  const loadList = async (type: 'poems' | 'diaries') => {
+  const loadList = async (type: 'poems' | 'diaries' | 'photos') => {
     if (!ghToken) return;
     setListLoading(true);
     try {
       const items = await fetchGithubJson(`data/${type}.json`);
       if (type === 'poems') setPoemList(items);
-      else setDiaryList(items);
+      else if (type === 'diaries') setDiaryList(items);
+      else if (type === 'photos') setPhotoList(items);
     } catch (e: any) { console.error('불러오기 실패:', e.message); }
     finally { setListLoading(false); }
   };
@@ -109,9 +111,10 @@ const AdminPage: React.FC = () => {
     if (!ghToken) return;
     if (activeTab === 'poem') loadList('poems');
     if (activeTab === 'diary') loadList('diaries');
+    if (activeTab === 'photo') loadList('photos');
   }, [activeTab, ghToken]);
 
-  const handleDelete = async (type: 'poems' | 'diaries', id: number) => {
+  const handleDelete = async (type: 'poems' | 'diaries' | 'photos', id: number) => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     if (!ghToken) return alert('토큰을 설정해주세요.');
     setIsDeleting(`${type}-${id}`);
@@ -121,19 +124,21 @@ const AdminPage: React.FC = () => {
       const filtered = items.filter((v: any) => v.id !== id);
       await commitToGithub(`data/${type}.json`, JSON.stringify(filtered, null, 2), `관리자: ${type} 항목 삭제 (ID:${id})`, false);
       if (type === 'poems') setPoemList(filtered);
-      else setDiaryList(filtered);
+      else if (type === 'diaries') setDiaryList(filtered);
+      else if (type === 'photos') setPhotoList(filtered);
       alert('✅ 삭제되었습니다.');
     } catch (e: any) { alert('❌ 삭제 실패: ' + e.message); }
     finally { setIsDeleting(null); }
   };
 
-  const openEdit = (type: 'poems'|'diaries', item: any) => {
+  const openEdit = (type: 'poems'|'diaries'|'photos', item: any) => {
     setEditType(type);
     setEditItem(item);
     setEditForm({ 
       title: item.title || '', 
       content: item.content || '', 
-      author: item.author || '' 
+      author: item.author || '',
+      location: item.location || ''
     } as any);
     setEditImage(null);
   };
@@ -161,10 +166,11 @@ const AdminPage: React.FC = () => {
           title: (editForm as any).title, 
           content: editForm.content, 
           author: editForm.author,
+          location: editForm.location,
           editHistory: history 
         };
 
-        if (editType === 'poems') {
+        if (editType === 'poems' || editType === 'photos') {
           updatedItem.imageUrl = newImagePath;
         } else {
           updatedItem.image = newImagePath;
@@ -173,7 +179,8 @@ const AdminPage: React.FC = () => {
       });
       await commitToGithub(`data/${editType}.json`, JSON.stringify(updated, null, 2), `관리자: ${editType} 항목 수정 (ID:${editItem.id})`, false);
       if (editType === 'poems') setPoemList(updated);
-      else setDiaryList(updated);
+      else if (editType === 'diaries') setDiaryList(updated);
+      else if (editType === 'photos') setPhotoList(updated);
       alert('✅ 수정 완료!');
       setEditItem(null); setEditType(null);
     } catch (e:any) { alert('❌ 수정 실패: ' + e.message); }
@@ -419,11 +426,11 @@ const AdminPage: React.FC = () => {
         title: photoForm.title,
         imageUrl: `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`,
         date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-        location: '거제도'
+        location: photoForm.location || ""
       };
       await commitToGithub('data/photos.json', JSON.stringify([newPhoto, ...photos], null, 2), '관리자: 일상 사진 등록', false);
       alert('✅ 일상 사진이 등록되었습니다!');
-      setPhotoForm({ title: "" });
+      setPhotoForm({ title: "", location: "" });
       setPhotoImageFile(null);
       setPhotoPreview("");
       if (photoImageInputRef.current) photoImageInputRef.current.value = "";
@@ -1109,6 +1116,16 @@ const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">사진이 찍힌 위치 (선택)</label>
+                  <input
+                    type="text"
+                    value={photoForm.location}
+                    onChange={e => setPhotoForm({...photoForm, location: e.target.value})}
+                    placeholder="예: 거제도 동부면"
+                    className="w-full border-2 border-gray-100 rounded-2xl px-5 py-4 outline-none focus:border-green-500 transition-all"
+                  />
+                </div>
+                <div>
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">사진 선택 (필수)</label>
                   <input
                     type="file"
@@ -1136,7 +1153,7 @@ const AdminPage: React.FC = () => {
               <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100">
                 <div className="mb-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                   <span>{new Date().toLocaleDateString('ko-KR')}</span>
-                  <span>거제도</span>
+                  <span>{photoForm.location || "거제도"}</span>
                 </div>
                 
                 <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square sm:aspect-auto sm:min-h-[400px]">
@@ -1152,7 +1169,7 @@ const AdminPage: React.FC = () => {
                   {photoPreview && (
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
                       {photoForm.title && <h3 className="font-bold text-lg mb-1">{photoForm.title}</h3>}
-                      <p className="text-xs opacity-80 flex items-center gap-1">📍 거제도 · {new Date().toLocaleDateString('ko-KR')}</p>
+                      <p className="text-xs opacity-80 flex items-center gap-1">📍 {photoForm.location || "거제도"} · {new Date().toLocaleDateString('ko-KR')}</p>
                     </div>
                   )}
                 </div>
@@ -1165,6 +1182,44 @@ const AdminPage: React.FC = () => {
               >
                 {isPhotoUploading ? '업로드 중... ⏳' : '🚀 사진 등록하기'}
               </button>
+            </div>
+
+            {/* 사진 목록 + 삭제 */}
+            <div className="mt-10 pt-8 border-t border-gray-100 col-span-1 lg:col-span-2">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-black text-gray-800">📸 등록된 일상 ({photoList.length}건)</h3>
+                <button onClick={() => loadList('photos')} className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-black hover:bg-green-100 transition-all">🔄 새로고침</button>
+              </div>
+              {listLoading ? <p className="text-green-500 text-sm text-center py-6 animate-pulse">불러오는 중...</p> : photoList.length === 0 ? <p className="text-gray-300 text-sm text-center py-6">토큰 설정 후 새로고침 해주세요</p> : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {photoList.map((p: any) => (
+                    <div key={p.id} className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm flex flex-col">
+                      <div className="aspect-square relative overflow-hidden bg-gray-50 border-b border-gray-100">
+                        {p.imageUrl ? (
+                          <img src={p.imageUrl} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="flex items-center justify-center h-full text-gray-300 text-3xl">📸</div>
+                        )}
+                        <div className="absolute top-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-1 rounded-full backdrop-blur-sm">
+                          {p.date}
+                        </div>
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <p className="font-black text-sm text-gray-800 mb-1 line-clamp-1">{p.title || "제목 없음"}</p>
+                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1">📍 {p.location || "위치 없음"}</p>
+                        </div>
+                        <div className="flex gap-2 mt-4 pt-4 border-t border-gray-50">
+                          <button onClick={() => openEdit('photos', p)} className="flex-1 py-2 text-[11px] font-black bg-gray-50 text-gray-600 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">수정</button>
+                          <button onClick={() => handleDelete('photos', p.id)} disabled={isDeleting === `photos-${p.id}`} className="flex-1 py-2 text-[11px] font-black bg-gray-50 text-red-400 rounded-xl hover:bg-red-50 hover:text-red-600 transition-colors">
+                            {isDeleting === `photos-${p.id}` ? '삭제중' : '삭제'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1193,7 +1248,7 @@ const AdminPage: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50" onClick={() => {setEditItem(null);setEditType(null);}}>
           <div className="bg-white rounded-[32px] p-8 w-full max-w-lg space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-black text-gray-800">✏️ {editType === 'poems' ? '시' : '일기'} 수정</h3>
+              <h3 className="text-xl font-black text-gray-800">✏️ {editType === 'poems' ? '시' : editType === 'diaries' ? '일기' : '일상'} 수정</h3>
               <button onClick={() => {setEditItem(null);setEditType(null);}} className="text-gray-300 hover:text-gray-600 text-2xl">✕</button>
             </div>
             <div className="space-y-4">
@@ -1201,8 +1256,14 @@ const AdminPage: React.FC = () => {
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">제목</label>
                 <input type="text" value={(editForm as any).title} onChange={e=>setEditForm({...editForm,title:e.target.value} as any)} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" placeholder="제목을 입력하세요 (선택사항)" />
               </div>
+              {editType === 'photos' && (
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">위치</label>
+                  <input type="text" value={editForm.location} onChange={e=>setEditForm({...editForm,location:e.target.value})} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500" placeholder="위치를 입력하세요" />
+                </div>
+              )}
               {/* 내용 필드: 일기거나, 시 중에서 내용이 있는 경우(디자인 모드)만 표시 */}
-              {!(editType === 'poems' && !editItem.content) && (
+              {!(editType === 'poems' && !editItem.content) && editType !== 'photos' && (
                 <div>
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">내용</label>
                   <textarea value={editForm.content} onChange={e=>setEditForm({...editForm,content:e.target.value})} rows={5} className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500 leading-relaxed" />
