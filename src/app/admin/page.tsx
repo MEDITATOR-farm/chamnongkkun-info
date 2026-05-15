@@ -630,7 +630,7 @@ const AdminPage: React.FC = () => {
       <div className="bg-white/60 backdrop-blur-xl border-b border-gray-100 px-2 md:px-8 py-0 flex overflow-x-auto">
         {(["poem", "diary", "photo", "file"] as const).map(tab => (
           <button key={tab} onClick={() => { setActiveTab(tab); window.location.hash = tab; }} className={`py-3 px-3 md:px-0 md:mr-8 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all relative whitespace-nowrap ${activeTab === tab ? "text-orange-600" : "text-gray-400 hover:text-gray-600"}`}>
-            {tab === "poem" ? "📝 시 등록" : tab === "diary" ? "📔 일기" : tab === "photo" ? "📸 일상 사진" : "📂 파일"}
+            {tab === "poem" ? "📝 시 등록" : tab === "diary" ? "📔 일기" : tab === "photo" ? "📸 나의 일상" : "📂 파일"}
             {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600 rounded-full" />}
           </button>
         ))}
@@ -1093,8 +1093,8 @@ const AdminPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
               <div>
-                <h2 className="text-2xl font-black text-gray-800 tracking-tighter">📸 일상 사진 등록</h2>
-                <p className="text-gray-400 text-xs font-bold mt-1">간단하게 평상시 사진을 올릴 수 있어요</p>
+                <h2 className="text-2xl font-black text-gray-800 tracking-tighter">📸 나의 일상 올리기</h2>
+                <p className="text-gray-400 text-xs font-bold mt-1">간단하게 평상시 사진과 제목을 올려보세요</p>
               </div>
 
               <div className="space-y-4">

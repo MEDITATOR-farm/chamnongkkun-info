@@ -154,7 +154,7 @@ export default function Home() {
               {photos && photos.length > 0 && (
                 <GlassCard className="!p-0 overflow-hidden border border-primary/10 reveal-up">
                   <div className="p-5 border-b border-primary/5 bg-primary/5">
-                    <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-foreground/80">📸 평상시 기록</h3>
+                    <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-foreground/80">📸 나의 일상</h3>
                   </div>
                   <DailyPhotoClient photos={photos} />
                 </GlassCard>
