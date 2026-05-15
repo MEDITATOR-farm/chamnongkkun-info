@@ -75,6 +75,9 @@ const AdminPage: React.FC = () => {
   const [editType, setEditType] = useState<'poems'|'diaries'|'photos'|null>(null);
   const [editForm, setEditForm] = useState({content:'',author:'',title:'',location:''});
   const [editImage, setEditImage] = useState<File|null>(null);
+  const [editExistingImages, setEditExistingImages] = useState<string[]>([]);
+  const [editNewImages, setEditNewImages] = useState<FileList | null>(null);
+  const [editNewImagePreviews, setEditNewImagePreviews] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const editImageRef = useRef<HTMLInputElement>(null);
   const [imageInfo, setImageInfo] = useState<{original: string, resized: string, w: number, h: number} | null>(null);
@@ -141,6 +144,18 @@ const AdminPage: React.FC = () => {
       author: item.author || '',
       location: item.location || ''
     } as any);
+    
+    let existing: string[] = [];
+    if (type === 'diaries') {
+      existing = item.images && item.images.length > 0 ? item.images : (item.image ? [item.image] : []);
+    } else if (type === 'photos') {
+      existing = item.imageUrls && item.imageUrls.length > 0 ? item.imageUrls : (item.imageUrl ? [item.imageUrl] : []);
+    } else {
+      existing = item.imageUrl ? [item.imageUrl] : [];
+    }
+    setEditExistingImages(existing);
+    setEditNewImages(null);
+    setEditNewImagePreviews([]);
     setEditImage(null);
   };
 
@@ -148,12 +163,30 @@ const AdminPage: React.FC = () => {
     if (!editItem || !editType || !ghToken) return;
     setIsEditing(true);
     try {
-      let newImagePath = editItem.image || editItem.imageUrl || '';
-      if (editImage) {
+      let finalImages = [...editExistingImages];
+      
+      // 새로 추가된 사진 업로드
+      if (editNewImages && editNewImages.length > 0) {
+        for (let i = 0; i < editNewImages.length; i++) {
+          const file = editNewImages[i];
+          const resized = await resizeImage(file, 1200);
+          const base64 = resized.dataUrl.split(',')[1];
+          const imgPath = `uploads/${editType}_edit_${Date.now()}_${i}_${file.name.replace(/\s/g, '_')}`;
+          await commitToGithub(imgPath, base64, `관리자: 수정 추가 이미지 업로드`);
+          finalImages.push(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`);
+        }
+      } else if (editImage) {
+        // 단일 이미지 (poems 용) 업로드 호환
+        const resized = await resizeImage(editImage, 1200);
+        const base64 = resized.dataUrl.split(',')[1];
         const imgPath = `uploads/${editType}_edit_${Date.now()}_${editImage.name}`;
-        await commitToGithub(imgPath, await fileToBase64(editImage), `관리자: 수정 이미지 업로드`);
-        newImagePath = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`;
+        await commitToGithub(imgPath, base64, `관리자: 수정 이미지 업로드`);
+        const newUrl = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`;
+        finalImages = [newUrl];
       }
+      
+      const newImagePath = finalImages[0] || '';
+
       const items = await fetchGithubJson(`data/${editType}.json`);
       if (!items.length) throw new Error('파일을 불러올 수 없습니다.');
       const now = new Date().toLocaleString('ko-KR');
@@ -171,10 +204,14 @@ const AdminPage: React.FC = () => {
           editHistory: history 
         };
 
-        if (editType === 'poems' || editType === 'photos') {
+        if (editType === 'poems') {
           updatedItem.imageUrl = newImagePath;
+        } else if (editType === 'photos') {
+          updatedItem.imageUrl = newImagePath;
+          updatedItem.imageUrls = finalImages;
         } else {
           updatedItem.image = newImagePath;
+          updatedItem.images = finalImages;
         }
         return updatedItem;
       });
@@ -1347,10 +1384,58 @@ const AdminPage: React.FC = () => {
                 </div>
               )}
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">📷 사진 변경 (선택)</label>
-                <input type="file" ref={editImageRef} accept="image/*" onChange={e=>setEditImage(e.target.files?e.target.files[0]:null)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-blue-50 file:text-blue-600" />
-                {(editItem.image || editItem.imageUrl) && !editImage && (
-                  <p className="text-[10px] text-gray-400 mt-2">현재 이미지가 있습니다. 새 사진을 선택하면 교체됩니다.</p>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">📷 사진 관리 (삭제 및 추가)</label>
+                
+                {/* 기존 사진 리스트 */}
+                {editExistingImages.length > 0 && (
+                  <div className="flex gap-3 overflow-x-auto pb-4 mb-4">
+                    {editExistingImages.map((url: string, idx: number) => (
+                      <div key={`exist-${idx}`} className="relative w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 border-gray-100 shadow-sm group">
+                        <img src={url} alt={`기존-${idx}`} className="w-full h-full object-cover" />
+                        <button 
+                          onClick={() => setEditExistingImages(editExistingImages.filter((_: string, i: number) => i !== idx))}
+                          className="absolute top-1 right-1 bg-red-500/90 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md"
+                          title="삭제"
+                        >✕</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 사진 추가 폼 (시의 경우 단일, 일상/일기의 경우 다중) */}
+                <input 
+                  type="file" 
+                  ref={editImageRef} 
+                  accept="image/*" 
+                  multiple={editType === 'diaries' || editType === 'photos'}
+                  onChange={e => {
+                    const files = e.target.files;
+                    if (!files) return;
+                    if (editType === 'poems') {
+                      setEditImage(files[0]);
+                    } else {
+                      setEditNewImages(files);
+                      setEditNewImagePreviews(Array.from(files).map(f => URL.createObjectURL(f)));
+                    }
+                  }} 
+                  className="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer" 
+                />
+                
+                {/* 새 사진 미리보기 리스트 */}
+                {editNewImagePreviews.length > 0 && (
+                  <div className="flex gap-3 overflow-x-auto mt-4 pb-2">
+                    {editNewImagePreviews.map((url: string, idx: number) => (
+                      <div key={`new-${idx}`} className="relative w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 border-blue-200 border-dashed shadow-sm">
+                        <img src={url} alt={`새사진-${idx}`} className="w-full h-full object-cover opacity-80" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-blue-500/20 text-white font-black text-xs drop-shadow-md">New</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* 단일 추가(poems) 힌트 */}
+                {editType === 'poems' && editItem.imageUrl && !editImage && (
+                  <p className="text-[10px] text-gray-400 mt-2">새 사진을 선택하면 교체됩니다.</p>
                 )}
               </div>
               {editItem.editHistory && editItem.editHistory.length > 0 && (
