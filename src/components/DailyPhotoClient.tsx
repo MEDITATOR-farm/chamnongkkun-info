@@ -13,8 +13,33 @@ export default function DailyPhotoClient({ photos }: { photos: any[] }) {
     <div className="w-full flex flex-col gap-4 p-4">
       {todaysPhotos.map((photo, index) => (
         <div key={photo.id || index} className="w-full relative bg-white group rounded-3xl overflow-hidden shadow-sm border border-gray-100">
-          <div className="aspect-square sm:aspect-video w-full overflow-hidden bg-gray-50 relative">
-            <div className="flex overflow-x-auto snap-x snap-mandatory h-full w-full scrollbar-hide">
+          <div className="aspect-square sm:aspect-video w-full overflow-hidden bg-gray-50 relative group/slider">
+            
+            {/* 좌우 스크롤 버튼 (웹 환경 고려) */}
+            {photo.imageUrls && photo.imageUrls.length > 1 && (
+              <>
+                <button 
+                  onClick={(e) => {
+                    const container = e.currentTarget.parentElement?.querySelector('.scroll-container');
+                    if (container) container.scrollBy({ left: -window.innerWidth * 0.8, behavior: 'smooth' });
+                  }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 text-white w-8 h-8 rounded-full z-20 flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-black/60 shadow-lg pointer-events-auto"
+                >
+                  ❮
+                </button>
+                <button 
+                  onClick={(e) => {
+                    const container = e.currentTarget.parentElement?.querySelector('.scroll-container');
+                    if (container) container.scrollBy({ left: window.innerWidth * 0.8, behavior: 'smooth' });
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 text-white w-8 h-8 rounded-full z-20 flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-black/60 shadow-lg pointer-events-auto"
+                >
+                  ❯
+                </button>
+              </>
+            )}
+
+            <div className="scroll-container flex overflow-x-auto snap-x snap-mandatory h-full w-full scrollbar-hide">
               {photo.imageUrls && photo.imageUrls.length > 0 ? (
                 photo.imageUrls.map((url: string, imgIdx: number) => (
                   <div key={imgIdx} className="w-full h-full flex-shrink-0 snap-center relative">

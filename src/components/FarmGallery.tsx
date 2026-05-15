@@ -74,8 +74,30 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
                           />
                         </div>
                       ) : images.length > 0 ? (
-                        <div className="relative mt-4">
-                          <div className="flex overflow-x-auto snap-x snap-mandatory rounded-[20px] shadow-lg border border-primary/5 bg-primary/5 scrollbar-hide">
+                        <div className="relative mt-4 group/slider">
+                          {images.length > 1 && (
+                            <>
+                              <button 
+                                onClick={(e) => {
+                                  const container = e.currentTarget.parentElement?.querySelector('.scroll-container');
+                                  if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
+                                }}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 text-white w-8 h-8 rounded-full z-20 flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-black/60 shadow-lg pointer-events-auto"
+                              >
+                                ❮
+                              </button>
+                              <button 
+                                onClick={(e) => {
+                                  const container = e.currentTarget.parentElement?.querySelector('.scroll-container');
+                                  if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
+                                }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 text-white w-8 h-8 rounded-full z-20 flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-black/60 shadow-lg pointer-events-auto"
+                              >
+                                ❯
+                              </button>
+                            </>
+                          )}
+                          <div className="scroll-container flex overflow-x-auto snap-x snap-mandatory rounded-[20px] shadow-lg border border-primary/5 bg-primary/5 scrollbar-hide">
                             {images.map((img, idx) => (
                               <div key={idx} className="w-full flex-shrink-0 snap-center relative">
                                 <img
