@@ -6,12 +6,20 @@
     "imageUrls": [
       "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1778818876365_0_19882.jpg",
       "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1778818878963_1_19881.jpg",
-      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1778818881447_2_19880.jpg",
       "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1778818884077_3_19879.jpg",
-      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1778818886836_4_19878.jpg"
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1778818886836_4_19878.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photos_edit_1778827011632_0_KakaoTalk_20260329_204837056_06.jpg"
     ],
     "date": "2026. 05. 15.",
-    "location": "통영 정량동"
+    "location": "통영 정량동",
+    "content": "",
+    "author": "",
+    "editHistory": [
+      {
+        "date": "2026. 5. 15. 오후 3:36:55",
+        "note": "관리자 수정"
+      }
+    ]
   },
   {
     "id": 1778818691096,
