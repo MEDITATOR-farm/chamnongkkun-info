@@ -29,8 +29,12 @@ export default function DailyPhotoClient({ photos }: { photos: any[] }) {
               </h3>
             )}
             <div className="flex items-center gap-2 text-xs sm:text-sm font-bold opacity-90 uppercase tracking-widest drop-shadow-md">
-              <span className="flex items-center gap-1">📍 {photo.location || "거제도"}</span>
-              <span className="opacity-50">·</span>
+              {photo.location ? (
+                <>
+                  <span className="flex items-center gap-1">📍 {photo.location}</span>
+                  <span className="opacity-50">·</span>
+                </>
+              ) : null}
               <span>{photo.date}</span>
             </div>
           </div>

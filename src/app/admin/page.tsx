@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import exifr from 'exifr';
 
 interface Message {
   sender: "user" | "admin";
@@ -1138,6 +1139,26 @@ const AdminPage: React.FC = () => {
                       setPhotoImageFile(file);
                       const url = URL.createObjectURL(file);
                       setPhotoPreview(url);
+                      
+                      // 사진에서 위치 정보 자동 추출
+                      try {
+                        const gps = await exifr.gps(file);
+                        if (gps && gps.latitude && gps.longitude) {
+                          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${gps.latitude}&lon=${gps.longitude}&zoom=14&addressdetails=1`);
+                          const data = await res.json();
+                          if (data && data.address) {
+                            const province = data.address.province || data.address.state || '';
+                            const city = data.address.city || data.address.town || data.address.county || '';
+                            const suburb = data.address.suburb || data.address.village || data.address.neighbourhood || '';
+                            const locationStr = `${province} ${city} ${suburb}`.trim().replace(/\s+/g, ' ');
+                            if (locationStr) {
+                              setPhotoForm(prev => ({ ...prev, location: locationStr }));
+                            }
+                          }
+                        }
+                      } catch (err) {
+                        console.error('EXIF 추출 실패:', err);
+                      }
                     }}
                   />
                 </div>
@@ -1153,7 +1174,7 @@ const AdminPage: React.FC = () => {
               <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100">
                 <div className="mb-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                   <span>{new Date().toLocaleDateString('ko-KR')}</span>
-                  <span>{photoForm.location || "거제도"}</span>
+                  <span>{photoForm.location || "위치 지정 안됨"}</span>
                 </div>
                 
                 <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square sm:aspect-auto sm:min-h-[400px]">
@@ -1169,7 +1190,9 @@ const AdminPage: React.FC = () => {
                   {photoPreview && (
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
                       {photoForm.title && <h3 className="font-bold text-lg mb-1">{photoForm.title}</h3>}
-                      <p className="text-xs opacity-80 flex items-center gap-1">📍 {photoForm.location || "거제도"} · {new Date().toLocaleDateString('ko-KR')}</p>
+                      <p className="text-xs opacity-80 flex items-center gap-1">
+                        {photoForm.location ? `📍 ${photoForm.location} · ` : ""}{new Date().toLocaleDateString('ko-KR')}
+                      </p>
                     </div>
                   )}
                 </div>
