@@ -62,9 +62,9 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
                         </h3>
                       </div>
 
-                      {/* 사진/영상 그대로 나열 */}
+                      {/* 사진/영상 렌더링 */}
                       {diary.video ? (
-                        <div className="rounded-[24px] overflow-hidden shadow-xl border border-primary/5">
+                        <div className="rounded-[24px] overflow-hidden shadow-xl border border-primary/5 mt-4">
                           <video
                             src={diary.video}
                             controls
@@ -74,20 +74,27 @@ export default function FarmGallery({ diaries }: { diaries: any[] }) {
                           />
                         </div>
                       ) : images.length > 0 ? (
-                        <div className="space-y-2">
-                          {images.map((img, idx) => (
-                            <div key={idx} className="rounded-[20px] overflow-hidden shadow-lg border border-primary/5 bg-primary/5">
-                              <img
-                                src={img}
-                                alt={`${diary.title} ${idx + 1}`}
-                                className="w-full object-cover"
-                                loading="lazy"
-                              />
-                            </div>
-                          ))}
+                        <div className="relative mt-4">
+                          <div className="flex overflow-x-auto snap-x snap-mandatory rounded-[20px] shadow-lg border border-primary/5 bg-primary/5 scrollbar-hide">
+                            {images.map((img, idx) => (
+                              <div key={idx} className="w-full flex-shrink-0 snap-center relative">
+                                <img
+                                  src={img}
+                                  alt={`${diary.title} ${idx + 1}`}
+                                  className="w-full object-cover"
+                                  loading="lazy"
+                                />
+                                {images.length > 1 && (
+                                  <div className="absolute top-4 right-4 bg-black/60 text-white text-[10px] font-black px-3 py-1.5 rounded-full backdrop-blur-sm z-10 shadow-lg border border-white/20">
+                                    {idx + 1} / {images.length}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       ) : (
-                        <div className="w-full aspect-[4/3] bg-primary/5 rounded-[24px] flex items-center justify-center text-4xl">
+                        <div className="w-full mt-4 aspect-[4/3] bg-primary/5 rounded-[24px] flex items-center justify-center text-4xl">
                           🌱
                         </div>
                       )}

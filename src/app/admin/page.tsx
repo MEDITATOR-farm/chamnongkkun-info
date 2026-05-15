@@ -91,8 +91,8 @@ const AdminPage: React.FC = () => {
 
   // --- 일상 사진 올리기 관련 상태 ---
   const [photoForm, setPhotoForm] = useState({ title: "", location: "" });
-  const [photoImageFile, setPhotoImageFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoImageFiles, setPhotoImageFiles] = useState<FileList | null>(null);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [isPhotoUploading, setIsPhotoUploading] = useState(false);
   const photoImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -413,27 +413,34 @@ const AdminPage: React.FC = () => {
 
   const handlePhotoSubmit = async () => {
     if (!ghToken) return alert('토큰을 설정해주세요.');
-    if (!photoImageFile) return alert('사진 파일을 선택해주세요.');
+    if (!photoImageFiles || photoImageFiles.length === 0) return alert('사진 파일을 선택해주세요.');
     setIsPhotoUploading(true);
     try {
-      const resized = await resizeImage(photoImageFile, 1200);
-      const base64 = resized.dataUrl.split(',')[1];
-      const imgPath = `uploads/photo_${Date.now()}_${photoImageFile.name.replace(/\s/g, '_')}`;
-      await commitToGithub(imgPath, base64, `관리자: 일상 사진 업로드`);
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < photoImageFiles.length; i++) {
+        const file = photoImageFiles[i];
+        const resized = await resizeImage(file, 1200);
+        const base64 = resized.dataUrl.split(',')[1];
+        const imgPath = `uploads/photo_${Date.now()}_${i}_${file.name.replace(/\s/g, '_')}`;
+        await commitToGithub(imgPath, base64, `관리자: 일상 사진 ${i+1} 업로드`);
+        uploadedUrls.push(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`);
+      }
 
       const photos = await fetchGithubJson('data/photos.json');
       const newPhoto = {
         id: Date.now(),
         title: photoForm.title,
-        imageUrl: `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imgPath}`,
+        imageUrl: uploadedUrls[0],
+        imageUrls: uploadedUrls,
         date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }),
         location: photoForm.location || ""
       };
       await commitToGithub('data/photos.json', JSON.stringify([newPhoto, ...photos], null, 2), '관리자: 일상 사진 등록', false);
       alert('✅ 일상 사진이 등록되었습니다!');
       setPhotoForm({ title: "", location: "" });
-      setPhotoImageFile(null);
-      setPhotoPreview("");
+      setPhotoImageFiles(null);
+      photoPreviews.forEach(url => URL.revokeObjectURL(url));
+      setPhotoPreviews([]);
       if (photoImageInputRef.current) photoImageInputRef.current.value = "";
     } catch (e: any) {
       alert('❌ 오류: ' + e.message);
@@ -464,10 +471,16 @@ const AdminPage: React.FC = () => {
     setIsDiarySubmitting(true);
     try {
       let imagePath = "";
+      const uploadedImagePaths: string[] = [];
       if (diaryImages && diaryImages.length > 0) {
-        const file = diaryImages[0];
-        imagePath = `uploads/diary_${Date.now()}_${file.name}`;
-        await commitToGithub(imagePath, await fileToBase64(file), `관리자: 일기 이미지 업로드`);
+        for (let i = 0; i < diaryImages.length; i++) {
+          const file = diaryImages[i];
+          const path = `uploads/diary_${Date.now()}_${i}_${file.name.replace(/\s/g, '_')}`;
+          await commitToGithub(path, await fileToBase64(file), `관리자: 일기 이미지 ${i+1} 업로드`);
+          const fullPath = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${path}`;
+          uploadedImagePaths.push(fullPath);
+          if (i === 0) imagePath = fullPath;
+        }
       }
       let videoPath = "";
       if (diaryVideo) {
@@ -480,7 +493,8 @@ const AdminPage: React.FC = () => {
         date: new Date().toISOString().split('T')[0],
         title: diaryForm.title,
         content: diaryForm.content,
-        image: imagePath ? `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${imagePath}` : "",
+        image: imagePath,
+        images: uploadedImagePaths,
         video: videoPath ? `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/public/${videoPath}` : ""
       };
       await commitToGithub('data/diaries.json', JSON.stringify([newEntry, ...diaries], null, 2), "관리자: 새 농부일기 등록", false);
@@ -1131,18 +1145,19 @@ const AdminPage: React.FC = () => {
                   <input
                     type="file"
                     accept="image/*"
+                    multiple
                     ref={photoImageInputRef}
                     className="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer"
                     onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      setPhotoImageFile(file);
-                      const url = URL.createObjectURL(file);
-                      setPhotoPreview(url);
+                      const files = e.target.files;
+                      if (!files || files.length === 0) return;
+                      setPhotoImageFiles(files);
+                      const urls = Array.from(files).map(file => URL.createObjectURL(file));
+                      setPhotoPreviews(urls);
                       
-                      // 사진에서 위치 정보 자동 추출
+                      // 사진에서 위치 정보 자동 추출 (첫번째 이미지 기준)
                       try {
-                        const gps = await exifr.gps(file);
+                        const gps = await exifr.gps(files[0]);
                         if (gps && gps.latitude && gps.longitude) {
                           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${gps.latitude}&lon=${gps.longitude}&zoom=14&addressdetails=1`);
                           const data = await res.json();
@@ -1178,8 +1193,19 @@ const AdminPage: React.FC = () => {
                 </div>
                 
                 <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square sm:aspect-auto sm:min-h-[400px]">
-                  {photoPreview ? (
-                    <img src={photoPreview} alt="미리보기" className="w-full h-full object-cover" />
+                  {photoPreviews.length > 0 ? (
+                    <div className="flex overflow-x-auto snap-x snap-mandatory h-full w-full scrollbar-hide">
+                      {photoPreviews.map((url, idx) => (
+                        <div key={idx} className="w-full h-full flex-shrink-0 snap-center relative">
+                          <img src={url} alt={`미리보기 ${idx+1}`} className="w-full h-full object-cover" />
+                          {photoPreviews.length > 1 && (
+                            <div className="absolute top-4 right-4 bg-black/60 text-white text-[10px] font-black px-3 py-1.5 rounded-full backdrop-blur-sm z-10 shadow-lg border border-white/20">
+                              {idx + 1} / {photoPreviews.length}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-300">
                       <span className="text-4xl mb-2">📸</span>
@@ -1187,8 +1213,8 @@ const AdminPage: React.FC = () => {
                     </div>
                   )}
                   {/* 하단 정보 오버레이 (미리보기 용) */}
-                  {photoPreview && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
+                  {photoPreviews.length > 0 && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white z-10 pointer-events-none">
                       {photoForm.title && <h3 className="font-bold text-lg mb-1">{photoForm.title}</h3>}
                       <p className="text-xs opacity-80 flex items-center gap-1">
                         {photoForm.location ? `📍 ${photoForm.location} · ` : ""}{new Date().toLocaleDateString('ko-KR')}
@@ -1200,7 +1226,7 @@ const AdminPage: React.FC = () => {
 
               <button
                 onClick={handlePhotoSubmit}
-                disabled={isPhotoUploading || !photoImageFile}
+                disabled={isPhotoUploading || !photoImageFiles}
                 className="w-full bg-green-500 text-white font-black py-5 rounded-[24px] hover:bg-green-600 shadow-xl shadow-green-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isPhotoUploading ? '업로드 중... ⏳' : '🚀 사진 등록하기'}
