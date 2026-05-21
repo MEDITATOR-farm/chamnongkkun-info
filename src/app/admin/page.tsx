@@ -66,6 +66,8 @@ const AdminPage: React.FC = () => {
     fontColor: "#ffffff", // 기본 폰트 색상
     fontFamily: "var(--font-nanum-myeongjo), serif", // 기본 폰트
   });
+  const [showAdvancedStyles, setShowAdvancedStyles] = useState(false);
+  const [poemSubTab, setPoemSubTab] = useState<"form" | "preview">("form");
   const [isPoemSubmitting, setIsPoemSubmitting] = useState(false);
   const [poemList, setPoemList] = useState<any[]>([]);
   const [diaryList, setDiaryList] = useState<any[]>([]);
@@ -702,7 +704,7 @@ const AdminPage: React.FC = () => {
           {/* 모드 전환 탭 */}
           <div className="flex gap-2 mb-4">
             <button
-              onClick={() => setPoemMode('design')}
+              onClick={() => { setPoemMode('design'); setPoemSubTab('form'); }}
               className={`flex-1 py-3 rounded-2xl text-xs font-black transition-all ${
                 poemMode === 'design'
                   ? 'bg-orange-600 text-white shadow-lg shadow-orange-200'
@@ -712,7 +714,7 @@ const AdminPage: React.FC = () => {
               🎨 직접 디자인하기
             </button>
             <button
-              onClick={() => setPoemMode('upload')}
+              onClick={() => { setPoemMode('upload'); setPoemSubTab('form'); }}
               className={`flex-1 py-3 rounded-2xl text-xs font-black transition-all ${
                 poemMode === 'upload'
                   ? 'bg-purple-600 text-white shadow-lg shadow-purple-200'
@@ -723,13 +725,38 @@ const AdminPage: React.FC = () => {
             </button>
           </div>
 
+          {/* 모바일 전용 작성 / 미리보기 전환 서브 탭 (lg 미만에서만 표시) */}
+          <div className="flex bg-white rounded-2xl p-1 border border-gray-100 mb-6 lg:hidden shadow-sm">
+            <button
+              onClick={() => setPoemSubTab('form')}
+              className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                poemSubTab === 'form'
+                  ? 'bg-orange-50 text-orange-600 font-black'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              ✍️ 정보 작성하기
+            </button>
+            <button
+              onClick={() => setPoemSubTab('preview')}
+              className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all relative ${
+                poemSubTab === 'preview'
+                  ? 'bg-orange-50 text-orange-600 font-black'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              👁️ 미리보기 & 등록
+            </button>
+          </div>
+
           {/* ===== 완성 이미지 업로드 폼 ===== */}
           {poemMode === 'upload' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                  <div className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-100 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                  {/* 모바일 탭 상태에 맞춰 보이기/숨기기 */}
+                  <div className={`${poemSubTab === 'form' ? 'block' : 'hidden'} lg:block bg-white p-5 md:p-8 rounded-[24px] lg:rounded-[32px] shadow-xl border border-gray-100 space-y-6`}>
                     <div>
-                      <h2 className="text-2xl font-black text-gray-800 tracking-tighter">완성 이미지 등록</h2>
-                      <p className="text-gray-400 text-xs font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
+                      <h2 className="text-xl lg:text-2xl font-black text-gray-800 tracking-tighter">완성 이미지 등록</h2>
+                      <p className="text-gray-400 text-[11px] font-bold mt-1">밖에서 만든 시 카드 이미지를 그대로 올릴 수 있어요</p>
                     </div>
 
                     <div className="space-y-4">
@@ -763,19 +790,19 @@ const AdminPage: React.FC = () => {
                   </div>
 
                   {/* 완성 이미지 프리뷰 + 등록 버튼 */}
-                  <div className="sticky top-12 space-y-6">
+                  <div className={`${poemSubTab === 'preview' ? 'block' : 'hidden'} lg:block lg:sticky lg:top-12 space-y-6`}>
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
                       <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">완성 이미지 미리보기</span>
                     </div>
                     
-                    <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-gray-100 font-serif">
+                    <div className="bg-white p-5 rounded-[24px] lg:rounded-[32px] shadow-2xl border border-gray-100 font-serif">
                       <div className="mb-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                         <span>{new Date().toLocaleDateString('ko-KR')}</span>
                         <span>출처: {imageUploadForm.author || "작가 미상"}</span>
                       </div>
                       
-                      <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square sm:aspect-auto sm:min-h-[400px]">
+                      <div className="relative w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square lg:aspect-auto lg:min-h-[400px] h-[300px] lg:h-auto">
                         {imagePreview ? (
                           <img src={imagePreview} alt="미리보기" className="w-full h-full object-contain" />
                         ) : (
@@ -790,7 +817,7 @@ const AdminPage: React.FC = () => {
                     <button
                       onClick={handleImagePoemSubmit}
                       disabled={isImageUploading || !imageUploadFile}
-                      className="w-full bg-purple-600 text-white font-black py-5 rounded-[24px] hover:bg-purple-700 shadow-xl shadow-purple-100 transition-all text-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="w-full bg-purple-600 text-white font-black py-4.5 rounded-[20px] hover:bg-purple-700 shadow-xl shadow-purple-100 transition-all text-base disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
                     >
                       {isImageUploading ? '업로드 중... ⏳' : '🚀 완성 이미지 등록하기'}
                     </button>
@@ -802,110 +829,156 @@ const AdminPage: React.FC = () => {
 
           {/* ===== 디자인 모드 폼 ===== */}
           {poemMode === 'design' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* 설정 영역 (1~4번) */}
-            <div className="bg-white p-6 md:p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-10">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-black text-gray-800 tracking-tighter">🎨 시 디자인하기</h2>
-                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest italic">Walking Reading Poem Designer</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            {/* 설정 영역 */}
+            <div className={`${poemSubTab === 'form' ? 'block' : 'hidden'} lg:block bg-white p-5 md:p-6 rounded-[24px] lg:rounded-[32px] shadow-xl border border-gray-100 space-y-5`}>
+              <div className="space-y-1">
+                <h2 className="text-xl lg:text-2xl font-black text-gray-800 tracking-tighter">🎨 시 직접 디자인하기</h2>
+                <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest italic">Walking Reading Poem Designer</p>
               </div>
 
-              <div className="space-y-10">
-                {/* 1. 오늘의 싯구 */}
-                <div>
-                  <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">1</span> 
-                    오늘의 싯구
-                  </label>
-                  <textarea value={poemForm.content} onChange={e => setPoemForm({...poemForm, content: e.target.value})} rows={5} className="w-full border-2 border-gray-50 rounded-[24px] px-6 py-5 bg-gray-50 focus:border-orange-500 focus:bg-white transition-all font-serif text-lg leading-relaxed outline-none" placeholder="적게 소유하고 깊게 사랑하라"></textarea>
+              <div className="space-y-5">
+                {/* 1. 기본 내용 입력 */}
+                <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100 space-y-3">
+                  <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">📝 기본 정보</h3>
+                  
+                  <div>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">오늘의 싯구</label>
+                    <textarea 
+                      value={poemForm.content} 
+                      onChange={e => setPoemForm({...poemForm, content: e.target.value})} 
+                      rows={3} 
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:border-orange-500 transition-all font-serif text-sm leading-relaxed outline-none" 
+                      placeholder="적게 소유하고 깊게 사랑하라"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">작가 / 출처</label>
+                    <input 
+                      type="text" 
+                      value={poemForm.author} 
+                      onChange={e => setPoemForm({...poemForm, author: e.target.value})} 
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 bg-white focus:border-orange-500 outline-none font-bold text-xs transition-all" 
+                      placeholder="박노해 시인" 
+                    />
+                  </div>
                 </div>
 
-                {/* 2. 배경 테마 */}
-                <div>
-                  <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">2</span> 
-                    배경 테마 선택
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {/* 2. 배경 이미지 설정 */}
+                <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">🖼️ 배경 이미지</h3>
+                    <label className="text-[9px] font-black text-orange-600 bg-orange-50 hover:bg-orange-100 px-2.5 py-0.5 rounded-full cursor-pointer transition-colors">
+                      📤 내 PC에서 올리기
+                      <input type="file" onChange={handleLocalImageUpload} className="hidden" accept="image/*" />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {POEM_PRESETS.map(preset => (
-                      <button key={preset.name} onClick={() => setPoemForm({...poemForm, imageUrl: preset.url})} className={`px-2 py-3 rounded-xl border text-[10px] font-bold transition-all ${poemForm.imageUrl === preset.url ? 'bg-orange-600 border-orange-600 text-white shadow-lg' : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50'}`}>
+                      <button 
+                        key={preset.name} 
+                        type="button"
+                        onClick={() => setPoemForm({...poemForm, imageUrl: preset.url})} 
+                        className={`px-1.5 py-2 rounded-lg border text-[9px] font-bold transition-all truncate ${poemForm.imageUrl === preset.url ? 'bg-orange-600 border-orange-600 text-white shadow-md' : 'bg-white border-gray-200 text-gray-400 hover:bg-gray-50'}`}
+                        title={preset.name}
+                      >
                         {preset.name}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* 3. 내 PC에서 사진 불러오기 */}
-                <div>
-                  <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">3</span> 
-                    나만의 배경 업로드
-                  </label>
-                  <label className="flex items-center justify-center gap-2 w-full py-5 rounded-2xl border-2 border-dashed border-gray-200 text-gray-400 text-xs font-black hover:border-orange-300 hover:bg-orange-50/30 cursor-pointer transition-all">
-                    <span className="text-lg">📤</span> 내 PC에서 사진 불러오기
-                    <input type="file" onChange={handleLocalImageUpload} className="hidden" accept="image/*" />
-                  </label>
-                </div>
+                {/* 3. 세부 꾸미기 토글 버튼 */}
+                <button
+                  type="button"
+                  onClick={() => setShowAdvancedStyles(!showAdvancedStyles)}
+                  className="w-full py-2.5 px-3 rounded-lg border border-gray-200 text-[11px] font-bold text-gray-500 hover:bg-gray-50 transition-all flex items-center justify-between"
+                >
+                  <span>🎨 글꼴, 크기, 색상, 어둡기 세부 설정</span>
+                  <span>{showAdvancedStyles ? "접기 ▲" : "펼치기 ▼"}</span>
+                </button>
 
-                {/* 4. 글꼴, 색상, 크기 선택 추가 */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div>
-                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">4</span> 
-                      글꼴 선택
-                    </label>
-                    <select value={poemForm.fontFamily} onChange={e => setPoemForm({...poemForm, fontFamily: e.target.value})} className="w-full border-2 border-gray-50 rounded-xl px-4 py-3 bg-gray-50 outline-none focus:border-orange-500 transition-all text-xs font-bold">
-                      <option value="var(--font-nanum-myeongjo), serif">명조체 (감성적인 느낌)</option>
-                      <option value="var(--font-geist-sans), sans-serif">고딕체 (깔끔한 느낌)</option>
-                      <option value="system-ui, sans-serif">기본체 (모던한 느낌)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">5</span> 
-                      글자 크기 ({poemForm.fontSize}px)
-                    </label>
-                    <input type="range" min="16" max="60" value={poemForm.fontSize} onChange={e => setPoemForm({...poemForm, fontSize: parseInt(e.target.value)})} className="w-full h-2 mt-4 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-600" />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">6</span> 
-                      글자 색상
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input type="color" value={poemForm.fontColor} onChange={e => setPoemForm({...poemForm, fontColor: e.target.value})} className="w-10 h-10 rounded cursor-pointer border-0 p-0" />
-                      <span className="text-xs font-bold text-gray-500 uppercase">{poemForm.fontColor}</span>
+                {/* 4. 세부 꾸미기 영역 */}
+                {showAdvancedStyles && (
+                  <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100 space-y-4 animate-fadeIn">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 block">글꼴 선택</label>
+                        <select 
+                          value={poemForm.fontFamily} 
+                          onChange={e => setPoemForm({...poemForm, fontFamily: e.target.value})} 
+                          className="w-full border border-gray-200 rounded-lg px-2 py-1.5 bg-white outline-none focus:border-orange-500 transition-all text-[11px] font-bold"
+                        >
+                          <option value="var(--font-nanum-myeongjo), serif">명조체 (감성적인 느낌)</option>
+                          <option value="var(--font-geist-sans), sans-serif">고딕체 (깔끔한 느낌)</option>
+                          <option value="system-ui, sans-serif">기본체 (모던한 느낌)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 block">글자 색상</label>
+                        <div className="flex items-center gap-2">
+                          <input 
+                            type="color" 
+                            value={poemForm.fontColor} 
+                            onChange={e => setPoemForm({...poemForm, fontColor: e.target.value})} 
+                            className="w-7 h-7 rounded cursor-pointer border border-gray-200 p-0" 
+                          />
+                          <span className="text-[10px] font-mono font-bold text-gray-500 uppercase">{poemForm.fontColor}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <div className="flex justify-between items-center mb-0.5">
+                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">글자 크기</label>
+                          <span className="text-[9px] font-black text-orange-600">{poemForm.fontSize}px</span>
+                        </div>
+                        <input 
+                          type="range" 
+                          min="16" 
+                          max="60" 
+                          value={poemForm.fontSize} 
+                          onChange={e => setPoemForm({...poemForm, fontSize: parseInt(e.target.value)})} 
+                          className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-600" 
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between items-center mb-0.5">
+                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">배경 어둡기</label>
+                          <span className="text-[9px] font-black text-orange-600">{poemForm.opacity}%</span>
+                        </div>
+                        <input 
+                          type="range" 
+                          min="0" 
+                          max="90" 
+                          value={poemForm.opacity} 
+                          onChange={e => setPoemForm({...poemForm, opacity: parseInt(e.target.value)})} 
+                          className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-600" 
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                {/* 5. 배경 어둡기 */}
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px]">7</span> 
-                      배경 어둡기 (가독성 조절)
-                    </label>
-                    <span className="text-[11px] font-black text-orange-600">{poemForm.opacity}%</span>
-                  </div>
-                  <input type="range" min="0" max="90" value={poemForm.opacity} onChange={e => setPoemForm({...poemForm, opacity: parseInt(e.target.value)})} className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-600" />
-                </div>
+                )}
               </div>
             </div>
 
-            {/* 프리뷰 + 등록 버튼 영역 (5~6번) */}
-            <div className="sticky top-12 space-y-6">
+            {/* 프리뷰 + 등록 버튼 영역 */}
+            <div className={`${poemSubTab === 'preview' ? 'block' : 'hidden'} lg:block lg:sticky lg:top-12 space-y-4`}>
               <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-orange-600 text-white flex items-center justify-center text-[10px] font-bold">8</span> 
-                <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">실제 사이트 미리보기 (최종 확인)</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-orange-600 animate-pulse"></span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">실제 사이트 미리보기</span>
               </div>
 
               {/* 미리보기 카드 */}
               <div
-                className="relative w-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)]"
+                className="relative w-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] min-h-[300px] lg:min-h-[450px]"
                 style={{
                   borderRadius: "24px",
-                  minHeight: 500,
                   background: poemForm.imageUrl ? undefined : "#1a1a1a",
                 }}
               >
@@ -920,13 +993,13 @@ const AdminPage: React.FC = () => {
                   className="absolute inset-0 transition-opacity duration-300"
                   style={{ backgroundColor: `rgba(0,0,0,${poemForm.opacity / 100})` }}
                 />
-                <div className="absolute top-6 left-6 text-[10px] text-white/50 font-bold tracking-widest">{new Date().toLocaleDateString('ko-KR')}</div>
-                <div className="absolute top-6 right-6 text-[10px] text-white/50 font-bold tracking-widest">출처 : {poemForm.author}</div>
+                <div className="absolute top-4 left-4 text-[9px] text-white/60 font-bold tracking-widest">{new Date().toLocaleDateString('ko-KR')}</div>
+                <div className="absolute top-4 right-4 text-[9px] text-white/60 font-bold tracking-widest">출처 : {poemForm.author}</div>
                 
-                <div className="relative z-10 flex flex-col items-center justify-center px-10 py-16 text-center text-white min-h-[500px]">
-                  <div className="space-y-4 w-full">
+                <div className="relative z-10 flex flex-col items-center justify-center px-6 py-10 text-center text-white min-h-[300px] lg:min-h-[450px]">
+                  <div className="space-y-3 w-full">
                     {(poemForm.content || "").split("\n").map((line, idx) => (
-                      <p key={idx} className="font-bold leading-relaxed drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]" style={{ wordBreak: "keep-all", fontSize: `${poemForm.fontSize || 24}px`, color: poemForm.fontColor || "#ffffff", fontFamily: poemForm.fontFamily || "var(--font-nanum-myeongjo), serif" }}>
+                      <p key={idx} className="font-bold leading-relaxed drop-shadow-[0_3px_6px_rgba(0,0,0,0.4)]" style={{ wordBreak: "keep-all", fontSize: `${poemForm.fontSize || 24}px`, color: poemForm.fontColor || "#ffffff", fontFamily: poemForm.fontFamily || "var(--font-nanum-myeongjo), serif" }}>
                         {line || "\u00A0"}
                       </p>
                     ))}
@@ -934,32 +1007,31 @@ const AdminPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* 6. 시 등록하기 버튼 */}
-              <div className="pt-4">
+              {/* 시 등록하기 및 이미지 다운로드 버튼 */}
+              <div className="space-y-2.5">
                 <button 
                   onClick={handlePoemSubmit} 
                   disabled={isPoemSubmitting} 
-                  className="group relative w-full overflow-hidden bg-orange-600 text-white font-black py-4 rounded-[28px] hover:bg-orange-700 shadow-2xl shadow-orange-200 transition-all active:scale-95"
+                  className="group relative w-full overflow-hidden bg-orange-600 text-white font-black py-3.5 rounded-xl hover:bg-orange-700 shadow-lg shadow-orange-100 transition-all active:scale-[0.98]"
                 >
-                  <div className="relative z-10 flex items-center justify-center gap-3">
-                    <span className="text-2xl">{isPoemSubmitting ? "⏳" : "🚀"}</span>
-                    <span className="text-xl tracking-tighter">{isPoemSubmitting ? "전송 중..." : "위 디자인으로 시 등록하기"}</span>
+                  <div className="relative z-10 flex items-center justify-center gap-2 text-sm">
+                    <span>{isPoemSubmitting ? "⏳" : "🚀"}</span>
+                    <span>{isPoemSubmitting ? "등록 중..." : "이 디자인으로 시 등록하기"}</span>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
 
                 <button 
                   onClick={handleDownloadImage} 
-                  className="w-full bg-slate-800 text-white font-black py-4 rounded-[28px] hover:bg-black shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3"
+                  className="w-full bg-slate-800 text-white font-black py-3 rounded-xl hover:bg-black transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs"
                 >
-                  <span className="text-xl">💾</span>
-                  <span className="text-base">이 디자인을 이미지로 저장하기</span>
+                  <span>💾</span>
+                  <span>이 디자인을 이미지 파일로 내려받기</span>
                 </button>
               </div>
 
               {/* 이미지 리사이즈 정보 */}
               {imageInfo && (
-                <div className="bg-orange-50/50 rounded-2xl p-4 text-xs border border-orange-100 flex items-center justify-between">
+                <div className="bg-orange-50/50 rounded-xl p-3 text-[10px] border border-orange-100 flex items-center justify-between">
                   <span className="font-bold text-orange-600 uppercase tracking-widest text-[9px]">Optimized: {imageInfo.resized}</span>
                   <span className="text-gray-400 italic">Original: {imageInfo.original}</span>
                 </div>
