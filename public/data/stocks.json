@@ -3,16 +3,16 @@
     "id": 1,
     "name": "KOSPI",
     "symbol": "^KS11",
-    "value": "8,185.29",
-    "change": "0.53%",
-    "isUp": false
+    "value": "8,365.52",
+    "change": "2.20%",
+    "isUp": true
   },
   {
     "id": 2,
     "name": "KOSDAQ",
     "symbol": "^KQ11",
-    "value": "1,104.36",
-    "change": "4.89%",
+    "value": "1,060.1",
+    "change": "4.01%",
     "isUp": false
   },
   {
@@ -26,15 +26,17 @@
   {
     "id": 4,
     "name": "NASDAQ",
-    "value": "정보 없음",
-    "change": "-",
+    "symbol": "^IXIC",
+    "value": "26,917.47",
+    "change": "0.91%",
     "isUp": true
   },
   {
     "id": 5,
     "name": "원/달러 환율",
-    "value": "정보 없음",
-    "change": "-",
+    "symbol": "KRW=X",
+    "value": "1,502.14",
+    "change": "8.35원",
     "isUp": true
   }
 ]
