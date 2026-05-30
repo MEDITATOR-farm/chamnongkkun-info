@@ -10,10 +10,9 @@
   {
     "id": 2,
     "name": "KOSDAQ",
-    "symbol": "^KQ11",
-    "value": "1,074.8",
-    "change": "2.68%",
-    "isUp": false
+    "value": "정보 없음",
+    "change": "-",
+    "isUp": true
   },
   {
     "id": 3,
