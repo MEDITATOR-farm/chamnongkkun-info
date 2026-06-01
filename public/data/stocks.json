@@ -35,8 +35,8 @@
     "id": 5,
     "name": "원/달러 환율",
     "symbol": "KRW=X",
-    "value": "1,513.27",
-    "change": "6.14원",
-    "isUp": true
+    "value": "1,511.72",
+    "change": "0.55원",
+    "isUp": false
   }
 ]
