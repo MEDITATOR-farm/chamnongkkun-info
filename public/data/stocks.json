@@ -3,17 +3,17 @@
     "id": 1,
     "name": "KOSPI",
     "symbol": "^KS11",
-    "value": "7,484.41",
-    "change": "8.29%",
-    "isUp": false
+    "value": "7,732.56",
+    "change": "3.32%",
+    "isUp": true
   },
   {
     "id": 2,
     "name": "KOSDAQ",
     "symbol": "^KQ11",
-    "value": "911.39",
-    "change": "9.08%",
-    "isUp": false
+    "value": "960.09",
+    "change": "5.34%",
+    "isUp": true
   },
   {
     "id": 3,
@@ -35,8 +35,8 @@
     "id": 5,
     "name": "원/달러 환율",
     "symbol": "KRW=X",
-    "value": "1,526.84",
-    "change": "0.01원",
-    "isUp": true
+    "value": "1,515.58",
+    "change": "11.25원",
+    "isUp": false
   }
 ]
