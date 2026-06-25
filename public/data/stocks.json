@@ -11,9 +11,9 @@
     "id": 2,
     "name": "KOSDAQ",
     "symbol": "^KQ11",
-    "value": "887.81",
-    "change": "0.42%",
-    "isUp": false
+    "value": "909.31",
+    "change": "2.00%",
+    "isUp": true
   },
   {
     "id": 3,
@@ -35,8 +35,8 @@
     "id": 5,
     "name": "원/달러 환율",
     "symbol": "KRW=X",
-    "value": "1,544.84",
-    "change": "8.32원",
+    "value": "1,544.16",
+    "change": "7.64원",
     "isUp": true
   }
 ]
