@@ -1,5 +1,16 @@
 [
   {
+    "id": 1783467335509,
+    "title": "동호만 등대",
+    "imageUrl": "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783467330997_0_23359.jpg",
+    "imageUrls": [
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783467330997_0_23359.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783467333370_1_23358.jpg"
+    ],
+    "date": "2026. 07. 08.",
+    "location": "동호만"
+  },
+  {
     "id": 1783409744351,
     "title": "동호만 해무",
     "imageUrl": "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783409741753_0_23292.jpg",
