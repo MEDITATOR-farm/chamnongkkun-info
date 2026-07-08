@@ -1,5 +1,17 @@
 [
   {
+    "id": 1783553026513,
+    "title": "동호만의 아침",
+    "imageUrl": "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783553019661_0_23445.jpg",
+    "imageUrls": [
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783553019661_0_23445.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783553021680_1_23444.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783553024497_2_23443.jpg"
+    ],
+    "date": "2026. 07. 09.",
+    "location": "정량동"
+  },
+  {
     "id": 1783479413064,
     "title": "MandeVilla 만데빌라",
     "imageUrl": "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/photo_1783479410699_0_23398.jpg",
