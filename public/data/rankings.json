@@ -3,32 +3,32 @@
     "id": 1,
     "name": "삼성전자",
     "symbol": "005930.KS",
-    "value": "270,250",
-    "change": "0.84%",
+    "value": "269,000",
+    "change": "0.37%",
     "isUp": true
   },
   {
     "id": 2,
     "name": "SK하이닉스",
     "symbol": "000660.KS",
-    "value": "1,644,000",
-    "change": "3.20%",
+    "value": "1,634,000",
+    "change": "2.57%",
     "isUp": true
   },
   {
     "id": 3,
     "name": "LG에너지솔루션",
     "symbol": "373220.KS",
-    "value": "362,000",
-    "change": "0.96%",
+    "value": "364,500",
+    "change": "0.27%",
     "isUp": false
   },
   {
     "id": 4,
     "name": "현대차",
     "symbol": "005380.KS",
-    "value": "451,000",
-    "change": "7.77%",
+    "value": "449,500",
+    "change": "7.41%",
     "isUp": true
   },
   {
@@ -43,16 +43,16 @@
     "id": 6,
     "name": "셀트리온",
     "symbol": "068270.KS",
-    "value": "201,000",
-    "change": "0.50%",
+    "value": "200,500",
+    "change": "0.74%",
     "isUp": false
   },
   {
     "id": 7,
     "name": "기아",
     "symbol": "000270.KS",
-    "value": "141,500",
-    "change": "2.98%",
+    "value": "140,800",
+    "change": "2.47%",
     "isUp": true
   }
 ]
