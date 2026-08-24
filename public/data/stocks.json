@@ -19,24 +19,24 @@
     "id": 3,
     "name": "S&P 500",
     "symbol": "^GSPC",
-    "value": "7,674.37",
-    "change": "0.43%",
-    "isUp": true
+    "value": "7,654.69",
+    "change": "0.26%",
+    "isUp": false
   },
   {
     "id": 4,
     "name": "NASDAQ",
     "symbol": "^IXIC",
-    "value": "26,180.46",
-    "change": "0.43%",
-    "isUp": true
+    "value": "26,001.54",
+    "change": "0.68%",
+    "isUp": false
   },
   {
     "id": 5,
     "name": "원/달러 환율",
     "symbol": "KRW=X",
-    "value": "1,382.36",
-    "change": "2.64원",
+    "value": "1,383.69",
+    "change": "1.31원",
     "isUp": false
   }
 ]
