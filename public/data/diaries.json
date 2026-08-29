@@ -4,9 +4,24 @@
     "date": "2026-08-29",
     "title": "양수기 수리",
     "content": "기록적 폭우로 인해\n비닐하우스로 물이 흘러감\n양수기도 물에 잠겼다가 빠짐\n\n켠덴서 확인,\n펌프 코알 분해 물제거\n작동확인",
-    "image": "",
-    "images": [],
-    "video": "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diary_vid_1787990773809_20260829_103906.mp4"
+    "image": "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1787990990641_0_26851.jpg",
+    "images": [
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1787990990641_0_26851.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1787990993583_1_26848.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1787990997236_2_26845.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1787991000342_3_26853.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1787991003239_4_26836.jpg",
+      "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diaries_edit_1787991005592_5_26852.jpg"
+    ],
+    "video": "https://raw.githubusercontent.com/MEDITATOR-farm/chamnongkkun-info/main/public/uploads/diary_vid_1787990773809_20260829_103906.mp4",
+    "author": "",
+    "location": "",
+    "editHistory": [
+      {
+        "date": "2026. 8. 29. 오후 5:10:09",
+        "note": "관리자 수정"
+      }
+    ]
   },
   {
     "id": 1783295250780,
