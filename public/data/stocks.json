@@ -19,16 +19,16 @@
     "id": 3,
     "name": "S&P 500",
     "symbol": "^GSPC",
-    "value": "7,718.36",
-    "change": "1.12%",
+    "value": "7,718.94",
+    "change": "1.11%",
     "isUp": false
   },
   {
     "id": 4,
     "name": "NASDAQ",
     "symbol": "^IXIC",
-    "value": "26,696.76",
-    "change": "1.87%",
+    "value": "26,692.87",
+    "change": "1.88%",
     "isUp": false
   },
   {
