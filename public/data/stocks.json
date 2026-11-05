@@ -3,40 +3,40 @@
     "id": 1,
     "name": "KOSPI",
     "symbol": "^KS11",
-    "value": "5,683.8",
-    "change": "0.62%",
-    "isUp": true
+    "value": "5,441.2",
+    "change": "4.27%",
+    "isUp": false
   },
   {
     "id": 2,
     "name": "KOSDAQ",
     "symbol": "^KQ11",
-    "value": "714.95",
-    "change": "2.64%",
+    "value": "683.56",
+    "change": "4.39%",
     "isUp": false
   },
   {
     "id": 3,
     "name": "S&P 500",
     "symbol": "^GSPC",
-    "value": "7,702.55",
-    "change": "1.77%",
+    "value": "7,688.62",
+    "change": "1.58%",
     "isUp": true
   },
   {
     "id": 4,
     "name": "NASDAQ",
     "symbol": "^IXIC",
-    "value": "25,791.16",
-    "change": "1.65%",
+    "value": "25,736.51",
+    "change": "1.44%",
     "isUp": true
   },
   {
     "id": 5,
     "name": "원/달러 환율",
     "symbol": "KRW=X",
-    "value": "1,341.35",
-    "change": "1.47원",
-    "isUp": false
+    "value": "1,341.78",
+    "change": "1.15원",
+    "isUp": true
   }
 ]
