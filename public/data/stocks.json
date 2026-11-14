@@ -12,31 +12,31 @@
     "name": "KOSDAQ",
     "symbol": "^KQ11",
     "value": "699.66",
-    "change": "0.77%",
-    "isUp": false
+    "change": "0.45%",
+    "isUp": true
   },
   {
     "id": 3,
     "name": "S&P 500",
     "symbol": "^GSPC",
-    "value": "7,550.5",
-    "change": "0.55%",
+    "value": "7,561.67",
+    "change": "0.40%",
     "isUp": false
   },
   {
     "id": 4,
     "name": "NASDAQ",
     "symbol": "^IXIC",
-    "value": "25,115.86",
-    "change": "0.99%",
+    "value": "25,136.27",
+    "change": "0.91%",
     "isUp": false
   },
   {
     "id": 5,
     "name": "원/달러 환율",
     "symbol": "KRW=X",
-    "value": "1,336.53",
-    "change": "2.17원",
+    "value": "1,335.11",
+    "change": "0.75원",
     "isUp": true
   }
 ]
