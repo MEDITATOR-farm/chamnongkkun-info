@@ -165,7 +165,7 @@ export default function AppsPage() {
               </label>
               <input
                 type="password"
-                placeholder="비밀번호를 입력하세요"
+                placeholder="비밀번호를 입력하세요 (1234 또는 관리자 암호)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-primary/20 bg-background/50 focus:outline-none focus:border-primary text-sm transition-all"
