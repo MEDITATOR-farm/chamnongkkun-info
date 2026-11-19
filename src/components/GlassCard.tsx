@@ -17,6 +17,7 @@ export function NavLinks() {
     { name: "기록", href: "/" },
     { name: "거제지도", href: "/#map" },
     { name: "오늘의시", href: "/#wisdom" },
+    { name: "앱 놀이터", href: "/apps" },
     { name: "소개", href: "/about" },
   ];
 

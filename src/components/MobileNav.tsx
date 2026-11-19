@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { href: "/",      icon: "🏡", label: "홈" },
   { href: "/#map",  icon: "🗺️", label: "거제지도" },
   { href: "/#diary", icon: "🌾", label: "농부일기" },
+  { href: "/apps",  icon: "🧩", label: "놀이터" },
   { href: "/#daily-photo", icon: "📸", label: "나의일상" },
   { href: "/#wisdom", icon: "📖", label: "오늘의시" },
 ];

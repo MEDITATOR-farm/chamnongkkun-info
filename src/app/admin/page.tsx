@@ -647,7 +647,15 @@ const AdminPage: React.FC = () => {
           <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white font-black">M</div>
           <h1 className="font-black text-base md:text-lg text-gray-800 tracking-tighter uppercase">Master Center</h1>
         </div>
-        <div className="flex gap-2 md:gap-4">
+        <div className="flex gap-2 md:gap-4 items-center">
+          <a
+            href="/apps"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs md:text-sm font-bold text-orange-600 hover:text-orange-700 bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-200 transition-all flex items-center gap-1"
+          >
+            🧩 앱 놀이터/업로드
+          </a>
           <button onClick={() => setShowSettings(true)} className="text-xs md:text-sm font-bold text-gray-400 hover:text-gray-800 transition-colors px-2 py-1">⚙️ 설정</button>
           <button onClick={() => {
             localStorage.removeItem("CHAMNONG_ADMIN_SESSION");
