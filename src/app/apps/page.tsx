@@ -68,7 +68,8 @@ export default function AppsPage() {
     setMessage(null);
     try {
       const form = new FormData();
-      form.append('file', file);
+      form.append('file', file, file.name);
+      form.append('name', file.name);
       const res = await fetch('/api/apps', {
         method: 'POST',
         headers: { 'x-admin-password': password },

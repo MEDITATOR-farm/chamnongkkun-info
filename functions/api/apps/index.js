@@ -86,18 +86,42 @@ export async function onRequestPost({ request, env }) {
     return json({ error: '업로드 형식이 올바르지 않습니다.' }, 400);
   }
 
-  const file = form.get('file');
-  if (!file || typeof file === 'string') return json({ error: '파일이 없습니다.' }, 400);
+  let file = form.get('file');
+  if (!file) {
+    for (const [, val] of form.entries()) {
+      if (val && typeof val === 'object' && typeof val.arrayBuffer === 'function') {
+        file = val;
+        break;
+      }
+    }
+  }
 
-  const name = sanitizeName(file.name);
+  if (!file) return json({ error: '선택된 파일이 없습니다.' }, 400);
+
+  let name = '';
+  let body = null;
+  let size = 0;
+
+  if (typeof file === 'string') {
+    const rawName = form.get('name') || form.get('filename') || 'app.html';
+    name = sanitizeName(rawName);
+    const enc = new TextEncoder();
+    body = enc.encode(file);
+    size = body.byteLength;
+  } else {
+    const rawName = file.name || form.get('name') || 'app.html';
+    name = sanitizeName(rawName);
+    size = file.size || 0;
+    body = await file.arrayBuffer();
+  }
+
   if (!/\.html?$/i.test(name)) return json({ error: 'HTML 파일(.html, .htm)만 업로드할 수 있습니다.' }, 400);
-  if (file.size === 0) return json({ error: '빈 파일입니다.' }, 400);
-  if (file.size > MAX_SIZE) return json({ error: '파일이 너무 큽니다. (최대 5MB)' }, 413);
+  if (size === 0) return json({ error: '빈 파일입니다.' }, 400);
+  if (size > MAX_SIZE) return json({ error: '파일이 너무 큽니다. (최대 5MB)' }, 413);
 
-  const body = await file.arrayBuffer();
   await getKV(env).put(PREFIX + name, body, {
-    metadata: { size: file.size, uploaded: new Date().toISOString() },
+    metadata: { size, uploaded: new Date().toISOString() },
   });
 
-  return json({ ok: true, name, size: file.size });
+  return json({ ok: true, name, size });
 }
