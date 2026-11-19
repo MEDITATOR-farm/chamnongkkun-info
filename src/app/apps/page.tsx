@@ -149,6 +149,51 @@ export default function AppsPage() {
           </p>
         </div>
 
+        {/* 🌟 추천 공식 웹앱 카드 */}
+        <section className="glass-nature rounded-3xl p-6 md:p-8 mb-10 border border-primary/10 shadow-lg relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none -mr-10 -mt-10"></div>
+          
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-xl">🌟</span>
+            <h2 className="text-lg md:text-xl font-bold font-serif">추천 웹앱</h2>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase">
+              Official
+            </span>
+          </div>
+
+          <div className="p-4 md:p-5 rounded-2xl bg-primary/[0.03] border border-primary/15 hover:border-primary/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 font-serif font-black text-2xl flex items-center justify-center shrink-0">
+                篆
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-base font-bold text-foreground">해서 → 소전 변환기 (楷書 to 小篆)</h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500">
+                    웹앱 / 설치 지원
+                  </span>
+                </div>
+                <p className="text-xs text-foreground/60 mt-1 leading-relaxed">
+                  해서체 한자를 입력하면 유니코드 소전(小篆) 글자로 변환해주는 유용한 서예·한자 변환기입니다.
+                </p>
+                <div className="text-[11px] text-foreground/40 mt-1.5 font-mono">
+                  meditator-farm.github.io/sojeon
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://meditator-farm.github.io/sojeon/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5 shrink-0 active:scale-95"
+            >
+              <span>▶ 바로 실행하기</span>
+              <span className="text-[10px]">↗</span>
+            </a>
+          </div>
+        </section>
+
         {/* ① 업로드 카드 (관리자용) */}
         <section className="glass-nature rounded-3xl p-6 md:p-8 mb-10 border border-primary/10 shadow-lg">
           <div className="flex items-center gap-2 mb-4">
