@@ -1,4 +1,4 @@
-﻿name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -97,7 +97,9 @@ jobs:
           NEXT_PUBLIC_ADSENSE_ID: ${{ secrets.NEXT_PUBLIC_ADSENSE_ID }}
           NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_COUPANG_PARTNER_ID: ${{ secrets.NEXT_PUBLIC_COUPANG_PARTNER_ID }}
-        run: npm run build
+        run: |
+          npm run build
+          find out -type f -size +24M -delete
 
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy out --project-name=chamnongkkun-info
