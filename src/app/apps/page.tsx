@@ -41,7 +41,7 @@ export default function AppsPage() {
     setLoading(true);
     setLoadError('');
     try {
-      const res = await fetch('/api/apps', { cache: 'no-store' });
+      const res = await fetch(`/api/apps?_t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || '앱 목록을 불러오지 못했습니다.');
       setApps(data.apps || []);
@@ -89,20 +89,29 @@ export default function AppsPage() {
   };
 
   const remove = async (name: string) => {
-    if (!password) return setMessage({ type: 'err', text: '삭제하려면 위의 관리자 비밀번호를 먼저 입력해주세요.' });
-    if (!window.confirm(`"${name}" 어플을 정말 삭제하시겠습니까?`)) return;
+    let pw = password.trim();
+    if (!pw) {
+      const prompted = window.prompt(`"${name}" 어플을 삭제하려면 관리자 비밀번호를 입력해주세요:`);
+      if (!prompted) return;
+      pw = prompted.trim();
+      setPassword(pw);
+    } else {
+      if (!window.confirm(`"${name}" 어플을 정말 삭제하시겠습니까?`)) return;
+    }
 
     setBusy(true);
     setMessage(null);
     try {
       const res = await fetch(`/api/apps/${encodeURIComponent(name)}`, {
         method: 'DELETE',
-        headers: { 'x-admin-password': password },
+        headers: { 'x-admin-password': pw },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || '삭제에 실패했습니다.');
+      
+      // ✅ 서버 동기화 지연과 상관없이 화면 목록에서 즉시 제거!
+      setApps((prev) => prev.filter((app) => app.name !== name));
       setMessage({ type: 'ok', text: `🗑️ 삭제 완료: ${name}` });
-      await load();
     } catch (e) {
       setMessage({ type: 'err', text: e instanceof Error ? e.message : '삭제에 실패했습니다.' });
     } finally {
